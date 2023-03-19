@@ -2,6 +2,10 @@
 <html>
 
 <head>
+  <script src="../lib/PhpRequest.js"></script>
+  <script src="script.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
   <title>Registration Form</title>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
@@ -69,14 +73,15 @@
         </div>
         <input class="formbold-btn" type="button" onclick="handleRegistrationButton(); return false;" 
         name="register" id="register" value="Register Now">
-        <span hidden id="fuck" class="label danger">Danger</span>
+
+
+
 
       </form>
     </div>
-  </div>    
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="../lib/PhpRequest.js"></script>
-  <script src="script.js"></script>
+  </div>
+
+
 </body>
 
 

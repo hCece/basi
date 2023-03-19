@@ -44,12 +44,13 @@
         </div>
       <input class="formbold-btn" type="button" onclick="handleLoginButton(); return false;" name="log" id="log" value="Log In Here">
       <button class="formbold-btn" onclick= "
-        window.location.href = 'http://localhost:4000/phpTEST/src/registration/register.php'; 
+        window.location.href = 'http://localhost:4000/TAXI/src/registration/register.php';
         return false;">
         Register Now</button>
 
+
       
-      <br><br>  <span  id="fuck" class="label danger"style="visibility  : hidden">Credenziali sbagliate!</span>
+      <br><br>  <span  id="errorLabel" class="label danger"style="visibility  : hidden">Credenziali sbagliate!</span>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="../lib/PhpRequest.js"></script>
     <script src="script.js"></script>
