@@ -11,8 +11,11 @@
     /*  This function is made to call genericly stored procedures. Following inputs are required:
 
             - input_variables: a list, in the right order, of the inputs needed for the stored procedure
-            - procedure_name: the name of how the stored procedure that we want to call
-            - has_output: if the stored procedure returns a value this has to be set to true.
+            - procedure_name: the name of the stored procedure that we want to call
+            - has_output (char) : if the stored procedure returns a value this has to be set to true.
+                        s --> String return
+                        i --> integer return
+                        ...
 
     */
 function call_stored_procedure($input_variables, $procedure_name, $hasOutput=false) {
@@ -34,7 +37,7 @@ function call_stored_procedure($input_variables, $procedure_name, $hasOutput=fal
     /*the three dots are called a "splat" operataor. It decomposes a array to single values and passes each a an individual one
         for more info check https://www.hashbangcode.com/article/splat-operator-php
         E.g. if there are 3 input varables, the input will look as follow:
-            bind_param("sss", $input1, $input2, $input3)
+            bind_param(                 "sss"                 , $input1, $input2, $input3)
     */
     $stmt->bind_param(str_repeat("s", count($input_variables)), ...$input_values);
 
@@ -71,6 +74,8 @@ function prepare_input($input_variables) {
     $input_params = rtrim($input_params, ",");
     return array('params' => $input_params, 'values' => $input_values);
 }
+
+
 
 
 

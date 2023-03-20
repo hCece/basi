@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html>
+
+  <?php
+
+    //TODO: somehow check if the cookies set are actually valid credentials
+
+  ?>
   <head>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <script src="../lib/PhpRequest.js"></script>
@@ -22,6 +28,12 @@
     <button id="storico-recensioni">Storico recensioni</button>
     <button id="graduatoria">Graduatoria</button>
   </body>
+
+
+  <?php
+      echo("username: " . $_COOKIE["user"]);
+
+  ?>
 </html>
 
 
