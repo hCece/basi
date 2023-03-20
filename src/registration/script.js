@@ -1,12 +1,16 @@
-var phpRequest = PhpRequest();
+
+
 /*
     This function is designed to handle the register button. 
     It retrives the data, calls a stored procedure and handles the response
 */
 
 function handleRegistrationButton(){
-
     //Retriving data from the two input fields, and parsing them into json
+    
+    var request = new PhpRequest();
+
+
     var user = document.getElementById("user").value;
     var pass = document.getElementById("pass").value;
     var firstName = document.getElementById("firstname").value;
@@ -28,15 +32,16 @@ function handleRegistrationButton(){
                     city:city,
                     cf:cf};
 
-        phpRequest.makeMySqlRequest("checkUsername", "POST", {user:user});
-        var result1 = phpRequest.getResponse();
+;
+        request.mySql("checkUsername", "POST", {user:user});
+        var result1 = request.getResponse();
 
-        phpRequest.makeMySqlRequest("checkCF", "POST", {cf:cf});
-        var result2 = phpRequest.getResponse();
+        request.mySql(PhpRequest.SP.CheckCF, "POST", {cf:cf});
+        var result2 = request.getResponse();
 
         if(result1 == 'OK'  && result2 == 'OK'){
-            phpRequest.makeMySqlRequest("aggiungiCredenziali", "POST", json1);
-            phpRequest.makeMySqlRequest("aggiungiCliente", "POST", json2);
+            request.callMySql(PhpRequest.SP.AggiungiCredenziali, "POST", json1);
+            request.callMySql(PhpRequest.SP.AggiungCliente, "POST", json2);
             alert("Registration successful, try to login");
             window.location.href = "http://localhost:4000/TAXI/src/login/login.php";
 
