@@ -3,34 +3,16 @@
     It uses AJAX to make the requests
 */
 var response;
-class PhpRequest{
-
-    //Stands for Stored Procedure
-    static SP = {
-        AggiungiCliente: "aggiungiCliente",
-        AggiungiCredenziali: "aggiung iCredenziali",
-        CheckCF: "checkCF",
-        CheckUsername: "checkUsername",
-        RiconosciUtente: "riconosciUtente"
-    };
-
+function phpRequest() {
     //Returns the variable "response" 
-    getResponse = function () { return response.trim(); };       
-
-
+    this.getResponse = function () { return response.trim(); };       
     /* Opting to make request via javascript-php instead of the <post> with html-php, get's usefull for more complex use cases of requests, 
         e.g. the Google Maps webpage. The request is performed with JQuery & AJAX. 
         If the function is successfull, the data get's saved on "respone", otherwise an error message populates the variable   
-    */    
-    mySql = function (storedProcedure, type, json) {
-        console.log(storedProcedure)
-        // Check if the provided storedProcedure is a valid enum value
-        if (!Object.values(SP).includes(storedProcedure)) {
-            throw new Error("Invalid stored procedure name");
-        }
-        
+    */
+    this.makeRequest = function (url, type, json) {
         $.ajax({
-            url: storedProcedure,
+            url: url,
             type: type,
             async: false,
             data: json,
@@ -45,9 +27,12 @@ class PhpRequest{
     };
 
     //calls the previous method, but corrects the path where the php file for the queries are found
-    makeMySqlRequest = function (url, type, json) {
+    this.makeMySqlRequest = function (url, type, json) {
         url =  "../lib/mySqlConnection/" + url + ".php";
         return this.makeRequest(url, type, json);
     };
+}
+function PhpRequest() {
+    return new phpRequest();
 }
 
