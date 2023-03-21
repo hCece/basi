@@ -1,11 +1,11 @@
 var googleMap = googleMaps();
-var phpRequest = PhpRequest();
 var locationStart,locationEnd,map;
 
 //Just a boring handler. It gets the Location object, 
 // takes the coordinates of those location and makes a request to the server.
 // The response is printed onto html 
 function handleSubmitButton() {
+  var request = new PhpRequest();
   locationStart = googleMap.getStartPlace();
   locationEnd =  googleMap.getEndPlace();
 
@@ -20,8 +20,8 @@ function handleSubmitButton() {
   prettyZoom();
   json = {LatBegin:startCoordinates[0],LongBegin:startCoordinates[1],
     LatEnd:endCoordinates[0],LongEnd:endCoordinates[1]}
-  phpRequest.makeRequest("distance.php", "POST", json);
-  document.getElementById("distance").innerHTML=phpRequest.getResponse();
+    request.request("distance.php", "POST", json);
+  document.getElementById("distance").innerHTML=request.getResponse();
 
 }
 

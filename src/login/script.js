@@ -4,6 +4,9 @@
     This function is designed to handle the login button. 
     It retrives the data, calls a stored procedure and handles the response
 */
+
+
+
 function handleLoginButton() {
     var request = new PhpRequest();
 
@@ -26,7 +29,8 @@ function handleLoginButton() {
             window.location.href = "../dashboard/profile.php";
             break;
         case "tassista":
-            //carica pagina tassista
+            setLoginCookies();
+            window.location.href = "../taxidriver/dashboard/index.php";
             break;
         case "ammministratore":
             //carica pagina amministratore

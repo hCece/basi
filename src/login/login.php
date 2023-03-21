@@ -36,7 +36,7 @@
       <input class="formbold-btn" type="button" onclick="handleLoginButton(); return false;" name="log" id="log"
         value="Log In Here">
       <button class="formbold-btn" onclick="
-        window.location.href = 'http://localhost:4000/TAXI/src/registration/register.php';
+        window.location.href = '../registration/register.php';
         return false;">
         Register Now</button>
 

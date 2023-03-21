@@ -1,12 +1,18 @@
+<?php
+  require dirname(__DIR__) .'\lib\mySqlConnection\validCredential.php';
+  
+  ob_start();
+  session_start();
+  //TODO: somehow check if the cookies set are actually valid credentials
+  if(!isset($_COOKIE["user"]) || !isset($_COOKIE["pass"]))
+    header('Location: ../errorPage/index.php');
+  
+  isValidCredential($_COOKIE["user"],$_COOKIE["pass"],"cliente");
+
+?>
 <!DOCTYPE html>
-<html>
-
-  <?php
-
-    //TODO: somehow check if the cookies set are actually valid credentials
-
-  ?>
-  <head>
+<html>  
+<head>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <script src="../lib/PhpRequest.js"></script>
       <script src="script.js"></script>

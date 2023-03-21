@@ -22,7 +22,7 @@ class PhpRequest{
         e.g. the Google Maps webpage. The request is performed with JQuery & AJAX. 
         If the function is successfull, the data get's saved on "respone", otherwise an error message populates the variable   
     */    
-    #request = function (url, type, json) {
+    request = function (url, type, json) {
         console.log(url);
         // Check if the provided storedProcedure is a valid enum value
         $.ajax({
@@ -56,7 +56,7 @@ class PhpRequest{
         }
 
         var url = "../lib/mySqlConnection/" + storedProcedure + ".php";
-        this.#request(url, type, json);
+        this.request(url, type, json);
     };
     
 }

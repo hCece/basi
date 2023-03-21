@@ -43,7 +43,7 @@ function handleRegistrationButton(){
             request.mySql(PhpRequest.SP.AggiungiCredenziali, "POST", json1);
             request.mySql(PhpRequest.SP.AggiungCliente, "POST", json2);
             alert("Registration successful, try to login");
-            window.location.href = "http://localhost:4000/TAXI/src/login/login.php";
+            window.location.href = "../login/login.php";
         }else
             alert("Username or Codice Fiscale already exist");
     } else
