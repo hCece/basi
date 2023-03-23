@@ -53,8 +53,7 @@ if ($coor) {
             $jsonObject = json_decode($response);
             $distance = intval(($jsonObject->features[0]->properties->segments[0]->distance) / 1000);
             $duration = intval(($jsonObject->features[0]->properties->segments[0]->duration) / 60);
-            echo "The distance between the two points is $distance km.<br>";
-            echo "The time taken between the two points is $duration minutes.";
+            echo "$distance;$duration"; 
             break; // exit loop if a successful response is received
         } else {
             /*

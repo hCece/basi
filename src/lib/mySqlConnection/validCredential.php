@@ -1,17 +1,19 @@
 <?php 
 
 
-require __DIR__.'/main copy.php';
+require __DIR__.'/main.php';
 
 
-///TODO: the problem is that main.call_stored_procedures checks if a post variable is set... therefore sending the variable value dosen't help
+///TODO: this code set's the cookies to POST variables and calls the stored procedure. 
+// That's bad coding, we should change the main to choose if we want COOKIES, POST or GET variables  
 function isValidCredential($user, $pass, $type) {
     
-    //$return = call_stored_procedure(array($user,$pass), "checkUsername",'s');
-    //if($return = "...") return false;
-    $return = call_stored_procedure(array($user), "riconosciUtente",'s');
+    $_POST['user'] = $user;
+    $_POST['pass'] = $pass;
+    $values = array("user","pass");
+    $return = call_stored_procedure($values, "riconosciUtente",'s');
     if($return == $type) return true;
-    header('Location: ../errorPage/index.php');
+    else false;
 
 }
 

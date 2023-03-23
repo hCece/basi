@@ -9,13 +9,32 @@ var map;
 
 */
 function GoogleMaps(){
+  //All this function return a specific value of the google APi's class.
   this.getEndPlace=function(){
     return autocomplete[1].getPlace();
+  };
+  this.getStartCoordinates=function(){
+    return [autocomplete[1].getPlace().geometry.location.lng(), 
+    autocomplete[1].getPlace().geometry.location.lat()];
+  };
+  this.getEndCoordinates=function()
+  { return [autocomplete[0].getPlace().geometry.location.lng(), 
+    autocomplete[0].getPlace().geometry.location.lat()];
   };
   this.getStartPlace=function(){
     return autocomplete[0].getPlace();
   };
   this.getMap=function(){return map;};
+  this.getCityFromLocation=function(place){
+    let city = "";
+    for (let component of place.address_components) {
+      if (component.types.includes("locality")) {
+        city = component.long_name;
+        break;
+      }
+    }
+    return city;
+  }
 }
 function googleMaps(){
   return new GoogleMaps();
@@ -24,7 +43,7 @@ function googleMaps(){
 //This function creates the autocomplete input fields and connects a marker with them
 function addAutocomplete(input, map, isStart) {
   const options = {
-    fields: ["formatted_address", "geometry", "name"],
+    fields: ["address_components", "geometry", "name"],
     strictBounds: false,
     types: ["address"],
   };

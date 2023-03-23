@@ -1,14 +1,13 @@
 <?php
   require dirname(__DIR__) .'\lib\mySqlConnection\validCredential.php';
-  
+
   ob_start();
   session_start();
-  //TODO: somehow check if the cookies set are actually valid credentials
-  if(!isset($_COOKIE["user"]) || !isset($_COOKIE["pass"]))
+  //checks if cookies are set, and if the credential are actually valid. 
+  // If one of the condition is false, the error page is loaded 
+  if(!isset($_COOKIE["user"]) || !isset($_COOKIE["pass"])
+      || !isValidCredential($_COOKIE["user"],$_COOKIE["pass"],"cliente"))
     header('Location: ../errorPage/index.php');
-  
-  isValidCredential($_COOKIE["user"],$_COOKIE["pass"],"cliente");
-
 ?>
 <!DOCTYPE html>
 <html>  
@@ -29,7 +28,8 @@
     return false;">
     Portafoglio</button>
 
-    <button id="prenota-corsa">Prenota una corsa</button>
+    <button id="prenota-corsa" 
+            onclick="window.location.href = '../bookRide/index.php'";>Prenota una corsa</button>
     <button id="storico-corse">Storico corse</button>
     <button id="storico-recensioni">Storico recensioni</button>
     <button id="graduatoria">Graduatoria</button>
