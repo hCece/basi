@@ -23,12 +23,15 @@ window.onload = function () {
   
   
     //TODO
-    function handleButton() {
+    function handleAccepted() {
   
   
     }
   
-    
+    function handleDeclined() {
+  
+  
+    }
   }
   
   

@@ -33,7 +33,8 @@ function handleRegistrationButton(){
                   lusso:isLuxury(),
                   elettrico:isElectric()};
 
-      request.mySql(PhpRequest.DB.RischiestaLavoro, "POST", json)
+      console.log(json);
+      request.mySql(PhpRequest.DB.SetRischiestaLavoro, "POST", json)
       console.log(request.getResponse());
     } else
         alert("Please fill in all fields");
