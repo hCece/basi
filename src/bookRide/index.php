@@ -30,6 +30,12 @@
           <button id="submit-button"  onclick="handleSubmitButton(); return false;"> Submit </button>
           <p id="distance"></p>
         </div>
+        <label for="nrSeat" > Number of seats:  </label>
+        <input type="number"  id="nrSeat" name="nrSeat" min="1" max="8"> <br>
+        <input type="checkbox" id="luxury" name="luxury" >
+        <label for="vehicle1"> Lusso</label><br>
+        <input type="checkbox" id="electric" name="electric">
+        <label for="electric"> Elettrica</label><br>
       </div>
       <div id="infowindow-content">
         <span id="place-name" class="title"></span><br />
