@@ -1,3 +1,7 @@
+<?php
+require_once dirname(__DIR__) . '\lib\security.php';
+checkUser(UserType::Cliente);
+?>
 <!DOCTYPE html>
 
 <html>

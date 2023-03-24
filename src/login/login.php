@@ -1,3 +1,5 @@
+<?php define('LIB_PATH', __DIR__ . '/lib/');?>
+
 <!DOCTYPE html>
 <html>
 

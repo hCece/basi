@@ -1,33 +1,49 @@
 <?php 
-
+function newConnection(){
     $servername = "localhost";
     $username = "root";
     $password = "pass0";
     $dbname = "taxiserver";
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    return new mysqli($servername, $username, $password, $dbname);
+}
+newConnection();
 
 
 
-    /*  This function is made to call genericly stored procedures. Following inputs are required:
+function call_query($query) {
+    global $conn;
+    if($conn==null)
+        $conn = newConnection();
+    $result = $conn->query($query);
+    if (!$result) return null;
+    
+    $output = array();
+    while ($row = $result->fetch_assoc()) {
+        $output[] = $row;
+    }
+    $result->free();
+    return $output;
+}
+    
+/*  This function is made to call genericly stored procedures. Following inputs are required:
 
-            - input_variables: a list, in the right order, of the inputs needed for the stored procedure
-            - procedure_name: the name of the stored procedure that we want to call
-            - has_output (char) : if the stored procedure returns a value this has to be set to true.
-                        s --> String return
-                        i --> integer return
-                        ...
-
-    */
+        - input_variables: a list, in the right order, of the inputs needed for the stored procedure
+        - procedure_name: the name of the stored procedure that we want to call
+        - has_output (char) : if the stored procedure returns a value this has to be set to true.
+                    s --> String return
+                    i --> integer return
+*/
 function call_stored_procedure($input_variables, $procedure_name, $hasOutput=false) {
 
     global $conn;
+    if($conn==null)
+        $conn = newConnection();
     // It preperas the input values. the values are retrived from  
     $prepared_input = prepare_input($input_variables);
     if(!$prepared_input) return null;
 
     $input_params = $prepared_input['params'];
     $input_values = $prepared_input['values'];
-
     if($hasOutput){
         $stmt = $conn->prepare("CALL $procedure_name($input_params,@output)");
     }else{
@@ -48,10 +64,9 @@ function call_stored_procedure($input_variables, $procedure_name, $hasOutput=fal
         $result = $conn->query("SELECT @output");
         $row = $result->fetch_assoc();
         $output = $row["@output"];
+    }else{
+        $output = "done!";
     }
-
-    // Close MySQL connection
-    $conn->close();
 
     return $output;
 }

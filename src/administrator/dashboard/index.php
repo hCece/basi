@@ -1,6 +1,6 @@
 <?php
 require_once dirname(dirname(__DIR__)) . '\lib\security.php';
-checkUser(UserType::Tassista);
+checkUser(UserType::Amministratore);
 ?>
 <!DOCTYPE html>
 <html>  
@@ -10,18 +10,14 @@ checkUser(UserType::Tassista);
       <script src="script.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
 
-    <title>Taxi Service</title>
+    <title>Administrator dashboard</title>
   </head>
   <body>
-    <h1>Benvenuto Tassista</h1>
+    <h1>Benvenuto amministratore</h1>
     <h2>seleziona un opzione</h2>
 
-    <button id="Portafoglio" onclick="
-    //window.location.href = 'http://localhost:4000/TAXI/src/dashboard/portafoglio.php';
-    return false;">
-    Portafoglio</button>
 
-    <button id="prenota-corsa" onclick="window.location.href = '../ride/index.php'" >Visualizza Corse disponibili</button>
+    <button onclick="window.location.href = '../jobRequest/index.php'" >Visualizza Richieste Lavoro</button>
     <button id="storico-corse">Visualizza storico corse</button>
   </body>
 

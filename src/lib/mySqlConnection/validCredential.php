@@ -12,6 +12,7 @@ function isValidCredential($user, $pass, $type) {
     $_POST['pass'] = $pass;
     $values = array("user","pass");
     $return = call_stored_procedure($values, "riconosciUtente",'s');
+    echo($_POST['pass']);
     if($return == $type) return true;
     else false;
 

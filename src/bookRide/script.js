@@ -25,7 +25,7 @@ function handleSubmitButton() {
     ele:isElectric()};
 
   console.log(json);
-  request.mySql(PhpRequest.SP.InserisciPrenotazione, "POST", json);
+  request.mySql(PhpRequest.DB.InserisciPrenotazione, "POST", json);
   
   var costo = getCost(request);
   console.log("Costo corsa: " + costo + " €");

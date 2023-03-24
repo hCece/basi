@@ -1,7 +1,8 @@
 <?php
 require_once dirname(dirname(__DIR__)) . '\lib\security.php';
-checkUser(UserType::Tassista);
+checkUser(UserType::Amministratore);
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -16,20 +17,17 @@ checkUser(UserType::Tassista);
   <table id="table" class="styled-table">
     <thead>
       <tr>
-        <th>IPD</th>
-        <th>pro</th>
-        <th>partenza</th>
-        <th>arrivo</th>
-        <th>posti</th>
-        <th>data</th>
-        <th>usernameCliente</th>
+        <th>username Cliente</th>
+        <th>username Nuovo</th>
+        <th>targa</th>
       </tr>
     </thead>
     <tbody id="tableBody">
     </tbody>
   </table>
-  <input class="formbold-btn" type="button" onclick="handleButton(); return false;" name="log" id="log"
-        value="Log In Here">
-
+  <input class="formbold-btn" type="button" onclick="handleApproved(); return false;" name="log" id="log"
+        value="Accetta richiesta">
+    <input class="formbold-btn" type="button" onclick="handleDecline(); return false;" name="log" id="log"
+        value="Rifiuta richiesta">
 
 </html>

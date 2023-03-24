@@ -1,22 +1,22 @@
 
-
 /*
     This function is designed to handle the login button. 
     It retrives the data, calls a stored procedure and handles the response
 */
 function handleLoginButton() {
     var request = new PhpRequest();
-
+    
     //Retriving data from the two input fields, and parsing them into json
     var user = document.getElementById("user").value;
     var pass = document.getElementById("pass").value;
     var json = {user:user,pass:pass}
     
     //call "riconosciUtene" and get the return value. The return value will tell what type of user we are dealing with 
-    request.mySql(PhpRequest.SP.RiconosciUtente, "POST", json);
+    request.mySql(PhpRequest.DB.RiconosciUtente, "POST", json);
     var userType = request.getResponse();
     console.log(userType);
-    
+
+
     //If the user is a valid type, the correct kind of start page is loaded, otherwise an error message appears
     switch(userType){
         case "cliente":
@@ -27,8 +27,9 @@ function handleLoginButton() {
             setLoginCookies();
             window.location.href = "../taxidriver/dashboard/index.php";
             break;
-        case "ammministratore":
-            //carica pagina amministratore
+        case "amministratore":
+            setLoginCookies();
+            window.location.href = "../administrator/dashboard/index.php";
             break;
         case "unregistered":
             document.getElementById("errorLabel").style.visibility = "visible";
