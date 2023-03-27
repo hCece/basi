@@ -2,9 +2,15 @@ var request = new PhpRequest();
 let cookies = document.cookie;
 
 var sp = cookies.split(';'); // here we split the cookies by semicolon and
-var user = sp[0].split('=')[1];  //get the username from the second cookie
-console.log(user);
-
+var user = null;
+for (var i = 0; i < sp.length; i++) { //look for the cookie with username
+  var cookie = sp[i].trim();
+  if (cookie.indexOf('user=') == 0) {
+    user = cookie.substring('user='.length);
+    console.log(user);
+    break;
+  }
+}
 //call the procedure CreditoPortafoglio and get the credit related to the user
 request.mySql(PhpRequest.DB.CreditoPortafoglio, "POST", {user: user});
 var response = request.getResponse();
@@ -31,7 +37,7 @@ function handleRicarica() {
         alert("Ricarica eseguita con successo");
     }
     else{
-        alert("Inserisci un numero di carta e un importo valido");
+        alert("Inserisci un numero di carta e un importo valido (inserire un numero carta di 16 caratteri)");
     }
 }
 // convert euro to Tcoin (amount multiplied by 3)

@@ -1,31 +1,17 @@
 <?php
-    try {
-          $pdo=new PDO("mysql:host=localhost; dbname=taxiserver",
-         "root", "pass0");
-         $pdo->setAttribute(PDO::ATTR_ERRMODE,
-         PDO::ERRMODE_EXCEPTION);
-         $pdo->exec('SET NAMES "utf8"');
-    }catch(exception $e){
-        $error_log = "Connessione non riuscita";
-        error_log($error_log);
-        exit();
-    }
+//checks if user is of type Cliente
+require_once dirname(dirname(__DIR__)) . '\shared\lib\security.php';
+checkUser(UserType::Cliente);
 
-
-
-    try{
-       $sql = "CALL topClienti()";
-           $stmt = $pdo->query($sql);
-           $result = $stmt->fetchAll();
-    }catch (Exception $e) {
-         error_log('Codice errore' . $e->getMessage());
-         exit();
-     }
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Graduatoria Clienti</title>
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="../../shared/lib/PhpRequest.js"></script>
+        <script src="../../shared/lib/UpdateTable.js"></script>
+        <script src="script.js"></script>
 	     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -39,12 +25,6 @@
 			</tr>
 		</thead>
 		<tbody id="table-body">
-			<?php foreach ($result as $row) { ?>
-                <tr>
-                  <td><?php echo $row['usernameCliente']; ?></td>
-                  <td><?php echo $row['cnt']; ?></td>
-                </tr>
-            <?php } ?>
 		</tbody>
 	</table>
   </body>

@@ -1,4 +1,4 @@
-<?php
+<?php //checks if user is of type Cliente
 require_once dirname(dirname(__DIR__)) . '\shared\lib\security.php';
 checkUser(UserType::Cliente);
 ?>
@@ -7,7 +7,6 @@ checkUser(UserType::Cliente);
 <head>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <script src="../../shared/lib/PhpRequest.js"></script>
-
       <link rel="stylesheet" href="style.css">
 
     <title>Taxi Service</title>
@@ -47,9 +46,3 @@ checkUser(UserType::Cliente);
 
   </body>
 </html>
-
-
-
-
-
-
