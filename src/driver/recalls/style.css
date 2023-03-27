@@ -1,0 +1,72 @@
+ body {
+          background-color: #f2f2f2; /* light grey background color */
+          margin: 0;
+          padding: 0;
+      }
+
+      h2 {
+          text-align: center; /* center align the heading */
+          padding-top: 50px; /* add some space between the top of the page and the heading */
+      }
+      h5 {
+                text-align: center; /* center align the heading */
+            }
+
+      table {
+          margin: 0 auto; /* center the table horizontally */
+          border: 2px solid #555; /* add a border to the table */
+          width: 80%; /* make the table take up 80% of the screen */
+          max-width: 800px; /* set a max width for the table */
+          background-color: white; /* set a white background for the table */
+          border-collapse: collapse; /* collapse table borders */
+      }
+
+      th, td {
+          padding: 15px; /* add padding to table cells */
+          text-align: center; /* center align table cell text */
+          border: 2px solid #aaa;
+          border-bottom: 1px solid #ddd; /* add a bottom border to table rows */
+      }
+
+      th {
+          background-color: #555; /* set the background color of the table headers */
+          color: white; /* set the color of the table headers */
+      }
+
+      .popup {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .popup-content {
+          background-color: white;
+          margin: 15% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 50%;
+      }
+
+      .close-btn {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+      }
+
+      .close-btn:hover{
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+      }
+      .icon {
+          width: 20px;
+          height: 20px;
+      }
+
