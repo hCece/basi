@@ -28,7 +28,7 @@ checkUser(UserType::Cliente);
     Prenota una corsa</button>
 
     <button id="storico-corse" onclick="
-    window.location.href = '../pastRides/storicoCorse.php';return false;">
+    window.location.href = '../pastRides/index.php';return false;">
     Storico corse</button>
 
     <button id="storico-recensioni" onclick="

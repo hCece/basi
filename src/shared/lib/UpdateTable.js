@@ -13,7 +13,7 @@ class UpdateTable{
      * @returns 
      */
     update = function(tableBody, storedProcedure, dataJson) {
-        phpRequest.mySql(storedProcedure, 'GET', dataJson);
+        phpRequest.mySql(storedProcedure, 'POST', dataJson);
         const responseData = phpRequest.getResponse();
 
         if (responseData !== previousData) {

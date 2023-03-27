@@ -12,6 +12,7 @@ class PhpRequest{
     //This Enum is requaired to make a call to the server. It is there to ensure that whoever uses
     //an instance of the class won't call a wrong file.
     static DB = {
+        StoricoCorse : "storicoCorse",
         InserisciBonifico: "inserisciBonifico",
         VisualizzaRecensione: "visualizzaRecensione",
         TopClienti: "topClienti",
