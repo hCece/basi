@@ -35,7 +35,6 @@ function handleRicarica() {
         request.mySql(PhpRequest.DB.RicaricaPortafoglio,
         "POST", {codp: response, amount : amount, card : card});
         alert("Ricarica eseguita con successo");
-        window.location.href="../dashboard/profile.php";
     }
     else{
         alert("Inserisci un numero di carta e un importo valido (inserire un numero carta di 16 caratteri)");

@@ -15,14 +15,19 @@ function checkUser($userType) {
   session_start();
   //TODO: somehow check if the cookies set are actually valid credentials
   if(!isset($_COOKIE["user"]) || !isset($_COOKIE["pass"])) {
-    header('Location: ../errorPage/index.php');
+    header('Location: ..  /../shared/errorPage/index.php');
     exit();
   }
   
   $isValidCredential = isValidCredential($_COOKIE["user"], $_COOKIE["pass"], $userType);
   
   if (!$isValidCredential) {
-    header('Location: ../errorPage/index.php');
+    echo(dirname(__FILE__).'/errorPage/index.php');
+    echo('<br>');
+    echo('../errorPage/index.php');
+
+    
+    header('Location: ../../shared/errorPage/index.php');
     exit();
   }
 }

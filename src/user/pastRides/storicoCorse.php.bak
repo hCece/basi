@@ -67,7 +67,7 @@ checkUser(UserType::Cliente);
 			<?php foreach ($result as $row) { ?>
                 <tr>
                   <td><?php echo $row['IDC']; ?></td>
-                  <td><?php if ($row['pro'] == 1) { echo '<img class="icon" src="checkLabel.png">'; } else { echo '<img class="icon" src="Xlabel.png">'; } ?></td>
+                  <td><?php echo $row['pro']; ?></td>
                   <td><?php echo $row['partenza']; ?></td>
                   <td><?php echo $row['arrivo']; ?></td>
                   <td><?php echo $row['data']; ?></td>
@@ -87,7 +87,6 @@ checkUser(UserType::Cliente);
             <p>Commento: <span id="Commentovalue"></span></p>
         </div>
     </div>
-    <?php }?>
   </body>
       <script src="script.js"></script>
 

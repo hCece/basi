@@ -52,12 +52,12 @@ CREATE TABLE PORTAFOGLIO(
 
 CREATE TABLE RICARICA(
 	CODR int auto_increment primary key,
-    usernameCliente varchar(20),
+    portafoglio int,
     euro int,
     tcoin int,
     data datetime,
     Ncarta varchar(16),
-    foreign key RICARICA(usernameCliente) references CLIENTE(username)
+    foreign key RICARICA(portafoglio) references PORTAFOGLIO(CODP)
 	
 ) ENGINE = "INNODB";
 
@@ -101,8 +101,6 @@ CREATE TABLE TAXIPRO(
     marca varchar(20),
     modello varchar(20),
     posti int,
-    blindato boolean default false,
-	sportivo boolean default false,
     lusso boolean default false,
     elettrico boolean default false,
     foreign key TAXIPRO(targa) references TASSISTA(targaAuto)
@@ -153,8 +151,6 @@ CREATE TABLE RICHIESTALAVORO(
     modello varchar(20),
     posti int,
     targa varchar(7),
-	blindato boolean default false,
-	sportivo boolean default false,
     lusso boolean default false,
     elettrico boolean default false,
     stato enum('APERTO','APPROVATO','NEGATO') default 'APERTO',
@@ -225,28 +221,38 @@ begin
 end//
 
 delimiter //
-create procedure ricaricaPortafoglio(in usernameU varchar(20), euro int, Ncarta varchar(16))
+create procedure ricaricaPortafoglio(in codicePortafoglio varchar(20), euro int, Ncarta varchar(16))
 begin
-		declare checkUsr boolean default false;
-        set checkUsr = exists(select username from CLIENTE where username = usernameU);
-        
-        if(checkUsr) then #check if user is in CLIENTE
-			insert into RICARICA(usernameCliente,euro,tcoin,data,Ncarta) values (usernameU, euro, (euro*3),now(), Ncarta);
-			update PORTAFOGLIO set credito = (credito + (euro*3)) where username = usernameU; #update client's wallet value 
-		end if;
+			insert into RICARICA(portafoglio,euro,tcoin,data,Ncarta) values (codicePortafoglio, euro, (euro*3),now(), Ncarta);
+			update PORTAFOGLIO set credito = (credito + (euro*3)) where CODP = codicePortafoglio; #update client's wallet amount 
+		
 end //
+
+delimiter // 
+create procedure creditoPortafoglio(in usernameCliente varchar(20), out creditoResiduo int)
+begin
+    select credito into creditoResiduo from PORTAFOGLIO where username = usernameCliente;
+    
+end //
+
+delimiter // 
+create procedure codicePortafoglio(in usernameCliente varchar(20), out codicePort int)
+begin
+    select CODP into codicePort from PORTAFOGLIO where username = usernameCliente;
+    
+end //
+
 
 delimiter //
 create procedure inserisciPrenotazione(in pro int, partenza varchar(20), arrivo varchar(20), Nposti int, usernameCliente varchar(20), lus int, ele int)
 begin
 
 	declare checkVal boolean default false;
-    
     if(pro) then 
     set checkVal= exists(
 		select *  #check if there are any PRO taxies in  the departure city with desired optionals
         from TAXIPRO join TASSISTA on TASSISTA.targaAuto = TAXIPRO.targa
-        where ((citta = partenza) and (posti >= Nposti) and  (lusso= lus) and (elettrico = ele)));
+        where ((citta = partenza) and (posti >= Nposti)  and (lusso= lus)  and (elettrico = ele)));
     else
 		set checkVal= exists(
 		select *  #check if there are any NORMAL taxies in  the departure city
@@ -290,8 +296,8 @@ begin
 end //
 
 delimiter //
-create procedure inserisciRichiestLavoro(in usernameCliente varchar(20), nuovoUsername varchar(20), password varchar(100), fotoDoc varchar(20), marca varchar(20), 
-modello varchar(20), targa varchar(7), posti int, blindato boolean, lusso boolean, sportivo boolean, elettrico boolean)
+create procedure inserisciRichiestaLavoro(in usernameCliente varchar(20), nuovoUsername varchar(20), password varchar(100), fotoDoc varchar(20), marca varchar(20), 
+											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int, out rtrn varchar(3) )
 begin
 	declare checkUsername boolean default false;
     declare checkRichiesta boolean default false;
@@ -299,16 +305,23 @@ begin
     set checkUsername = NOT exists(select username from TASSISTA where username = nuovoUsername);
     
     if(checkUsername AND checkRichiesta) then #check if the new username isen't already taken and check if there is not already a job request for this cliente
-		insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, blindato, sportivo, lusso, elettrico) 
-        values(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, blindato, sportivo, lusso, elettrico);
+		insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, lusso, elettrico) 
+        values(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, lusso, elettrico);
+        set rtrn='ok';
+	else
+        set rtrn='null';
 	end if;
 end //
 
 delimiter //
-create procedure inserisciBonifico(in usernameT varchar(20), tcoin int, data datetime, IBAN varchar(27))
+create procedure inserisciBonifico(in codp int, tcoin int, IBAN varchar(27))
 begin
 	declare checkImporto int default 0;
-    set checkImporto = (select credito from PORTAFOGLIO where username = usernameT);
+    declare usernameT varchar(20);
+    set checkImporto = (select credito from PORTAFOGLIO where PORTAFOGLIO.CODP = codp);
+    set usernameT = (select username from PORTAFOGLIO where PORTAFOGLIO.CODP = codp);
+    select checkImporto;
+    select usernameT;
     
     if((checkImporto - tcoin) >= 0) then #check if the tassista isn't requesting a bonifico bigger than his credito
 	 insert into BONIFICO(usernameTassista, tcoin, euro, data, IBAN) values(usernameT, tcoin, (tcoin/3), now(), IBAN);
@@ -327,6 +340,55 @@ create procedure rifiutaRichiesta(in idr int)
 begin
 	update RICHIESTALAVORO set stato = 'RIFIUTATO' where IDR = idr;
 end//
+
+delimiter //
+create procedure richiamiTassista(in usern varchar(20))
+begin
+select *
+from RICHIAMO
+where usernameTassista = usern;
+end //
+
+delimiter //
+CREATE PROCEDURE topClienti()
+BEGIN
+    SELECT usernameCliente, COUNT(*) as cnt
+    FROM CORSA
+    GROUP BY usernameCliente
+    ORDER BY cnt DESC
+    LIMIT 10;
+END //
+
+delimiter //
+create procedure storicoCorse(in usern varchar(20))
+begin
+	if(exists(select username from CLIENTE where username = usern))then
+		select * 
+        from CORSA 
+        where (CORSA.usernameCliente = usern);
+	else
+		select * 
+        from CORSA 
+        where (CORSA.usernameTassista = usern);
+	end if;
+
+end //
+
+delimiter //
+CREATE PROCEDURE visualizzaRecensione (in idc int, out voto_commento VARCHAR(200))
+BEGIN
+    SELECT CONCAT(RECENSIONE.voto, ' - ', RECENSIONE.commento) INTO voto_commento FROM RECENSIONE WHERE RECENSIONE.IDC = idc;
+    
+END//
+
+delimiter //
+create procedure storicoRecensioni()
+begin
+select *
+from RECENSIONE
+order by IDC desc;
+end //
+
 ##################	TRIGGERS	##########################
 
 delimiter //
@@ -363,9 +425,9 @@ for each row
 begin
 	
 	if(new.stato = 'APPROVATO')then
-		if(new.blindato or new.sportivo or new.lusso or new.elettrico) then #check if the taxi is pro and add it to the TAXIPRO table
-			insert into TAXIPRO(targa,marca,modello,posti,blindato,sportivo,lusso,elettrico)
-            values (new.targa,new.marca,new.modello,new.posti,new.blindato,new.sportivo,new.lusso,new.elettrico);
+		if(new.lusso or new.elettrico) then #check if the taxi is pro and add it to the TAXIPRO table
+			insert into TAXIPRO(targa,marca,modello,posti,lusso,elettrico)
+            values (new.targa,new.marca,new.modello,new.posti,new.lusso,new.elettrico);
 		else
 			insert into TAXI(targa,marca,modello,posti) #taxi isn't pro add it to the TAXI table
             values (new.targa,new.marca,new.modello,new.posti);
@@ -429,15 +491,7 @@ end//
 
 #create view recensioniTassista();
 
-#create view richiamiTassista(IDRICHIAMO, usernameAmministratore, commento, data)
-#as select(IDRICHIAMO, usernameAmministratore, commento, data)
-#from RICHIAMO;
-##where usernameTassista = '';
 
-#create view allCommenti(IDC,voto,commento)
-#as select(IDC, voto, commento)
-#from RECENSIONE;
-##where '';
 
 
 delimiter ;
@@ -447,6 +501,31 @@ INSERT INTO  CREDENZIALI(username,psw) VALUES ('yos99', '123');
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('dwdpie00', '123');
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('jury15', '123');
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('parme', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('andre', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('lucio', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('luca', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('claudia', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('enri', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('gio', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('paolo', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('marco', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('riccardo', '123');
+INSERT INTO  CREDENZIALI(username,psw) VALUES ('alle', '123');
+
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf1','andre', 'andrea', 'serrano', '2000-02-05','Bologna');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf2','lucio', 'lucio', 'dalla', '2000-02-05','Modena');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf3','luca', 'luca', 'merighi', '2000-02-05','Roma');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf4','claudia', 'claudia', 'bosi', '2000-02-05','Torino');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf5','enri', 'enri', 'valentini', '2000-02-05','Pavullo');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf6','gio', 'gio', 'savoca', '2000-02-05','Ferrara');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf7','paolo', 'paolo', 'poli', '2000-02-05','Maranello');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf8','marco', 'marco', 'mengoni', '2000-02-05','Sassuolo');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf9','riccardo', 'riccardo', 'balestri', '2000-02-05','Fiorano');
+INSERT INTO  CLIENTE(CF,username,nome,cognome,dataDiNascita,citta) VALUES ('cf10','alle', 'alle', 'ricci', '2000-02-05','Serramazzoni');
+
+
+
+
 
 
 INSERT INTO  AMMINISTRATORE(CF,username,nome,cognome,dataDiNascita,sede) VALUES ('123a','yos99', 'youssef', 'zerowatt', '1999-12-05','Bologna');
@@ -455,39 +534,91 @@ INSERT INTO  TASSISTA(CF,username,nome,cognome,dataDiNascita,targaAuto,citta) VA
 INSERT INTO  TASSISTA(CF,username,nome,cognome,dataDiNascita,targaAuto,citta) VALUES ('123d','parme', 'luca', 'parmesi', '2000-05-01','777cio','Bologna');
 
 insert into TAXI(targa,marca,modello,posti) values('777cio','bmw','x25',9);
-insert into TAXIPRO(targa,marca,modello,posti,blindato,sportivo) values ('123qwe','benz','slk',2,true,true);
+insert into TAXIPRO(targa,marca,modello,posti,elettrico,lusso) values ('123qwe','benz','slk',2,true,true);
 
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('ciccio22', '123');
 call aggiungiCliente('123e', 'ciccio22', 'ciccio', 'gamer', '1990-02-25', 'Padova');
 
-call inserisciBonifico("jury15", 60, now(), "45ftg65tyh78ikjuyg56789iut");
+call inserisciBonifico(13, 60, "45ftg65tyh78ikjuyg56789iut");
 call inserisciRichiamo('yos99','jury15','ha fatto il gay 1');
 call inserisciRichiamo('yos99','jury15','ha fatto il gay 2');
-call inserisciRichiamo('yos99','jury15','ha fatto il gay 3');
+#call inserisciRichiamo('yos99','jury15','ha fatto il gay 3');
 
 
-call ricaricaPortafoglio('ciccio22', 100, '0945891423768901');
-call ricaricaPortafoglio('jury15', 200, '2245891423228922'); #should not work tassista can't call ricaricaPortafoglio
+call ricaricaPortafoglio(4, 100, '0945891423768901');
+call ricaricaPortafoglio(2, 200, '2245891423228922'); #should not work tassista can't call ricaricaPortafoglio
 
 
-call riconosciUtente('ciccio22','123e', @nome);
+call riconosciUtente('yos99','123', @nome);
 select @nome;
-select * from cliente;
-/*
 
 
-call inserisciPrenotazione(false, 'Bologna', 'modena', 1, 'ciccio22', false, false, false, false);
-call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, false, false);
+
+call inserisciPrenotazione(false, 'Bologna', 'modena', 1, 'ciccio22', false, false);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true);
 
 
 call inserisciCorsa(false, 'bolo', 'modena', 'ciccio22', 'jury15', 10);
+call inserisciCorsa(false, 'bolo', 'firenze', 'ciccio22', 'jury15', 50);
+call inserisciCorsa(false, 'bolo', 'matera', 'ciccio22', 'jury15', 100);
+call inserisciCorsa(false, 'bolo', 'trento', 'claudia', 'jury15', 150);
+call inserisciCorsa(false, 'bolo', 'aosta', 'dwdpie00', 'jury15', 70);
+call inserisciCorsa(false, 'bolo', 'reggio', 'lucio', 'jury15', 5);
+call inserisciCorsa(false, 'bolo', 'finalemilia', 'luca', 'jury15', 15);
+call inserisciCorsa(false, 'bolo', 'lama', 'marco', 'parme', 12);
+call inserisciCorsa(false, 'bolo', 'fidenza', 'gio', 'parme', 11);
+call inserisciCorsa(false, 'bolo', 'barberino', 'paolo', 'parme', 156);
+call inserisciCorsa(false, 'bolo', 'camatta', 'enri', 'parme', 152);
+call inserisciCorsa(false, 'bolo', 'sassuolo', 'riccardo', 'parme', 166);
+call inserisciCorsa(false, 'bolo', 'napoli', 'alle', 'parme', 111);
+
+
+
+
+
+
 
 call inserisciRecensione(1,'5','molto bello lo rifarei');
+call inserisciRecensione(2,'10','jury top g');
+call inserisciRecensione(3,'1','pessima esperinza');
+call inserisciRecensione(4,'2','macchina sporca');
+call inserisciRecensione(5,'6','guida troppo veloce');
+call inserisciRecensione(6,'4','puzza in auto');
+call inserisciRecensione(7,'10','ottimo');
+call inserisciRecensione(8,'7','ci stava');
+call visualizzaRecensione( 1 ,@voto);
+select @voto;
+#in usernameCliente varchar(20), nuovoUsername varchar(20), password varchar(100), fotoDoc varchar(20), marca varchar(20), 
+#											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int)
+call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1);
+call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 0);# should not work, same username
 
-call inserisciRichiestLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, false, true, false, true);
-call inserisciRichiestLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, false, false, false, false);# should not work, same username
+#call approvaRichiesta(1);
+call creditoPortafoglio('parme',@res);
+call codicePortafoglio('jury15',@res);
+select @res;
+select credito from PORTAFOGLIO where username = 'parme';
+call topClienti();
 
+call storicoCorse('ciccio22');
+call storicoCorse('jury15');
 
+call richiamiTassista('jury15');
+
+call storicoRecensioni();
+select * from CLIENTE;
+select * from BONIFICO;
+select * from PORTAFOGLIO;
+select * from TASSISTA;
+select * from RICHIESTALAVORO;
+select * from RICHIAMO;
+select * from PRENOTAZIONECORSA;
+select * from CORSA;
+select * from TAXI;
+select * from TAXIPRO;
+select * from RECENSIONE;
+select * from CREDENZIALI;
+select * from RICARICA;
 
 #in RICHIESTALAVORO ho inserito il campo 'stato' che aiuta un botto con la gestione delle funz
 
@@ -497,6 +628,7 @@ call inserisciRichiestLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", 
 
 #prova a correggere il trigger aggiungiTASSISTA e cerca di trovare un modo per eliminare i tassisti dopo che prendono 3 richiami 
 #tra i trigger c'e' un prototipo NON funzionante del metodo che ho pensato
+
 
 
 

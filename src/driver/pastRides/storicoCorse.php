@@ -1,7 +1,6 @@
 <?php
 require_once dirname(dirname(__DIR__)) . '\shared\lib\security.php';
-checkUser(UserType::Cliente);
-
+checkUser(UserType::Tassista);
 
     try {
        $pdo=new PDO("mysql:host=localhost; dbname=taxiserver",
@@ -25,12 +24,7 @@ checkUser(UserType::Cliente);
          error_log('Codice errore' . $e->getMessage());
      }
 
-     if (empty($result)) {
-       $error_msg = "Non esistono corse per l'utente $username";
-     }
-
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -42,16 +36,11 @@ checkUser(UserType::Cliente);
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-     <?php
-     if (isset($error_msg)) { ?>
-         <h2><?php echo $error_msg; ?></h2>
-     <?php }
-     else { ?>
 	<h2>Lista delle corse eseguite da <?php  echo $username ?> </h2>
 	<table>
 		<thead>
 			<tr>
-				<th>ICD</th>
+				<th>IDC</th>
 				<th>Pro</th>
 				<th>Partenza</th>
                 <th>Arrivo</th>
@@ -87,7 +76,6 @@ checkUser(UserType::Cliente);
             <p>Commento: <span id="Commentovalue"></span></p>
         </div>
     </div>
-    <?php }?>
   </body>
       <script src="script.js"></script>
 

@@ -12,12 +12,13 @@ class UpdateTable{
      * @param {<PhpRequest.DB>} storedProcedure 
      * @returns 
      */
-    update = function(tableBody, storedProcedure) {
-        phpRequest.mySql(storedProcedure, 'GET', {});
+    update = function(tableBody, storedProcedure, dataJson) {
+        phpRequest.mySql(storedProcedure, 'GET', dataJson);
         const responseData = phpRequest.getResponse();
 
         if (responseData !== previousData) {
         previousData = responseData;
+        console.log(responseData);  
         const jsonData = JSON.parse(responseData);
         console.log(jsonData);
         tableBody.innerHTML = ''; // Clear the existing table rows

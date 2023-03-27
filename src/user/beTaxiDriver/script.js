@@ -35,6 +35,7 @@ function handleRegistrationButton(){
                   lusso:isLuxury(),
                   elettrico:isElectric()};
 
+      console.log(json);
       //make request to the server and add a new job request
       request.mySql(PhpRequest.DB.SetRischiestaLavoro, "POST", json)
       console.log(request.getResponse());

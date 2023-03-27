@@ -13,8 +13,7 @@ checkUser(UserType::Tassista);
     <title>Taxi Service</title>
   </head>
   <body>
-    <h1>Benvenuto Tassista</h1>
-     <div id="image-container"><img src="./driverIMG.png" alt="Image description"></div>
+    <h1>Benvenuto Tassista</h1>     <div id="image-container"><img src="./driverIMG.png" alt="Image description"></div>
     <h2>seleziona un opzione</h2>
 
     <button id="Portafoglio" onclick="

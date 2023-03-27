@@ -16,7 +16,6 @@ function call_query($query) {
         $conn = newConnection();
     $result = $conn->query($query);
     if (!$result) return null;
-    
     $output = array();
     while ($row = $result->fetch_assoc()) {
         $output[] = $row;

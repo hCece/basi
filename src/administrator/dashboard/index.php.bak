@@ -19,7 +19,7 @@ checkUser(UserType::Amministratore);
 
     <button onclick="window.location.href = '../jobRequest/index.php'" >Visualizza Richieste Lavoro</button>
      <button id="storico-recensioni" onclick="
-     window.location.href = '../reviews/storicoRecensioni.php';return false;">
+    window.location.href = '../reviews/storicoRecensioni.php';return false;">
     Visualizza recensioni</button>
   </body>
 
