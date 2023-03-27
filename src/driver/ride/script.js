@@ -1,10 +1,12 @@
+/*  The script wait's till the html site is loaded and then every two seconds calls
+    class updateTable to update the values. The updating into the table is delegated to updateTable
+*/
 window.onload = function () {
   const updateTable = new UpdateTable();
   const tableBody = document.getElementById("tableBody"); // Get the tbody element
 
   setInterval(function () {
       updateTable.update(tableBody,PhpRequest.DB.CorseDisponibili);
-    
   }, 2000);
 
 

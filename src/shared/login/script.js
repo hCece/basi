@@ -1,7 +1,8 @@
 
 /*
     This function is designed to handle the login button. 
-    It retrives the data, calls a stored procedure and handles the response
+    It retrives the data, calls the stored procedure that returns the right type of user
+    and calls the corrispondent website
 */
 function handleLoginButton() {
     var request = new PhpRequest();

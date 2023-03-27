@@ -26,16 +26,3 @@ body {
   button:hover {
     background-color: #4c49b9;
   }
-   #image-container {
-          width: FIT-CONTENT;
-              height: FIT-CONTENT;
-
-              position: absolute;
-              left: 40%;
-
-        }
-        #image-container img {
-          max-width: 70%;
-          max-height: 70%;
-          object-fit: contain;
-        }

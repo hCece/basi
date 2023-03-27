@@ -16,7 +16,6 @@ function call_query($query) {
         $conn = newConnection();
     $result = $conn->query($query);
     if (!$result) return null;
-    
     $output = array();
     while ($row = $result->fetch_assoc()) {
         $output[] = $row;
@@ -49,7 +48,6 @@ function call_stored_procedure($input_variables, $procedure_name, $hasOutput=fal
     }else{
         $stmt = $conn->prepare("CALL $procedure_name($input_params)");
     }    
-    
     /*the three dots are called a "splat" operataor. It decomposes a array to single values and passes each a an individual one
         for more info check https://www.hashbangcode.com/article/splat-operator-php
         E.g. if there are 3 input varables, the input will look as follow:

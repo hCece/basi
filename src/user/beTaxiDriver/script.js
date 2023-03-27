@@ -1,5 +1,6 @@
 
-
+/*  with the name of the cookie as input, it will return the value of the cookie
+*/
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -12,7 +13,7 @@ function handleRegistrationButton(){
     
     var request = new PhpRequest();
 
-
+    //get all data from the input fields
     var user = document.getElementById("newUser").value;
     var pass = document.getElementById("pass").value;
     var brand = document.getElementById("brand").value;
@@ -20,8 +21,9 @@ function handleRegistrationButton(){
     var licence = document.getElementById("licence").value;
     var nrSeat = document.getElementById("nrSeat").value;
 
-
+    //check if they are not null
     if (user && pass && brand && model && licence && nrSeat) {
+      //prepare json to send to the server
       var json = {usernameCliente:getCookie("user"),
                   nuovoUsername:user,
                   password:pass,
@@ -33,7 +35,9 @@ function handleRegistrationButton(){
                   lusso:isLuxury(),
                   elettrico:isElectric()};
 
-      request.mySql(PhpRequest.DB.RischiestaLavoro, "POST", json)
+      console.log(json);
+      //make request to the server and add a new job request
+      request.mySql(PhpRequest.DB.SetRischiestaLavoro, "POST", json)
       console.log(request.getResponse());
     } else
         alert("Please fill in all fields");

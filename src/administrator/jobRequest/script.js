@@ -1,13 +1,15 @@
+
+/*  The file handles both buttons and calls updateTable every two seconds, 
+    sending the tablebody to delegate the input into the table.
+*/
 window.onload = function () {
     const updateTable = new UpdateTable();
     const tableBody = document.getElementById("tableBody"); // Get the tbody element
   
+    //Updating the table every two seconds
     setInterval(function () {
         updateTable.update(tableBody, PhpRequest.DB.GetRischiestaLavoro);
-      
     }, 2000);
-  
-  
 
   
     // Add event listener to table rows, it makes a row marked when clicked.
@@ -23,12 +25,15 @@ window.onload = function () {
   
   
     //TODO
-    function handleButton() {
+    function handleAccepted() {
   
   
     }
   
-    
+    function handleDeclined() {
+  
+  
+    }
   }
   
   

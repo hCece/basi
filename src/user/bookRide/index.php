@@ -1,4 +1,5 @@
 <?php
+//checks if user is of type Cliente
 require_once dirname(dirname(__DIR__)) . '\shared\lib\security.php';
 checkUser(UserType::Cliente);
 ?>
