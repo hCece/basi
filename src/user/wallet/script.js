@@ -23,6 +23,7 @@ document.getElementById("codiceValue").textContent = response;
 
 function handleRicarica() {
     console.log("Ricarica");
+    console.log("Ciao");
     var card = document.getElementById("ncarta").value;
     var amount = document.getElementById("importo_euro").value;
     //var codp = document.getElementById("codiceValue").value;
