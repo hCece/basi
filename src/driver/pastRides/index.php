@@ -6,7 +6,6 @@
     <script src="../../shared/lib/PhpRequest.js"></script>
     <script src="../../shared/lib/UpdateTable.js"></script>
 
-
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,12 +22,11 @@
                 <th>Tassista</th>
                 <th>Importo</th>
 
-
-
 			</tr>
 		</thead>
 
 		<tbody id="table-body">
+
 		</tbody>
 
 	</table>
@@ -39,24 +37,6 @@
             <p>Commento: <span id="Commentovalue"></span></p>
         </div>
     </div>
-    <div id="popup2" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" onclick="closePopup2()">&times;</span>
-                <p>Nessuna recensione inserita per questa corsa</p>
-                <p>scrivine una adesso!</p>
-                <div>
-                     <label for="votoInput">Voto:</label>
-                     <input type="number" id="votoInput" min="1" max="10"><br><br>
-                </div>
-                <div>
-                     <label for="commentoInput" >Commento:</label><br>
-                     <textarea id="commentoInput" maxlength="200" rows="8" cols="50"></textarea><br><br>
-                </div>
-                <div>
-                    <button class="submit" id="submit" >Invia recensione</button>
-                </div>
-
-
   </body>
       <script src="script.js"></script>
 

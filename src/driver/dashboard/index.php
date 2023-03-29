@@ -18,7 +18,7 @@ checkUser(UserType::Tassista);
     <h2>seleziona un opzione</h2>
 
     <button id="Portafoglio" onclick="
-    window.location.href = '../wallet/portafoglioTaxi.php';return false;">
+    window.location.href = '../wallet/index.php';return false;">
     Portafoglio</button>
 
     <button id="prenota-corsa" onclick="
@@ -26,11 +26,11 @@ checkUser(UserType::Tassista);
     Visualizza Corse disponibili</button>
 
     <button id="storico-corse" onclick="
-    window.location.href = '../pastRides/storicoCorse.php';return false;">
+    window.location.href = '../pastRides/index.php';return false;">
     Visualizza storico corse</button>
 
     <button id="storico-richiami" onclick="
-    window.location.href = '../recalls/storicoRichiami.php';return false;">
+    window.location.href = '../recalls/index.php';return false;">
     Visualizza richiami</button>
   </body>
 

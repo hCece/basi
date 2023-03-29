@@ -2,43 +2,43 @@ var request = new PhpRequest();
 let cookies = document.cookie;
 
 var sp = cookies.split(';'); // here we split the cookies by semicolon and
-var user = sp[0].split('=')[1];  //get the username from the second cookie
-console.log(user);
+var user = null;
+for (var i = 0; i < sp.length; i++) { //look for the cookie with username
+  var cookie = sp[i].trim();
+  if (cookie.indexOf('user=') == 0) {
+    user = cookie.substring('user='.length);
+    console.log(user);
+    break;
+  }
+}
 
 //call the procedure CreditoPortafoglio and get the credit related to the user
 request.mySql(PhpRequest.DB.CreditoPortafoglio, "POST", {user: user});
-var response = request.getResponse();
-document.getElementById("creditoValue").textContent = response;
+var credit = request.getResponse();
+document.getElementById("creditoValue").textContent = credit;
 
 //call the procedure CodicePortafoglio and get the code related to the user
 request.mySql(PhpRequest.DB.CodicePortafoglio, "POST", {user: user});
-response = request.getResponse();
-document.getElementById("codiceValue").textContent = response;
+var code = request.getResponse();
+document.getElementById("codiceValue").textContent = code;
 
-function handleRicarica() {
-    console.log("Ricarica");
-    var card = document.getElementById("ncarta").value;
-    var amount = document.getElementById("importo_euro").value;
-    //var codp = document.getElementById("codiceValue").value;
-    console.log(response);
+//handle the button click, check if iban is valid
+//and if the tcoin amount is greater than 0 and lover than total credit
+function handleBonifico() {
+    var iban = document.getElementById("iban").value;
+    var tcoin = document.getElementById("importo_tcoin").value;
 
-    if(card != "" &&  card.length == 16 && amount>0) {
-
-        console.log(card);
-        console.log(amount);
-        request.mySql(PhpRequest.DB.RicaricaPortafoglio,
-        "POST", {codp: response, amount : amount, card : card});
-        alert("Ricarica eseguita con successo");
+    if(iban.trim != "" && tcoin > 0 && tcoin < credit+1) {
+        request.mySql(PhpRequest.DB.InserisciBonifico, "POST", {codp:code, tcoin: tcoin, iban: iban});
+        alert("bonifico eseguito con successo");
     }
     else{
-        alert("Inserisci un numero di carta e un importo valido");
+        alert("Inserisci un iban e un importo valido");
     }
 }
-// convert euro to Tcoin (amount multiplied by 3)
+// convert tcoin to euro (amount divided by 3)
 function calculate() {
-    const input = document.getElementById('importo_euro');
-    const value = input.value * 3;
-    //const output =
-    document.getElementById('output').textContent = value; // get the output element
-   // output.innerText = value; // set the output element's text to the calculated value
+    const input = document.getElementById('importo_tcoin');
+    const value = input.value / 3;
+    document.getElementById('output').textContent = Math.round(value*100)/100;;
   }

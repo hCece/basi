@@ -31,16 +31,12 @@ checkUser(UserType::Cliente);
     window.location.href = '../pastRides/index.php';return false;">
     Storico corse</button>
 
-    <button id="storico-recensioni" onclick="
-    window.location.href = '../pastRides/storicoCorse.php';return false;">
-    Storico recensioni</button>
-
     <button id="diventa_driver" onclick="
     window.location.href = '../beTaxiDriver/index.php';return false;">
     Diventa Tassista </button>
 
     <button id="graduatoria" onclick="
-    window.location.href = '../topList/graduatoria.php'; return false;">
+    window.location.href = '../topList/index.php'; return false;">
     Graduatoria</button>
 
 
