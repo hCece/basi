@@ -23,17 +23,15 @@ window.onload = function () {
       event.target.closest('tr').classList.add('active-row');
     });
   
-  
-    //TODO
-    function handleAccepted() {
-  
-  
-    }
-  
-    function handleDeclined() {
-  
-  
-    }
+    
   }
   
+function handleApprove() {
+    row = document.getElementsByClassName('active-row')[0];
+    idr = row.innerHTML.split("<td>")[1].split("</td>")[0];
+    phpRequest.mySql(PhpRequest.DB.ApprovaRichiesta, "POST", {idr : idr});
+  }
   
+  function handleDecline() {
+    //phpRequest.mySql(PhpRequest.DB.RifiutaRichiesta, "POST");  
+  }

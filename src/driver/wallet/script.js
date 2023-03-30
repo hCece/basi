@@ -28,7 +28,7 @@ function handleBonifico() {
     var iban = document.getElementById("iban").value;
     var tcoin = document.getElementById("importo_tcoin").value;
 
-    if(iban.trim != "" && tcoin > 0 && tcoin < credit+1) {
+    if(iban.trim != "" && tcoin > 0 && tcoin < Number(credit)+1) {
         request.mySql(PhpRequest.DB.InserisciBonifico, "POST", {codp:code, tcoin: tcoin, iban: iban});
         alert("bonifico eseguito con successo");
     }

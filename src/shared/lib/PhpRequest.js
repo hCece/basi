@@ -5,7 +5,7 @@
 */
 var response;
 var scriptPath = document.currentScript.src;
-const PHP_PATH = scriptPath.substring(0, scriptPath.lastIndexOf("/") + 1) + "mySqlConnection/";
+const DATABASE_PATH = scriptPath.substring(0, scriptPath.lastIndexOf("/") + 1) + "mySqlConnection/database.php";
 
 class PhpRequest{
 
@@ -30,7 +30,9 @@ class PhpRequest{
         InserisciPrenotazione: "inserisciPrenotazione",
         CorseDisponibili: "corseDisponibili",
         SetRischiestaLavoro: "inserisciRichiestaLavoro",
-        GetRischiestaLavoro: "getRichiestaLavoro"
+        GetRischiestaLavoro: "getRichiestaLavoro",
+        ApprovaRichiesta: "approvaRichiesta",
+        RifiutaRichiesta: "rifiutaRichiesta"
     };
 
 
@@ -74,7 +76,7 @@ class PhpRequest{
         if (!Object.values(PhpRequest.DB).includes(storedProcedure)) 
             throw new TypeError("Invalid stored procedure name");
         //Adds the path where the php files are found
-        var url = PHP_PATH + storedProcedure + ".php";
+        var url = DATABASE_PATH + "?function="+ storedProcedure;
         this.request(url, type, json);
     };
     

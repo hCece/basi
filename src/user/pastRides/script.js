@@ -26,7 +26,17 @@ window.onload = function () {
     const cell = tableBody.rows[i].insertCell(-1);
     // create a new button element
     const button = document.createElement("button");
-    button.innerText = "Visualizza commento";
+
+
+    //TODO -- codice brutto
+    
+    request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST", {idc: tableBody.rows[i].cells[0].innerText});
+    response = request.getResponse(); //output format: voto - commento
+    console.log(response);
+    if (response && response.trim() !== "") 
+      button.innerText = "Inserisci Recensione";
+    else
+      button.innerText = "Visualizza Commento";
     // add a click event listener to the button
     button.addEventListener("click", function() {
       // call the openPopup function with the appropriate IDC value
@@ -37,6 +47,8 @@ window.onload = function () {
   }
 
 }
+
+
 
 function openPopup(idc) {
     // Get the values of voto and commento from sp.visualizzaRecensione
