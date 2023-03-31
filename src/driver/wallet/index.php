@@ -29,7 +29,7 @@ checkUser(UserType::Tassista);
       <input type="text" id="iban" >
       <br><br>
       <label for="importo_tcoin">Importo in Tcoin: </label>
-      <input type="number" id="importo_tcoin"  value="0" step="1"
+      <input type="number" id="importo_tcoin"  value="0" step="3"
       oninput="calculate()">
       <br><br>
       <label for="importo_euro">Importo in Euro: </label>

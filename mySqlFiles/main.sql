@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS TAXISERVER;
-
+SET SQL_SAFE_UPDATES = 0;
 CREATE DATABASE IF NOT EXISTS TAXISERVER;
 USE TAXISERVER; 
 
@@ -297,7 +297,7 @@ end //
 
 delimiter //
 create procedure inserisciRichiestaLavoro(in usernameCliente varchar(20), nuovoUsername varchar(20), password varchar(100), fotoDoc varchar(20), marca varchar(20), 
-											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int, out rtrn varchar(3) )
+											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int, out rtrn varchar(4) )
 begin
 	declare checkUsername boolean default false;
     declare checkRichiesta boolean default false;
@@ -571,6 +571,7 @@ call inserisciCorsa(false, 'bolo', 'barberino', 'paolo', 'parme', 156);
 call inserisciCorsa(false, 'bolo', 'camatta', 'enri', 'parme', 152);
 call inserisciCorsa(false, 'bolo', 'sassuolo', 'riccardo', 'parme', 166);
 call inserisciCorsa(false, 'bolo', 'napoli', 'alle', 'parme', 111);
+call inserisciCorsa(false, 'bolo', 'Milano', 'ciccio22', 'jury15', 111);
 
 
 
@@ -590,8 +591,8 @@ call visualizzaRecensione( 1 ,@voto);
 select @voto;
 #in usernameCliente varchar(20), nuovoUsername varchar(20), password varchar(100), fotoDoc varchar(20), marca varchar(20), 
 #											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int)
-call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1);
-call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 0);# should not work, same username
+call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1, @rtrn);
+call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 0, @rtrn);# should not work, same username
 
 #call approvaRichiesta(1);
 call creditoPortafoglio('parme',@res);
@@ -604,6 +605,11 @@ call storicoCorse('ciccio22');
 call storicoCorse('jury15');
 
 call richiamiTassista('jury15');
+
+
+
+
+call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1, @rtrn);
 
 call storicoRecensioni();
 select * from CLIENTE;
