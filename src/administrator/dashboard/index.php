@@ -17,10 +17,18 @@ checkUser(UserType::Amministratore);
     <h2>seleziona un opzione</h2>
 
 
-    <button onclick="window.location.href = '../jobRequest/index.php'" >Visualizza Richieste Lavoro</button>
-     <button id="storico-recensioni" onclick="
-     window.location.href = '../reviews/index.php';return false;">
+    <button id"jobRequest" onclick=
+    "window.location.href = '../jobRequest/index.php'" >
+    Visualizza Richieste Lavoro</button>
+
+    <button id="storico-recensioni" onclick=
+    "window.location.href = '../reviews/index.php'" >
     Visualizza recensioni</button>
+
+    <button id="storico-recensioni" onclick=
+    "window.location.href = '../recall/index.php'" >
+    Inserisci Richiamo</button>
+
   </body>
 
 

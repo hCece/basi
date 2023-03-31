@@ -12,10 +12,16 @@ for (var i = 0; i < sp.length; i++) { //look for the cookie with username
     break;
   }
 }
-  window.onload = function () {
+window.onload = function () {
   const updateTable = new UpdateTable();
   const tableBody = document.getElementById("table-body"); // Get the tbody element
   updateTable.update(tableBody,PhpRequest.DB.RichiamiTassista,{user:user});
+   if (response == '[]') { // Check if the response is null
+        // Hide the table and show error message
+        tableBody.style.display = "none";
+        table.style.display = "none"
+        document.getElementById("title").innerHTML = "Nessun richiamo, continua così";
 
+      }
 }
 document.getElementById("title").textContent = "Lista richiami " + user;

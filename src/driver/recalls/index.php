@@ -1,9 +1,13 @@
-
+<?php
+//checks if user is of type Tassista
+require_once dirname(dirname(__DIR__)) . '\shared\lib\security.php';
+checkUser(UserType::Tassista);
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Storico corse</title>
+	<title>Storico richiami</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="../../shared/lib/PhpRequest.js"></script>
     <script src="../../shared/lib/UpdateTable.js"></script>
@@ -12,7 +16,7 @@
 </head>
 <body>
 	<h2 id="title"></h2>
-	<table>
+	<table id='table'>
 		<thead>
 			<tr>
 				<th>IDR</th>

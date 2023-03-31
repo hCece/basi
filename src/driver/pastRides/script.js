@@ -25,31 +25,38 @@ window.onload = function () {
       const cell = tableBody.rows[i].insertCell(-1);
       // create a new button element
       const button = document.createElement("button");
-      button.innerText = "Visualizza commento";
-      // add a click event listener to the button
-      button.addEventListener("click", function() {
-        // call the openPopup function with the appropriate IDC value
-        openPopup(tableBody.rows[i].cells[0].innerText);
-      });
+      // Get the values of voto and commento from sp.visualizzaRecensione
+      request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST",
+      {idc: tableBody.rows[i].cells[0].innerText});
+      response = request.getResponse();
+      //if the response is not empty create a button to get the review
+      if((response.trim().length > 0)){
+        //set active button properties
+         button.innerText = "Visualizza commento";
+         button.style.background= '#6a64f1';
+         button.style.cursor = 'pointer';
+
+         button.addEventListener("click", function() {
+            //on click call the openPopup function with the appropriate voto and commento value
+            openPopup(tableBody.rows[i].cells[0].innerText);
+         });
+      }else{
+        //set grey not cickable button
+         button.innerText = "Nessun commento";
+         button.style.background = "grey";
+      }
       // add the button to the cell
       cell.appendChild(button);
     }
 }
 function openPopup(idc) {
-    // Get the values of voto and commento from sp.visualizzaRecensione
-    request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST", {idc: idc});
+
+    request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST",{idc:idc});
     response = request.getResponse(); //output format: voto - commento
-    if (response.trim!= "")
-    {
-        var sp=response.split('-')
-        // Set the text of the span elements in the pop up
-        document.getElementById("Votovalue").textContent = sp[0];
-        document.getElementById("Commentovalue").textContent = sp[1];
-    }
-    else{
-         document.getElementById("Votovalue").textContent = "Nessun voto";
-         document.getElementById("Commentovalue").textContent = "Nessun commento";
-    }
+    var sp=response.split('-')
+    // Set the text of the span elements in the pop up
+    document.getElementById("Votovalue").textContent = sp[0];
+    document.getElementById("Commentovalue").textContent = sp[1];
     // Display the pop up
     document.getElementById("popup").style.display = "block";
 }
