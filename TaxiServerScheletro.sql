@@ -232,7 +232,9 @@ begin
         
         if(checkUsr) then #check if user is in CLIENTE
 			insert into RICARICA(usernameCliente,euro,tcoin,data,Ncarta) values (usernameU, euro, (euro*3),now(), Ncarta);
-			update PORTAFOGLIO set credito = (credito + (euro*3)) where username = usernameU; #update client's wallet value 
+			update PORTAFOGLIO set credito = (credito + (euro*3)) where username = usernameU;
+			#update clients wallet value
+			
 		end if;
 end //
 
@@ -268,6 +270,22 @@ begin
 end//
 
 delimiter //
+#gets the rides historical based on user type (cliente/tassista)
+create procedure storicoCorse(in usern varchar(20))
+begin
+	if(exists(select username from CLIENTE where username = usern))then
+	select * 
+        from CORSA 
+        where (CORSA.usernameCliente = usern);
+	else
+	select * 
+        from CORSA 
+        where (CORSA.usernameTassista = usern);
+	end if;
+
+end //
+
+delimiter //
 create procedure inserisciRichiamo(in usernameAmministratore varchar(20), usernameTassista varchar(20), commento varchar(200))
 begin	
     declare checkTaxi boolean default false;
@@ -298,7 +316,7 @@ begin
     set checkRichiesta = NOT exists(select usernameCliente from RICHIESTALAVORO where usernameCliente = usernameCliente);
     set checkUsername = NOT exists(select username from TASSISTA where username = nuovoUsername);
     
-    if(checkUsername AND checkRichiesta) then #check if the new username isen't already taken and check if there is not already a job request for this cliente
+    if(checkUsername AND checkRichiesta) then #check if the new username isent already taken and check if there is not already a job request for this cliente
 		insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, blindato, sportivo, lusso, elettrico) 
         values(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, blindato, sportivo, lusso, elettrico);
 	end if;
@@ -310,11 +328,12 @@ begin
 	declare checkImporto int default 0;
     set checkImporto = (select credito from PORTAFOGLIO where username = usernameT);
     
-    if((checkImporto - tcoin) >= 0) then #check if the tassista isn't requesting a bonifico bigger than his credito
+    if((checkImporto - tcoin) >= 0) then #check if the tassista isnt requesting a bonifico bigger than his credito
 	 insert into BONIFICO(usernameTassista, tcoin, euro, data, IBAN) values(usernameT, tcoin, (tcoin/3), now(), IBAN);
-     update PORTAFOGLIO set credito = (credito - tcoin) where username = usernameT; #uptate tassista's portafoglio after bonifico
+     update PORTAFOGLIO set credito = (credito - tcoin) where username = usernameT; #uptate tassistas portafoglio after bonifico
     end if;
 end //
+
 
 delimiter //
 create procedure approvaRichiesta(in idr int)
@@ -327,6 +346,76 @@ create procedure rifiutaRichiesta(in idr int)
 begin
 	update RICHIESTALAVORO set stato = 'RIFIUTATO' where IDR = idr;
 end//
+
+delimiter //
+CREATE PROCEDURE storicoRichiami()
+BEGIN
+    SELECT TASSISTA.username,
+           COUNT(DISTINCT RICHIAMO.IDRICHIAMO) AS NumRichiami,
+           ROUND(AVG(RECENSIONE.voto),1) AS MediaVoti,
+           TASSISTA.Ncorse AS NumCorse
+    FROM TASSISTA
+    LEFT JOIN RICHIAMO ON TASSISTA.username = RICHIAMO.usernameTassista
+    LEFT JOIN CORSA ON TASSISTA.username = CORSA.usernameTassista
+    LEFT JOIN RECENSIONE ON CORSA.IDC = RECENSIONE.IDC
+    GROUP BY TASSISTA.username;
+    
+END//
+
+delimiter //
+#gets richiami related to the input driver
+create procedure richiamiTassista(in usern varchar(20))
+begin
+select *
+from RICHIAMO
+where usernameTassista = usern;
+end //
+
+delimiter //
+#gets the review passed in input, returns the related voto and commento (format voto-commento)
+CREATE PROCEDURE visualizzaRecensione (in idc int, out voto_commento VARCHAR(200))
+BEGIN
+SELECT CONCAT(RECENSIONE.voto, ' - ', RECENSIONE.commento) INTO voto_commento FROM RECENSIONE WHERE RECENSIONE.IDC = idc;
+    
+end//
+
+delimiter //
+create procedure storicoRecensioni()
+begin
+select RECENSIONE.IDC,voto,commento,usernameTassista,data
+from RECENSIONE,CORSA
+where RECENSIONE.IDC = CORSA.IDC
+order by IDC desc;
+end //
+
+delimiter //
+create procedure recensioniPeggiori()
+begin
+select RECENSIONE.IDC,voto,commento,usernameTassista,data
+from RECENSIONE,CORSA
+where RECENSIONE.IDC = CORSA.IDC
+order by voto asc;
+end //
+
+delimiter //
+create procedure recensioniMigliori()
+begin
+select RECENSIONE.IDC,voto,commento,usernameTassista,data
+from RECENSIONE,CORSA
+where RECENSIONE.IDC = CORSA.IDC
+order by voto desc;
+end //
+
+delimiter //
+CREATE PROCEDURE topClienti()
+BEGIN
+    SELECT usernameCliente, COUNT(*) as cnt
+    FROM CORSA
+    GROUP BY usernameCliente
+    ORDER BY cnt DESC
+    LIMIT 10;
+END //
+
 ##################	TRIGGERS	##########################
 
 delimiter //
@@ -367,11 +456,13 @@ begin
 			insert into TAXIPRO(targa,marca,modello,posti,blindato,sportivo,lusso,elettrico)
             values (new.targa,new.marca,new.modello,new.posti,new.blindato,new.sportivo,new.lusso,new.elettrico);
 		else
-			insert into TAXI(targa,marca,modello,posti) #taxi isn't pro add it to the TAXI table
-            values (new.targa,new.marca,new.modello,new.posti);
+			insert into TAXI(targa,marca,modello,posti) 
+            		values (new.targa,new.marca,new.modello,new.posti);
+			#taxi isnt pro add it to the TAXI table
 		end if;
     end if;
 end //
+
 
 delimiter //
 create trigger aggiungiPortafoglioCliente #whenever a new cliente is added links him a wallet 
@@ -389,6 +480,15 @@ begin
 		insert into PORTAFOGLIO(username) values(new.username);
 end//
 
+delimiter //
+create trigger incNcorse
+after insert on TAXISERVER.CORSA
+for each row
+begin
+update TASSISTA
+set Ncorse = Ncorse + 1
+where TASSISTA.username = NEW.usernameTassista;
+end //
 
 #delimiter //
 #create trigger licenziaTassista
