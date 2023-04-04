@@ -22,9 +22,7 @@
                 <th>Cliente</th>
                 <th>Tassista</th>
                 <th>Importo</th>
-
-
-
+                <th></th>
 			</tr>
 		</thead>
 
@@ -32,9 +30,9 @@
 		</tbody>
 
 	</table>
-	<div id="popup" class="popup">
+	<div id="popup1" class="popup">
         <div class="popup-content">
-            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <span class="close-btn" onclick="closePopup1()">&times;</span>
             <p>Voto: <span id="Votovalue"></span></p>
             <p>Commento: <span id="Commentovalue"></span></p>
         </div>
@@ -44,19 +42,20 @@
                 <span class="close-btn" onclick="closePopup2()">&times;</span>
                 <p>Nessuna recensione inserita per questa corsa</p>
                 <p>scrivine una adesso!</p>
-                <div>
-                     <label for="votoInput">Voto:</label>
-                     <input type="number" id="votoInput" min="1" max="10"><br><br>
-                </div>
-                <div>
-                     <label for="commentoInput" >Commento:</label><br>
-                     <textarea id="commentoInput" maxlength="200" rows="8" cols="50"></textarea><br><br>
-                </div>
-                <div>
-                    <button class="submit" id="submit" >Invia recensione</button>
-                </div>
 
-
+                    <div>
+                        <label for="votoInput">Voto:</label>
+                        <input type="number" id="votoInput" min="1" max="10"><br><br>
+                    </div>
+                    <div>
+                         <label for="commentoInput" >Commento:</label><br>
+                        <textarea id="commentoInput" maxlength="200" rows="8" cols="50"></textarea><br><br>
+                    </div>
+                    <div>
+                        <button class="submit" id="submit" >Invia recensione</button>
+                    </div>
+            </div>
+    </div>
   </body>
       <script src="script.js"></script>
 

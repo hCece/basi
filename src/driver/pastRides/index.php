@@ -21,6 +21,8 @@
                 <th>Cliente</th>
                 <th>Tassista</th>
                 <th>Importo</th>
+                <th></th>
+
 
 			</tr>
 		</thead>

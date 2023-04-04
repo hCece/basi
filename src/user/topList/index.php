@@ -15,7 +15,7 @@ checkUser(UserType::Cliente);
 	     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<h1>TOP 10 CLIENTI!!!</h1>
+	<h2>TOP 10 CLIENTI!!!</h2>
 	<h5>I primi 5 clieni in graduatoria hanno uno sconto del 20% sulle prossime corse</h5>
 	<table>
 		<thead>

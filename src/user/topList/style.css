@@ -1,40 +1,39 @@
-       body {
-          background-color: #f2f2f2; /* light grey background color */
-          margin: 0;
-          padding: 0;
-      }
+body {
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
 
-      h1 {
-          text-align: center; /* center align the heading */
-          padding-top: 50px; /* add some space between the top of the page and the heading */
-      }
-      h5 {
-                text-align: center; /* center align the heading */
-            }
+h2 {
+    text-align: center;
+    padding-top: 50px;
+}
 
-      table {
-          margin: 0 auto; /* center the table horizontally */
-          border: 2px solid #555; /* add a border to the table */
-          width: 80%; /* make the table take up 80% of the screen */
-          max-width: 800px; /* set a max width for the table */
-          background-color: white; /* set a white background for the table */
-          border-collapse: collapse; /* collapse table borders */
-      }
+table {
+    margin: 0 auto;
+    border: 2px solid #555;
+    width: 80%;
+    max-width: 800px;
+    background-color: white;
+    border-collapse: collapse;
+}
 
-      th, td {
-          padding: 15px; /* add padding to table cells */
-          text-align: center; /* center align table cell text */
-          border: 2px solid #aaa;
-          border-bottom: 1px solid #ddd; /* add a bottom border to table rows */
-      }
+th, td {
+    padding: 15px;
+    text-align: center;
+    border: 2px solid #aaa;
+    border-bottom: 1px solid #ddd;
+}
 
-      th {
-          background-color: #555; /* set the background color of the table headers */
-          color: white; /* set the color of the table headers */
-      }
+th {
+    background-color: #555;
+    color: white;
+}
 
-      tbody tr:nth-child(-n+5) {
-          background-color: #d1e7dd; /* set the background color of the first three rows */
-      }
+tbody tr:nth-child(-n+5) {
+    background-color: #d1e7dd; /* set the background color of the first three rows */
+}
 
-
+h5 {
+    text-align: center; /* center align the heading */
+}

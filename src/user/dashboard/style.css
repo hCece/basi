@@ -30,19 +30,20 @@ button {
 button:hover {
   background-color: #4c49b9;
 }
-#importo_euro {
-width: 40px;
-}
-#image-container {
-width: FIT-CONTENT;
-    height: FIT-CONTENT;
 
+#importo_euro {
+    width: 40px;
+}
+
+#image-container {
+    width: FIT-CONTENT;
+    height: FIT-CONTENT;
     position: absolute;
     left: 40%;
-
 }
+
 #image-container img {
-max-width: 100%;
-max-height: 100%;
-object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
