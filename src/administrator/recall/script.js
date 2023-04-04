@@ -30,7 +30,7 @@ window.onload = function () {
         // create a new button element
         const button = document.createElement("button");
         //if result is not empty create a clickable button to show the recall/s
-        if(results[i] && results[i].trim() != "") {
+        if(results[i] && results[i].length > 5) {
            button.innerText = "Visualizza richiami";
            button.style.background= '#6a64f1';
            button.style.cursor = 'pointer';
@@ -65,46 +65,49 @@ window.onload = function () {
     }
 }
 
-//Popup1 shows the list of recalls related to an user
+//this function displays a popup containing a table of recall information related to a user
 function openPopup1(results) {
 
-    console.log(results);
+    //parse the results parameter from a JSON string to a JavaScript object
+        const data = JSON.parse(results);
 
-    //const tableBody = document.getElementById("pop1Table");
+        //get a reference to the table body
+        const tableBody = document.getElementById('pop1Table');
 
+        //iterate over each recall in the data array and create a table row for each one
+        data.forEach(item => {
+            const row = document.createElement('tr');
 
+            // Create a table cell element for the IDRICHIAMO information and add it to the row
+            const idCell = document.createElement('td');
+            idCell.textContent = item.IDRICHIAMO;
+            row.appendChild(idCell);
 
-  const table = document.getElementById("tab");
-  const tbody = table.querySelector("pop1Table");
-/*
-  for (let i = 0; i < results.length; i++) {
-    const result = results[i];
-    const row = document.createElement("tr");
-    const id = document.createElement("td");
-    id.textContent = result.IDRICHIAMO;
-    const admin = document.createElement("td");
-    admin.textContent = result.usernameAmministratore;  //codice di chat gpt non funziona un cazzo
-    const tassista = document.createElement("td");
-    tassista.textContent = result.usernameTassista;
-    const comment = document.createElement("td");
-    comment.textContent = result.commento;
-    const date = document.createElement("td");
-    date.textContent = result.data;
+            // Create a table cell element for the usernameAmministratore information and add it to the row
+            const adminCell = document.createElement('td');
+            adminCell.textContent = item.usernameAmministratore;
+            row.appendChild(adminCell);
 
-    row.appendChild(id);
-    row.appendChild(admin);
-    row.appendChild(tassista);
-    row.appendChild(comment);
-    row.appendChild(date);
+            // Create a table cell element for the usernameTassista information and add it to the row
+            const taxiDriverCell = document.createElement('td');
+            taxiDriverCell.textContent = item.usernameTassista;
+            row.appendChild(taxiDriverCell);
 
-    tbody.appendChild(row);
-  }
+            // Create a table cell element for the commento information and add it to the row
+            const commentCell = document.createElement('td');
+            commentCell.textContent = item.commento;
+            row.appendChild(commentCell);
 
-  table.appendChild(tbody);
-  */
-      //TODO result e' corretto bisogna solo inserirlo nella tabella senza usare UpdateTable
+            // Create a table cell element for the data information and add it to the row
+            const dateCell = document.createElement('td');
+            dateCell.textContent = item.data;
+            row.appendChild(dateCell);
 
+            // Add the completed row to the table body
+            tableBody.appendChild(row);
+        });
 
+    // Display the popup
     document.getElementById("popup1").style.display = "block";
 }
  //Popup2 shows an interface where the administrator can add a recall
@@ -122,6 +125,7 @@ function openPopup2(user) {
 function closePopup1() {
    // Hide the pop up
    document.getElementById("popup1").style.display = "none";
+   document.getElementById("pop1Table").innerHTML = "";
 }
 
 function closePopup2() {
@@ -138,7 +142,9 @@ function submitRecall(user) {
     console.log(json);
     if (commento && commento.tirm!="") {
         request.mySql(PhpRequest.DB.InserisciRichiamo, "POST", json);
+        alert("Richiamo inserito correttamente");
         closePopup2();
+        window.location.href = "index.php"; //refresh the page
     }
     else {
         alert("Inserisci un commento valido");
