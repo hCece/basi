@@ -13,9 +13,9 @@ for (var i = 0; i < sp.length; i++) { //look for the cookie with username
   }
 }
 window.onload = function () {
-  const updateTable = new UpdateTable();
+  const update = new Update();
   const tableBody = document.getElementById("table-body"); // Get the tbody element
-  updateTable.update(tableBody,PhpRequest.DB.RichiamiTassista,{user:user});
+  update.table(tableBody,PhpRequest.Richiami.Tassista,{user:user});
    if (response == '[]') { // Check if the response is null
         // Hide the table and show error message
         tableBody.style.display = "none";

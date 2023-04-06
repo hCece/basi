@@ -1,7 +1,13 @@
+GRANT EVENT ON *.* TO 'root'@'localhost';
+
 DROP DATABASE IF EXISTS TAXISERVER;
 SET SQL_SAFE_UPDATES = 0;
 CREATE DATABASE IF NOT EXISTS TAXISERVER;
 USE TAXISERVER; 
+
+SET @T_COIN_CONVERSION = 3;
+SET @PROFIT_PERCENTAGE = 0.2;
+
 
 #Definisco le tabelle
 
@@ -115,13 +121,14 @@ CREATE TABLE PRENOTAZIONECORSA(
     posti int,
     data datetime,
     usernameCliente varchar(20),
+    costo int,
+    haCorsa boolean default false,
     foreign key PRENOTAZIONECORSA(usernameCliente) references CLIENTE(username)
     
 ) ENGINE = "INNODB";
 
 CREATE TABLE CORSA(
 	IDC int auto_increment primary key,
-	pro boolean default false,
     partenza varchar(50), 
     arrivo varchar(50),
     data datetime,
@@ -223,11 +230,36 @@ end//
 delimiter //
 create procedure ricaricaPortafoglio(in codicePortafoglio varchar(20), euro int, Ncarta varchar(16))
 begin
-			insert into RICARICA(portafoglio,euro,tcoin,data,Ncarta) values (codicePortafoglio, euro, (euro*3),now(), Ncarta);
+			insert into RICARICA(portafoglio,euro,tcoin,data,Ncarta) values (codicePortafoglio, euro, (euro*@T_COIN_CONVERSION),now(), Ncarta);
 			update PORTAFOGLIO set credito = (credito + (euro*3)) where CODP = codicePortafoglio; #update client's wallet amount 
 		
 end //
 
+
+delimiter //
+create procedure creditoSufficente(in usernameCliente varchar(20), euro int, out rtrn boolean)
+begin
+	SET rtrn = exists(select * from PORTAFOGLIO where username = usernameCliente and euro*3 < credito);
+end// 
+
+
+# se il cliente ha abbastanza denaro, allore gli euro vengono convertiti in Tcoin e il costo sottratto dal cliente
+# e il 90% del costo viene aggiunto al tassista
+delimiter //
+create procedure pagaCorsa(in usernameCliente varchar(20), usernameTassista varchar(20), euro int)
+begin
+		declare haSoldi boolean default false;
+		declare tCoin int;
+		call creditoSufficente (usernameCliente, euro, haSoldi );
+        if(haSoldi) then
+            set tCoin = euro*@T_COIN_CONVERSION;
+            update PORTAFOGLIO set credito = (credito - tCoin) where username = usernameCliente;
+			update PORTAFOGLIO set credito = (credito + tCoin*(1-@PROFIT_PERCENTAGE)) where username = usernameTassista;
+		end if;
+end //
+
+
+#restituisce il credito rimanente in portafoglio
 delimiter // 
 create procedure creditoPortafoglio(in usernameCliente varchar(20), out creditoResiduo int)
 begin
@@ -244,34 +276,98 @@ end //
 
 
 delimiter //
-create procedure inserisciPrenotazione(in pro int, partenza varchar(20), arrivo varchar(20), Nposti int, usernameCliente varchar(20), lus int, ele int)
+create procedure inserisciPrenotazione(in pro int, partenza varchar(20), arrivo varchar(20), Nposti int, usernameCliente varchar(20), lus int, ele int, costo int, out rtrn int)
 begin
 
-	declare checkVal boolean default false;
+	declare existsTaxi boolean default false;
+	declare haSoldi boolean default false;
     if(pro) then 
-    set checkVal= exists(
+    set existsTaxi= exists(
 		select *  #check if there are any PRO taxies in  the departure city with desired optionals
         from TAXIPRO join TASSISTA on TASSISTA.targaAuto = TAXIPRO.targa
         where ((citta = partenza) and (posti >= Nposti)  and (lusso= lus)  and (elettrico = ele)));
     else
-		set checkVal= exists(
+		set existsTaxi= exists(
 		select *  #check if there are any NORMAL taxies in  the departure city
         from TAXI join TASSISTA on TASSISTA.targaAuto = TAXI.targa
         where (citta = partenza and posti >= Nposti));
     end if;
     
+    call creditoSufficente(usernameCliente, costo, haSoldi);
     
-    if(checkVal) then #if there is at least 1 taxi matching the request add PRENOTAZIONECORSA
-		insert into PRENOTAZIONECORSA(pro, partenza, arrivo, posti, data, usernameCliente) values(pro, partenza, arrivo, Nposti, now(), usernameCliente);
-	end if;
+    
+    
+    if(existsTaxi) then #if there is at least 1 taxi matching the request add PRENOTAZIONECORSA
+		if(haSoldi) then
+			insert into PRENOTAZIONECORSA(pro, partenza, arrivo, posti, data, usernameCliente, costo) values(pro, partenza, arrivo, Nposti, now(), usernameCliente, costo);
+			SET rtrn= LAST_INSERT_ID();
+		else
+			SET rtrn= -400; # -400 means no moneyz
+        end if;
+	else
+		SET rtrn= -200; # -200 means no existing taxi
+    end if;
+    
 end //
+
+
+
+delimiter //
+CREATE PROCEDURE verificaStatoPrenotazione(IN username varchar(20), OUT rtrn varchar(20))
+BEGIN
+    DECLARE num_corse INT;
+    SELECT COUNT(*) INTO num_corse FROM prenotazionecorsa WHERE usernameCliente = username;
+    IF num_corse > 0 THEN
+        SELECT COUNT(*) INTO num_corse FROM prenotazionecorsa WHERE usernameCliente = username AND haCorsa = 1;
+		IF num_corse > 0 THEN
+			SET rtrn = "si corsa";
+		else
+			SET rtrn = "si prenotazione";
+		END IF;
+	else
+		SET rtrn = "no prenotazione";
+    END IF;
+	
+END;
+//
+
+
+
+# La stored procedure che deve essere richiamata per inserire una corsa.
+# Controlla se esiste una prenotazione per la corsa, e se quella prenotazione non è già stata assegnata ad un altro tassista
+# Successivamente viene controllato se l'utente possiede sufficente denaro per pagare la corsa
+# Se le condizioni sono tutte vere: viene creata una nuova corsa, modificata la variabile haCorsa nella tabella prenotazione e
+# infine si richiama la stored proc. che effettua il pagamento 
+
+delimiter //
+create procedure inserisciCorsa(in partenza varchar(20), arrivo varchar(20), usernameCliente varchar(20), usernameTassista varchar(20), idPrenotazione int,importo int, out rtrn boolean) 
+begin
+	declare checkVal boolean default false;
+	declare costoVar int;
+    set checkVal= exists( select * from prenotazionecorsa where IDP = idPrenotazione and haCorsa = false);
+    if(checkVal) then
+		call creditoSufficente(usernameCliente, importo, checkVal);
+		if(checkVal) then
+			insert into CORSA(partenza, arrivo, data, usernameCliente, usernameTassista, importo) values(partenza, arrivo, now(), usernameCliente, usernameTassista, importo);
+			
+			UPDATE prenotazioneCorsa 
+			SET haCorsa = true
+			WHERE idP = idPrenotazione;
+			
+			set costoVar = (select costo from prenotazioneCorsa where idP = idPrenotazione);
+			call pagaCorsa(usernameCliente, usernameTassista, costoVar);
+		end if;
+	end if;
+    set rtrn = checkVal;
+end//
+
 
 delimiter //
 #when a tassista accepts the PRENOTAZIONECORSA a CORSA is created 
-create procedure inserisciCorsa(in pro boolean, partenza varchar(20), arrivo varchar(20), usernameCliente varchar(20), usernameTassista varchar(20), importo int) 
+create procedure eliminaPrenotazione(username varchar(20)) 
 begin
-	insert into CORSA(pro, partenza, arrivo, data, usernameCliente, usernameTassista, importo) values(pro, partenza, arrivo, now(), usernameCliente, usernameTassista, importo);
-end//
+    DELETE FROM prenotazioneCorsa WHERE usernameCliente = username;
+end// 	
 
 delimiter //
 create procedure inserisciRichiamo(in usernameAmministratore varchar(20), usernameTassista varchar(20), commento varchar(200))
@@ -283,7 +379,8 @@ begin
 	set checkAmm = exists(select usernameAmministratore from AMMINISTRATORE where  usernameAmministratore = usernameAmministratore);
     
     if(checkTaxi and checkAmm ) then #check if amministratore and tassista exists 
-		insert into RICHIAMO(usernameAmministratore,usernameTassista,commento,data) values (usernameAmministratore,usernameTassista,commento,now());
+		insert into RICHIAMO(usernameAmministratore,usernameTassista,commento,data) values 
+							(usernameAmministratore,usernameTassista,commento,now());
         
     end if;
 
@@ -297,20 +394,26 @@ end //
 
 delimiter //
 create procedure inserisciRichiestaLavoro(in usernameCliente varchar(20), nuovoUsername varchar(20), password varchar(100), fotoDoc varchar(20), marca varchar(20), 
-											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int, out rtrn varchar(4) )
+											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int, out rtrn varchar(80) )
 begin
 	declare checkUsername boolean default false;
     declare checkRichiesta boolean default false;
     set checkRichiesta = NOT exists(select usernameCliente from RICHIESTALAVORO where usernameCliente = usernameCliente);
     set checkUsername = NOT exists(select username from TASSISTA where username = nuovoUsername);
     
-    if(checkUsername AND checkRichiesta) then #check if the new username isen't already taken and check if there is not already a job request for this cliente
-		insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, lusso, elettrico) 
-        values(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, lusso, elettrico);
-        set rtrn='ok';
+     #check if the new username isen't already taken and check if there is not already a job request for this cliente
+    if checkUsername then 
+		if (checkRichiesta) then
+			insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, lusso, elettrico) 
+			values(usernameCliente, nuovoUsername, fotoDoc, marca, modello, targa, posti, lusso, elettrico);
+			set rtrn='ok';
+		else 
+			set rtrn = "La tua richiesta sta per essere valutata. Aspetta una risposta";
+		end if;
 	else
-        set rtrn='null';
+        set rtrn='Username non disponibile';
 	end if;
+    
 end //
 
 delimiter //
@@ -324,7 +427,7 @@ begin
     select usernameT;
     
     if((checkImporto - tcoin) >= 0) then #check if the tassista isn't requesting a bonifico bigger than his credito
-	 insert into BONIFICO(usernameTassista, tcoin, euro, data, IBAN) values(usernameT, tcoin, (tcoin/3), now(), IBAN);
+	 insert into BONIFICO(usernameTassista, tcoin, euro, data, IBAN) values(usernameT, tcoin, (tcoin/@T_COIN_CONVERSION), now(), IBAN);
      update PORTAFOGLIO set credito = (credito - tcoin) where username = usernameT; #uptate tassista's portafoglio after bonifico
     end if;
 end //
@@ -384,11 +487,42 @@ END//
 delimiter //
 create procedure storicoRecensioni()
 begin
-select *
-from RECENSIONE
-order by IDC desc;
+	select *
+	from RECENSIONE
+	order by IDC desc;
 end //
 
+
+
+
+
+delimiter //
+create procedure corseDisponibili(in usernameTassista varchar(20))
+begin
+	SELECT IDP, partenza, arrivo, posti, data, usernameCliente, CAST(costo*0.9 AS SIGNED)
+	FROM prenotazioneCorsa
+	WHERE partenza IN
+		(SELECT citta FROM tassista 
+		WHERE username = usernameTassista);
+end //
+
+delimiter //
+create procedure countCorseDisponibili(in usernameTassista varchar(20), out count int)
+begin
+	set count = (SELECT count(*)
+	FROM prenotazioneCorsa
+	WHERE partenza IN
+		(SELECT citta FROM tassista 
+		WHERE username = usernameTassista));
+end //
+
+
+
+delimiter //
+create procedure cancellaPrenotazione(in username varchar(20))
+begin
+	  DELETE FROM prenotazioneCorsa WHERE usernameCliente = username;
+end //
 ##################	TRIGGERS	##########################
 
 delimiter //
@@ -449,7 +583,7 @@ after insert on TAXISERVER.TASSISTA
 for each row
 begin
 		insert into PORTAFOGLIO(username) values(new.username);
-end//
+end// 
 
 
 #delimiter //
@@ -494,7 +628,22 @@ end//
 
 
 
-delimiter ;
+####################   EXAMPLE CODE	########################
+ 
+
+#in RICHIESTALAVORO ho inserito il campo 'stato' che aiuta un botto con la gestione delle funz
+
+#caro juri nell'ultima parte ho inseito dati un po' ammerda per fare dei test
+#potresti provare a inserire tutti i dati per bene seguendo le store procedures 
+#senza fare INSERT violenti senza controlli. magari trovi degli errori 
+
+#prova a correggere il trigger aggiungiTASSISTA e cerca di trovare un modo per eliminare i tassisti dopo che prendono 3 richiami 
+#tra i trigger c'e' un prototipo NON funzionante del metodo che ho pensato
+
+
+
+
+
 SET GLOBAL event_scheduler = ON;
 
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('yos99', '123');
@@ -554,26 +703,28 @@ select @nome;
 
 
 
-call inserisciPrenotazione(false, 'Bologna', 'modena', 1, 'ciccio22', false, false);
-call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true);
+#call inserisciPrenotazione(false, 'Bologna', 'modena', 1, 'ciccio22', false, false, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
 
 
-call inserisciCorsa(false, 'bolo', 'modena', 'ciccio22', 'jury15', 10);
-call inserisciCorsa(false, 'bolo', 'firenze', 'ciccio22', 'jury15', 50);
-call inserisciCorsa(false, 'bolo', 'matera', 'ciccio22', 'jury15', 100);
-call inserisciCorsa(false, 'bolo', 'trento', 'claudia', 'jury15', 150);
-call inserisciCorsa(false, 'bolo', 'aosta', 'dwdpie00', 'jury15', 70);
-call inserisciCorsa(false, 'bolo', 'reggio', 'lucio', 'jury15', 5);
-call inserisciCorsa(false, 'bolo', 'finalemilia', 'luca', 'jury15', 15);
-call inserisciCorsa(false, 'bolo', 'lama', 'marco', 'parme', 12);
-call inserisciCorsa(false, 'bolo', 'fidenza', 'gio', 'parme', 11);
-call inserisciCorsa(false, 'bolo', 'barberino', 'paolo', 'parme', 156);
-call inserisciCorsa(false, 'bolo', 'camatta', 'enri', 'parme', 152);
-call inserisciCorsa(false, 'bolo', 'sassuolo', 'riccardo', 'parme', 166);
-call inserisciCorsa(false, 'bolo', 'napoli', 'alle', 'parme', 111);
-call inserisciCorsa(false, 'bolo', 'Milano', 'ciccio22', 'jury15', 111);
+
+/*
 
 
+call inserisciCorsa(false, 'bolo', 'modena', 'ciccio22', 'jury15', 10,0);
+call inserisciCorsa(false, 'bolo', 'firenze', 'ciccio22', 'jury15', 50,0);
+call inserisciCorsa(false, 'bolo', 'matera', 'ciccio22', 'jury15', 100,0);
+call inserisciCorsa(false, 'bolo', 'trento', 'claudia', 'jury15', 150,0);
+call inserisciCorsa(false, 'bolo', 'aosta', 'dwdpie00', 'jury15', 70,0);
+call inserisciCorsa(false, 'bolo', 'reggio', 'lucio', 'jury15', 5,0);
+call inserisciCorsa(false, 'bolo', 'finalemilia', 'luca', 'jury15', 15,0);
+call inserisciCorsa(false, 'bolo', 'lama', 'marco', 'parme', 12,0);
+call inserisciCorsa(false, 'bolo', 'fidenza', 'gio', 'parme', 11,0);
+call inserisciCorsa(false, 'bolo', 'barberino', 'paolo', 'parme', 156,0);
+call inserisciCorsa(false, 'bolo', 'camatta', 'enri', 'parme', 152,0);
+call inserisciCorsa(false, 'bolo', 'sassuolo', 'riccardo', 'parme', 166,0);
+call inserisciCorsa(false, 'bolo', 'napoli', 'alle', 'parme', 111,0);
+call inserisciCorsa(false, 'bolo', 'Milano', 'ciccio22', 'jury15', 111,0);
 
 
 
@@ -606,7 +757,7 @@ call storicoCorse('jury15');
 
 call richiamiTassista('jury15');
 
-
+*/
 
 
 call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1, @rtrn);
@@ -625,19 +776,5 @@ select * from TAXIPRO;
 select * from RECENSIONE;
 select * from CREDENZIALI;
 select * from RICARICA;
-
-#in RICHIESTALAVORO ho inserito il campo 'stato' che aiuta un botto con la gestione delle funz
-
-#caro juri nell'ultima parte ho inseito dati un po' ammerda per fare dei test
-#potresti provare a inserire tutti i dati per bene seguendo le store procedures 
-#senza fare INSERT violenti senza controlli. magari trovi degli errori 
-
-#prova a correggere il trigger aggiungiTASSISTA e cerca di trovare un modo per eliminare i tassisti dopo che prendono 3 richiami 
-#tra i trigger c'e' un prototipo NON funzionante del metodo che ho pensato
-
-
-
-
-
 
 

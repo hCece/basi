@@ -12,12 +12,12 @@ for (var i = 0; i < sp.length; i++) { //look for the cookie with username
   }
 }
 //call the procedure CreditoPortafoglio and get the credit related to the user
-request.mySql(PhpRequest.DB.CreditoPortafoglio, "POST", {user: user});
+request.mySql(PhpRequest.Portafoglio.Credito, "POST", {user: user});
 var response = request.getResponse();
 document.getElementById("creditoValue").textContent = response;
 
 //call the procedure CodicePortafoglio and get the code related to the user
-request.mySql(PhpRequest.DB.CodicePortafoglio, "POST", {user: user});
+request.mySql(PhpRequest.Portafoglio.Codice, "POST", {user: user});
 response = request.getResponse();
 document.getElementById("codiceValue").textContent = response;
 
@@ -33,7 +33,7 @@ function handleRicarica() {
 
         console.log(card);
         console.log(amount);
-        request.mySql(PhpRequest.DB.RicaricaPortafoglio,
+        request.mySql(PhpRequest.Portafoglio.Ricarica,
         "POST", {codp: response, amount : amount, card : card});
         alert("Ricarica eseguita con successo");
     }

@@ -16,9 +16,9 @@ for (var i = 0; i < sp.length; i++) { //look for the cookie with username
 window.onload = function () {
   document.getElementById("title").textContent = "Lista delle corse eseguite da " + user;
 
-  const updateTable = new UpdateTable();
+  const update = new Update();
   const tableBody = document.getElementById("table-body"); // Get the tbody element
-  updateTable.update(tableBody,PhpRequest.DB.StoricoCorse,{user:user});
+  update.table(tableBody,PhpRequest.Corsa.Storico,{user:user});
 
   // loop through each row in the table body
   for (let i = 0; i < tableBody.rows.length; i++) {
@@ -30,7 +30,7 @@ window.onload = function () {
 
     //TODO -- codice brutto
     
-    request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST", {idc: tableBody.rows[i].cells[0].innerText});
+    request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: tableBody.rows[i].cells[0].innerText});
     response = request.getResponse(); //output format: voto - commento
     console.log(response);
     if (response && response.trim() !== "") 
@@ -52,7 +52,7 @@ window.onload = function () {
 
 function openPopup(idc) {
     // Get the values of voto and commento from sp.visualizzaRecensione
-    request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST", {idc: idc});
+    request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: idc});
     response = request.getResponse(); //output format: voto - commento
     console.log(response);
     if (response && response.trim() !== "") {
@@ -92,7 +92,7 @@ function submitReview(idc) {
     var json = {idc: idc, voto: voto, commento: commento}
     console.log(json);
     if (voto >= 1 && voto <=10 && commento.tirm!="") {
-        request.mySql(PhpRequest.DB.InserisciRecensione, "POST", json);
+        request.mySql(PhpRequest.Recensioni.Inserisci, "POST", json);
         closePopup2();
     }
     else {

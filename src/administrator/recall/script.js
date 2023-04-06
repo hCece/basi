@@ -14,9 +14,9 @@ for (var i = 0; i < sp.length; i++) { //look for the cookie with username
 }
 
 window.onload = function () {
-    const updateTable = new UpdateTable();
+    const update = new Update();
     const tableBody = document.getElementById("table-body"); // Get the tbody element
-    updateTable.update(tableBody,PhpRequest.DB.StoricoRichiami);
+    update.table(tableBody,PhpRequest.Richiami.Storico);
 
     for (let i = 0; i < tableBody.rows.length; i++) {
           // create a new cell for the button
@@ -24,7 +24,7 @@ window.onload = function () {
           // create a new button element
           const button = document.createElement("button");
           // Get the values of voto and commento from sp.visualizzaRecensione
-          request.mySql(PhpRequest.DB.RichiamiTassista, "POST",
+          request.mySql(PhpRequest.Richiami.Tassista, "POST",
           {user: tableBody.rows[i].cells[0].innerText});
           response = request.getResponse();
           console.log(response);
@@ -66,9 +66,9 @@ window.onload = function () {
 }
 function openPopup1(user) {
 
-      const updateTable = new UpdateTable();
+      const update = new Update();
       const tableBody = document.getElementById("pop1Table"); // Get the tbody element
-      updateTable.update(tableBody,PhpRequest.DB.RichiamiTassista,{user: user});
+      update.table(tableBody,PhpRequest.Richiami.Tassista,{user: user});
       document.getElementById("popup1").style.display = "block";
 }
 
@@ -99,7 +99,7 @@ function submitRecall(user) {
     var json = {admin: admin, user: user, commento: commento}
     console.log(json);
     if (commento && commento.tirm!="") {
-        request.mySql(PhpRequest.DB.InserisciRichiamo, "POST", json);
+        request.mySql(PhpRequest.Richiamo.Inserisci, "POST", json);
         closePopup2();
     }
     else {

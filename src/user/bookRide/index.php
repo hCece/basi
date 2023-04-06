@@ -32,7 +32,7 @@ checkUser(UserType::Cliente);
             type="text"
             placeholder="Enter another location"
           />  
-          <button id="submit-button"  onclick="handleSubmitButton(); return false;"> Submit </button>
+          <button id="submit-button"  onclick="handleSubmitButton(); return false;">Prenotazione Corsa</button>
           <p id="distance"></p>
         </div>
         <label for="nrSeat" > Number of seats:  </label>

@@ -13,12 +13,12 @@ for (var i = 0; i < sp.length; i++) { //look for the cookie with username
 }
 
 //call the procedure CreditoPortafoglio and get the credit related to the user
-request.mySql(PhpRequest.DB.CreditoPortafoglio, "POST", {user: user});
+request.mySql(PhpRequest.Portafoglio.Credito, "POST", {user: user});
 var credit = request.getResponse();
 document.getElementById("creditoValue").textContent = credit;
 
 //call the procedure CodicePortafoglio and get the code related to the user
-request.mySql(PhpRequest.DB.CodicePortafoglio, "POST", {user: user});
+request.mySql(PhpRequest.Portafoglio.Codice, "POST", {user: user});
 var code = request.getResponse();
 document.getElementById("codiceValue").textContent = code;
 
@@ -29,7 +29,7 @@ function handleBonifico() {
     var tcoin = document.getElementById("importo_tcoin").value;
 
     if(iban.trim != "" && tcoin > 0 && tcoin < Number(credit)+1) {
-        request.mySql(PhpRequest.DB.InserisciBonifico, "POST", {codp:code, tcoin: tcoin, iban: iban});
+        request.mySql(PhpRequest.Portafoglio.Bonifico, "POST", {codp:code, tcoin: tcoin, iban: iban});
         alert("bonifico eseguito con successo");
     }
     else{

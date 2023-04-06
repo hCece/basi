@@ -16,9 +16,9 @@ for (var i = 0; i < sp.length; i++) { //look for the cookie with username
 document.getElementById("title").textContent = "Lista delle corse eseguite da " + user;
 
 window.onload = function () {
-  const updateTable = new UpdateTable();
+  const update = new Update();
   const tableBody = document.getElementById("table-body"); // Get the tbody element
-  updateTable.update(tableBody,PhpRequest.DB.StoricoCorse,{user:user});
+  update.table(tableBody,PhpRequest.Corsa.Storico,{user:user});
 
   for (let i = 0; i < tableBody.rows.length; i++) {
       // create a new cell for the button
@@ -26,7 +26,7 @@ window.onload = function () {
       // create a new button element
       const button = document.createElement("button");
       // Get the values of voto and commento from sp.visualizzaRecensione
-      request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST",
+      request.mySql(PhpRequest.Recensione.Visualizza, "POST",
       {idc: tableBody.rows[i].cells[0].innerText});
       response = request.getResponse();
       //if the response is not empty create a button to get the review
@@ -51,7 +51,7 @@ window.onload = function () {
 }
 function openPopup(idc) {
 
-    request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST",{idc:idc});
+    request.mySql(PhpRequest.Recensione.Visualizza, "POST",{idc:idc});
     response = request.getResponse(); //output format: voto - commento
     var sp=response.split('-')
     // Set the text of the span elements in the pop up

@@ -1,21 +1,21 @@
 request = new PhpRequest();
 
 window.onload = function () {
-    const updateTable = new UpdateTable();
+    const update = new Update();
     const tableBody = document.getElementById("table-body"); // Get the tbody element
-    updateTable.update(tableBody,PhpRequest.DB.StoricoRecensioni);
+    update.table(tableBody,PhpRequest.Recensioni.Storico);
 
 }
 
 
 function worstFilter(){
-    const updateTable = new UpdateTable();
+    const update = new Update();
     const tableBody = document.getElementById("table-body"); // Get the tbody element
-    updateTable.update(tableBody,PhpRequest.DB.RecensioniPeggiori);
+    update.table(tableBody,PhpRequest.Recensioni.Peggiori);
 }
 
 function bestFilter(){
-    const updateTable = new UpdateTable();
+    const update = new Update();
     const tableBody = document.getElementById("table-body"); // Get the tbody element
-    updateTable.update(tableBody,PhpRequest.DB.RecensioniMigliori);
+    update.table(tableBody,PhpRequest.Recensioni.Migliori);
 }

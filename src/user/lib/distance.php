@@ -9,14 +9,15 @@ The request is made server side reather then client side (with js) to respect th
 There is a .txt file with a brief example on how CSRF could be used by hackers.
 
 */
+define('COEFFICENTE_PRO', 1.5);
 $coor = areCoordinatesSet();
 
 //if all variables are set, it returns an array with the variable in the right order to make the openroute request
 function areCoordinatesSet(){
     if (
         isset($_POST['LatBegin']) && isset($_POST['LongBegin']) &&
-        isset($_POST['LatEnd']) && isset($_POST['LongEnd'])
-    ) {
+        isset($_POST['LatEnd']) && isset($_POST['LongEnd']) && isset($_POST['isPro']))
+    {
         return array($_POST['LatBegin'], $_POST['LongBegin'], $_POST['LatEnd'], $_POST['LongEnd']);
     }
     return false;
@@ -47,13 +48,17 @@ if ($coor) {
 
         /*
         If the response code is 200 (that means that the response is successfull), 
-        the distance in meters and the duration in seconds is retrived and sent as response to the javascript request
+        the distance in kilometer and the duration in minutes is retrived, added and multiplied with the coefficient if it's a pro car   
         */
         if ($httpCode == 200) {
             $jsonObject = json_decode($response);
             $distance = intval(($jsonObject->features[0]->properties->segments[0]->distance) / 1000);
             $duration = intval(($jsonObject->features[0]->properties->segments[0]->duration) / 60);
-            echo "$distance;$duration"; 
+            
+            $cost = intval($distance)+intval($duration);
+            if($_POST['isPro'])
+                $cost *= COEFFICENTE_PRO;
+            echo $cost;
             break; // exit loop if a successful response is received
         } else {
             /*

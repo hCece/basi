@@ -3,12 +3,12 @@
     sending the tablebody to delegate the input into the table.
 */
 window.onload = function () {
-    const updateTable = new UpdateTable();
+    const update = new Update();
     const tableBody = document.getElementById("tableBody"); // Get the tbody element
   
     //Updating the table every two seconds
     setInterval(function () {
-        updateTable.update(tableBody, PhpRequest.DB.GetRischiestaLavoro);
+        update.table(tableBody, PhpRequest.Richiesta.Get);
     }, 2000);
 
   
@@ -29,9 +29,9 @@ window.onload = function () {
 function handleApprove() {
     row = document.getElementsByClassName('active-row')[0];
     idr = row.innerHTML.split("<td>")[1].split("</td>")[0];
-    phpRequest.mySql(PhpRequest.DB.ApprovaRichiesta, "POST", {idr : idr});
+    phpRequest.mySql(PhpRequest.Richiesta.Approva, "POST", {idr : idr});
   }
   
   function handleDecline() {
-    //phpRequest.mySql(PhpRequest.DB.RifiutaRichiesta, "POST");  
+    //phpRequest.mySql(PhpRequest.Richiesta.Rifiuta, "POST");  
   }
