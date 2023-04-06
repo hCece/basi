@@ -9,21 +9,12 @@
 <body>
 
   <div class="formbold-main-wrapper">
-    <!-- Author: FormBold Team -->
-    <!-- Learn More: https://formbold.com -->
     <div class="formbold-form-wrapper">
 
-      <img src="your-image-url-here.jpg">
-
-      <div class="formbold-form-title">
-        <h2 class="">Log In</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt.
-        </p>
-      </div>
+        <h2>Log In</h2>
 
       <div>
+        <br>
         <label for="user" class="formbold-form-label">
           Username
         </label>

@@ -3,81 +3,79 @@ request = new PhpRequest();
 let cookies = document.cookie;
 
 var sp = cookies.split(';'); // here we split the cookies by semicolon and
-var user = null;
-for (var i = 0; i < sp.length; i++) { //look for the cookie with username
+var user = null;            //look for the cookie with username
+for (var i = 0; i < sp.length; i++) {
   var cookie = sp[i].trim();
   if (cookie.indexOf('user=') == 0) {
     user = cookie.substring('user='.length);
-    console.log(user);
+
     break;
   }
 }
+document.getElementById("title").textContent = "Lista delle corse eseguite da " + user;
 
+//when page is requested fill the table by StoricoCorse procedure
 window.onload = function () {
-  document.getElementById("title").textContent = "Lista delle corse eseguite da " + user;
 
   const update = new Update();
   const tableBody = document.getElementById("table-body"); // Get the tbody element
   update.table(tableBody,PhpRequest.Corsa.Storico,{user:user});
 
-  // loop through each row in the table body
+  var results =[];
   for (let i = 0; i < tableBody.rows.length; i++) {
+    var idc = tableBody.rows[i].cells[0].innerText;
+    request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: idc});
+    results[i] = request.getResponse(); //fill results array with procedure output
+
+    //now add a button at the end of each row
     // create a new cell for the button
     const cell = tableBody.rows[i].insertCell(-1);
     // create a new button element
     const button = document.createElement("button");
-
-
-    //TODO -- codice brutto
-    
-    request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: tableBody.rows[i].cells[0].innerText});
-    response = request.getResponse(); //output format: voto - commento
-    console.log(response);
-    if (response && response.trim() !== "") 
-      button.innerText = "Inserisci Recensione";
-    else
-      button.innerText = "Visualizza Commento";
-    // add a click event listener to the button
-    button.addEventListener("click", function() {
-      // call the openPopup function with the appropriate IDC value
-      openPopup(tableBody.rows[i].cells[0].innerText);
-    });
+    //check the result and set button properties
+    if (results[i] && results[i].trim() != ""){
+            button.innerText = "Visualizza Commento";
+            button.addEventListener("click", function() {
+            openPopup(results[i],tableBody.rows[i].cells[0].innerText);
+        });
+    }
+    else{
+            button.innerText = "Inserisci Recensione";
+            button.id = idc;
+            button.addEventListener("click", function() {
+            openPopup(null,tableBody.rows[i].cells[0].innerText);
+        });
+    }
     // add the button to the cell
     cell.appendChild(button);
   }
-
 }
 
+//if the ride contains a review show popup1
 
-
-function openPopup(idc) {
-    // Get the values of voto and commento from sp.visualizzaRecensione
-    request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: idc});
-    response = request.getResponse(); //output format: voto - commento
-    console.log(response);
+function openPopup(response,idc) {
     if (response && response.trim() !== "") {
       var sp=response.split('-')
-      // Set the text of the span elements in the pop up
+      // Set the text of the span elements in the popup
       document.getElementById("Votovalue").textContent = sp[0];
       document.getElementById("Commentovalue").textContent = sp[1];
-      document.getElementById("popup").style.display = "block";
-
+      document.getElementById("popup1").style.display = "block";
     }
     else {
+      //else show popup2 and ask the user to compile the labels
       const popup = document.getElementById("popup2");
       document.getElementById("popup2").style.display = "block";
-      const button = document.getElementById("submit");
-      button.addEventListener("click", function() {
+      const submitBtn = document.getElementById("submit");
+      submitBtn.addEventListener("click", function() {
       // call the submitReview() function with the appropriate IDC value
          submitReview(idc);
       });
     }
-
 }
 
-function closePopup() {
+function closePopup1() {
     // Hide the pop up
-    document.getElementById("popup").style.display = "none";
+    document.getElementById("popup1").style.display = "none";
 }
 
 function closePopup2() {
@@ -85,15 +83,19 @@ function closePopup2() {
    document.getElementById("popup2").style.display = "none";
 }
 
+//this function checks if the user has entered correctly the values and executes the procedure to add the review to the db
 function submitReview(idc) {
-
     var voto = document.getElementById("votoInput").value;
     var commento = document.getElementById("commentoInput").value;
     var json = {idc: idc, voto: voto, commento: commento}
-    console.log(json);
-    if (voto >= 1 && voto <=10 && commento.tirm!="") {
+
+    if (voto >= 1 && voto <=10 ) {
         request.mySql(PhpRequest.Recensioni.Inserisci, "POST", json);
+        btn = document.getElementById(idc);
+        btn.innerText = "Visualizza Commento";
+        alert("Recensione inserita correttamente");
         closePopup2();
+        window.location.href = "index.php"; //refresh the page
     }
     else {
         alert("Inserisci un voto da 1 a 10 e un commento");

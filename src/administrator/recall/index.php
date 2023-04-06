@@ -39,7 +39,7 @@ checkUser(UserType::Amministratore);
   <div id="popup1" class="popup">
     <div class="popup-content">
         <span class="close-btn" onclick="closePopup1()">&times;</span>
-        <table>
+        <table id="tab">
         	<thead>
         		<tr>
         			<th>IDR</th>

@@ -1,10 +1,43 @@
+
 <?php
+
 
 require __DIR__.'/main.php';
 
 if(function_exists($_GET['function'])) {
     $_GET['function']();
- } 
+ }
+
+function storicoRecensioni()
+{   $return = call_query("CALL storicoRecensioni()");
+    echo json_encode($return);
+}
+
+function storicoRichiami()
+{   $return = call_query("CALL storicoRichiami()");
+    echo json_encode($return);
+}
+
+function recensioniPeggiori()
+{   $return = call_query("CALL recensioniPeggiori()");
+    echo json_encode($return);
+}
+
+function recensioniMigliori()
+{   $return = call_query("CALL recensioniMigliori()");
+    echo json_encode($return);
+}
+
+function inserisciRichiamo()
+{   $values = array("admin","user","commento");
+    $return = call_stored_procedure($values, "inserisciRichiamo",false);
+}
+
+function richiamiTassista()
+{   $return = call_query("CALL richiamiTassista('".$_POST['user']."')");
+    echo json_encode($return);
+}
+
 
 function ricaricaPortafoglio()
 {   $values = array("codp", "amount", "card");
@@ -18,6 +51,11 @@ function storicoCorse()
 function inserisciBonifico()
 {    $values = array("codp", "tcoin" , "iban");
     call_stored_procedure($values, "inserisciBonifico", false);
+}
+function inserisciRecensione()
+{   $values = array("idc","voto","commento");
+    call_stored_procedure($values, "inserisciRecensione", false);
+
 }
 function visualizzaRecensione()
 {   $values = array("idc");
@@ -61,26 +99,6 @@ function inserisciPrenotazione()
 {   $values = array("pro","partenza","arrivo", "nrPosti" , 
     "usernameCliente","lus","ele","costo");
     echo call_stored_procedure($values, "inserisciPrenotazione",'s');
-}
-
-function recensioniMigliori(){
-    $return = call_query("CALL recensioniMigliori()");
-    echo json_encode($return);
-}
-
-function inserisciRichiamo(){
-    $values = array("admin","user","commento");
-    $return = call_stored_procedure($values, "inserisciRichiamo",false);
-}
-
-function storicoRichiami(){
-    $return = call_query("CALL storicoRichiami()");
-    echo json_encode($return);
-}
-
-function recensioniPeggiori(){
-    $return = call_query("CALL recensioniPeggiori()");
-    echo json_encode($return);
 }
 
 function inserisciRichiestaLavoro()

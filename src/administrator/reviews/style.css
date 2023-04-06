@@ -8,9 +8,6 @@
           text-align: center; /* center align the heading */
           padding-top: 50px; /* add some space between the top of the page and the heading */
       }
-      h5 {
-                text-align: center; /* center align the heading */
-            }
 
       table {
           margin: 0 auto; /* center the table horizontally */
@@ -65,8 +62,5 @@
           text-decoration: none;
           cursor: pointer;
       }
-      .icon {
-          width: 20px;
-          height: 20px;
-      }
+
 
