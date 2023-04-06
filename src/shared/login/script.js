@@ -13,7 +13,7 @@ function handleLoginButton() {
     var json = {user:user,pass:pass}
     
     //call "riconosciUtene" and get the return value. The return value will tell what type of user we are dealing with 
-    request.mySql(PhpRequest.DB.RiconosciUtente, "POST", json);
+    request.mySql(PhpRequest.Utente.Riconosci, "POST", json);
     var userType = request.getResponse().trim();
     console.log(userType);
 

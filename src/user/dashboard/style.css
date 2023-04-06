@@ -13,6 +13,25 @@ h1 {
   margin: 20px;
 }
 
+.notification-badge {
+  display: inline-block;
+  background-color: red;
+  color: white;
+  font-size: 16px;
+  width: 25px;
+  height: 25px;
+  line-height: 26px;
+  text-align: center;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+}
+
+.button-container > div {
+  position: relative;
+}
+
 button {
   display: block;
   margin-bottom: 10px;
@@ -25,6 +44,7 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 200px;
+  position: relative;
 }
 
 button:hover {
@@ -32,18 +52,18 @@ button:hover {
 }
 
 #importo_euro {
-    width: 40px;
+  width: 40px;
 }
 
 #image-container {
-    width: FIT-CONTENT;
-    height: FIT-CONTENT;
-    position: absolute;
-    left: 40%;
+  width: FIT-CONTENT;
+  height: FIT-CONTENT;
+  position: absolute;
+  left: 40%;
 }
 
 #image-container img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }

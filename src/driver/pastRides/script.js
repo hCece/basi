@@ -17,16 +17,16 @@ document.getElementById("title").textContent = "Lista delle corse eseguite da " 
 
 //when the page is requested fill the table by StoricoCorse procedure
 window.onload = function () {
-  const updateTable = new UpdateTable();
+  const update = new Update();
   const tableBody = document.getElementById("table-body");
-  updateTable.update(tableBody,PhpRequest.DB.StoricoCorse,{user:user});
+  update.table(tableBody,PhpRequest.Corsa.Storico,{user:user});
 
 var results = [];
 //add a button at the end of each row
   for (let i = 0; i < tableBody.rows.length; i++) {
 
       var idc = tableBody.rows[i].cells[0].innerText;
-      request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST",
+      request.mySql(PhpRequest.Recensione.Visualizza, "POST",
       {idc: idc});//here we are passing the idc value from the first column in each row
       results[i] = request.getResponse(); //keep the procedure output in the results array
 

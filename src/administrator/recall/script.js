@@ -15,12 +15,12 @@ for (var i = 0; i < sp.length; i++) {
 
 window.onload = function () {
 //when the page is requested fill the table-body by StoricoRichiami store procedure
-    const updateTable = new UpdateTable();
+    const update = new Update();
     const tableBody = document.getElementById("table-body");
-    updateTable.update(tableBody,PhpRequest.DB.StoricoRichiami);
+    update.table(tableBody,PhpRequest.Richiami.Storico);
     var results = [];
     for (let i = 0; i < tableBody.rows.length; i++) {
-        request.mySql(PhpRequest.DB.RichiamiTassista, "POST", //this procedure gets recalls related to an user
+        request.mySql(PhpRequest.Richiami.Tassista, "POST",
         {user: tableBody.rows[i].cells[0].innerText}); //here we are passing usernameTassista that is in first column of each row
         results[i] = request.getResponse();
 
@@ -72,7 +72,7 @@ function openPopup1(results) {
         const data = JSON.parse(results);
 
         //get a reference to the table body
-        const tableBody = document.getElementById('pop1Table');
+        tableBody = document.getElementById('pop1Table');
 
         //iterate over each recall in the data array and create a table row for each one
         data.forEach(item => {
@@ -107,7 +107,11 @@ function openPopup1(results) {
             tableBody.appendChild(row);
         });
 
-    // Display the popup
+    // Display the popup 
+    //TODO: This uncommented code maybe has to be added
+    /*const update = new Update();
+    const tableBody = document.getElementById("pop1Table"); // Get the tbody element
+    update.table(tableBody,PhpRequest.Richiami.Tassista,{user: user});*/
     document.getElementById("popup1").style.display = "block";
 }
  //Popup2 shows an interface where the administrator can add a recall
@@ -141,7 +145,7 @@ function submitRecall(user) {
     var json = {admin: admin, user: user, commento: commento}
     console.log(json);
     if (commento && commento.tirm!="") {
-        request.mySql(PhpRequest.DB.InserisciRichiamo, "POST", json);
+        request.mySql(PhpRequest.Richiamo.Inserisci, "POST", json);
         alert("Richiamo inserito correttamente");
         closePopup2();
         window.location.href = "index.php"; //refresh the page
