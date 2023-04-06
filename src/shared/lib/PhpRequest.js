@@ -53,7 +53,7 @@
 
         }
 
-        static Recensioni = {
+        static Recensione = {
             Migliori: "recensioniMigliori",
             Peggiori: "recensioniPeggiori",
             Inserisci: "inserisciRecensione",

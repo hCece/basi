@@ -511,26 +511,33 @@ begin
 	FROM prenotazioneCorsa
 	WHERE partenza IN
 		(SELECT citta FROM tassista 
-		WHERE username = usernameTassista);
+		WHERE username = usernameTassista AND haCorsa = 0);
 end //
 
-delimiter //
+delimiter $$
 create procedure countCorseDisponibili(in usernameTassista varchar(20), out count int)
 begin
 	set count = (SELECT count(*)
 	FROM prenotazioneCorsa
 	WHERE partenza IN
 		(SELECT citta FROM tassista 
-		WHERE username = usernameTassista));
-end //
+		WHERE username = usernameTassista AND haCorsa = 0));
+end $$
 
-
-
-delimiter //
+delimiter $$
 create procedure cancellaPrenotazione(in username varchar(20))
 begin
 	  DELETE FROM prenotazioneCorsa WHERE usernameCliente = username;
-end //
+end $$
+
+delimiter ;;
+CREATE EVENT delete_reservations
+ON SCHEDULE EVERY 7 DAY
+DO
+  DELETE FROM prenotazioneCorsa
+  WHERE haCorsa = true;;
+END ;
+*/
 ##################	TRIGGERS	##########################
 
 delimiter //
@@ -560,6 +567,8 @@ begin
 	
 end //
 
+
+
 delimiter //
 create trigger aggiungiTaxi
 after update on TAXISERVER.RICHIESTALAVORO
@@ -584,24 +593,19 @@ for each row
 begin
 		insert into PORTAFOGLIO(username) values(new.username);
 end//
-
 delimiter //
 
-create trigger aggiungiPortafoglioTassista
-after insert on TAXISERVER.TASSISTA 
-for each row
-begin
-    insert into PORTAFOGLIO(username) values(new.username);
-end //
+CREATE TRIGGER aggiungiPortafoglioTassista
+AFTER INSERT ON TAXISERVER.TASSISTA 
+FOR EACH ROW
+BEGIN
+    INSERT INTO PORTAFOGLIO(username) VALUES(new.username);
+END//
 
-delimiter; $
-CREATE EVENT delete_reservations
-ON SCHEDULE EVERY 7 SECOND
-DO
-  DELETE FROM prenotazioneCorsa
-  WHERE haCorsa = true;
-END $
-delimiter ;
+
+
+
+SET GLOBAL event_scheduler = ON;
 
 #delimiter //
 #create trigger licenziaTassista
@@ -642,7 +646,6 @@ delimiter ;
 
 #create view recensioniTassista();
 
-#####################   EVENTS     #########################
 
 
 
@@ -661,8 +664,6 @@ delimiter ;
 
 
 
-
-SET GLOBAL event_scheduler = ON;
 
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('yos99', '123');
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('dwdpie00', '123');

@@ -92,7 +92,7 @@ function submitReview(idc) {
     var json = {idc: idc, voto: voto, commento: commento}
 
     if (voto >= 1 && voto <=10 ) {
-        request.mySql(PhpRequest.Recensioni.Inserisci, "POST", json);
+        request.mySql(PhpRequest.Recensione.Inserisci, "POST", json);
         btn = document.getElementById(idc);
         btn.innerText = "Visualizza Commento";
         alert("Recensione inserita correttamente");

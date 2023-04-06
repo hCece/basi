@@ -5,6 +5,15 @@ let idReservation, reservation;
 const COEFFICENTE_PRO = 1.5;
 
 
+window.onload = function () {
+  request.mySql(PhpRequest.Prenotazione.isCompletata, "POST",{user:getCookie('user')} );
+  let res = request.getResponse().trim();
+  if(res == "si prenotazione" || res == "si corsa" ) {
+    btn = document.getElementById("submit-button");
+    btn.innerHTML = "Cancella Prenotazione";
+    checkRide(btn);
+  }
+}
 
 
 /* The button "submit" has two states: "Prenotazione Corsa" & "Cancella Prenotazione"
@@ -21,15 +30,8 @@ function handleSubmitButton() {
     if(idReservation < 0) return;
 
     btn.innerHTML = "Cancella Prenotazione";
+    checkRide(btn)
 
-    interval = setInterval(function () {
-      if(isRideApproved()){
-        alert("La corsa è stata presa in carico. un tassista arriverà a breve");
-        clearInterval(interval);    
-        btn.innerHTML = "Prenotazione Corsa";
-      }
-
-    }, 5000);
 
   }else{
     console.log(idReservation + "id Prenotazione");
@@ -41,16 +43,18 @@ function handleSubmitButton() {
 
 //Checks if the reservation has been picked up by a rider with "si corsa".
 //When the reservation has been picked up by a rider, the user's reservation get's deleted
-function isRideApproved(){
-  request.mySql(PhpRequest.Prenotazione.isCompletata, "POST",{user:getCookie('user')} );
-  const responseData = request.getResponse();
-  
-  if (responseData.trim()==  "si corsa") {
-    console.log("dio")
-    request.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:getCookie('user')} );
-    return true;
-  }
-  return false;
+function checkRide(btn){
+  interval = setInterval(function () {
+    request.mySql(PhpRequest.Prenotazione.isCompletata, "POST",{user:getCookie('user')} );
+    const responseData = request.getResponse();
+    
+    if (responseData.trim()==  "si corsa") {
+      request.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:getCookie('user')} );
+      alert("La corsa è stata presa in carico. un tassista arriverà a breve");
+      clearInterval(interval);    
+      btn.innerHTML = "Prenotazione Corsa";
+    }
+  }, 5000);
 }
 
 // This method prepares the json file to send to the server, and makes the request to book a new ride  

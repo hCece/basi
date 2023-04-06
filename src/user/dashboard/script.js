@@ -3,11 +3,12 @@ window.onload = function () {
     const notifyBadge = document.getElementById("span-prenota-corsa"); // Get the tbody element
     let beginRide = update.notificationBadge(notifyBadge,PhpRequest.Prenotazione.isCompletata, {user:getCookie('user')});
 
-    if(beginRide == "si prenotazione"){
+    if(beginRide.trim() == "si prenotazione"){
         notifyBadge.innerHTML = 1;
         let tmpRide;
         reservation = setInterval(function () {
             tmpRide = update.notificationBadge(notifyBadge,PhpRequest.Prenotazione.isCompletata,{user:getCookie('user')});
+            tmpRide=tmpRide.trim();
             if(tmpRide=="si corsa"){    
                 notifyBadge.innerHTML = 0;
                 phpRequest.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:getCookie('user')} );
