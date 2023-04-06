@@ -37,7 +37,7 @@ checkUser(UserType::Cliente);
 
     <div>
     <button id="storico-corse" onclick="
-    window.location.href = '../../shared/pastRides/index.php'">
+    window.location.href = '../pastRides/index.php'">
     Storico corse</button>
     </div>
 

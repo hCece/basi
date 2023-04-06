@@ -19,11 +19,13 @@ window.onload = function () {
 
   const update = new Update();
   const tableBody = document.getElementById("table-body"); // Get the tbody element
+   //gets rides related to the user
   update.table(tableBody,PhpRequest.Corsa.Storico,{user:user});
 
   var results =[];
   for (let i = 0; i < tableBody.rows.length; i++) {
     var idc = tableBody.rows[i].cells[0].innerText;
+     //Recensione.Visualizza gets the review's values (empty = no review)
     request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: idc});
     results[i] = request.getResponse(); //fill results array with procedure output
 

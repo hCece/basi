@@ -282,10 +282,10 @@ begin
 	declare existsTaxi boolean default false;
 	declare haSoldi boolean default false;
     if(pro) then 
-    set existsTaxi= exists(
-		select *  #check if there are any PRO taxies in  the departure city with desired optionals
-        from TAXIPRO join TASSISTA on TASSISTA.targaAuto = TAXIPRO.targa
-        where ((citta = partenza) and (posti >= Nposti)  and (lusso= lus)  and (elettrico = ele)));
+	    set existsTaxi= exists(
+			select *  #check if there are any PRO taxies in  the departure city with desired optionals
+	        from TAXIPRO join TASSISTA on TASSISTA.targaAuto = TAXIPRO.targa
+	        where ((citta = partenza) and (posti >= Nposti)  and (lusso= lus)  and (elettrico = ele)));
     else
 		set existsTaxi= exists(
 		select *  #check if there are any NORMAL taxies in  the departure city
@@ -625,8 +625,15 @@ end//
 
 #create view recensioniTassista();
 
-
-
+#####################   EVENTS     #########################
+delimiter //
+CREATE EVENT delete_reservations
+	ON SCHEDULE EVERY 1 DAY
+	DO
+	  DELETE FROM prenotazioneCorsa
+	  WHERE haCorsa = true;
+	END //
+delimiter;
 
 ####################   EXAMPLE CODE	########################
  
