@@ -44,7 +44,9 @@ function handleSubmitButton() {
 function isRideApproved(){
   request.mySql(PhpRequest.Prenotazione.isCompletata, "POST",{user:getCookie('user')} );
   const responseData = request.getResponse();
-  if (responseData == "si corsa") {
+  
+  if (responseData.trim()==  "si corsa") {
+    console.log("dio")
     request.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:getCookie('user')} );
     return true;
   }

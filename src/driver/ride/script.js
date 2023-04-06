@@ -35,14 +35,14 @@ function handleButton() {
   let cost = row.cells[6].textContent;
   
   var json = {
-    idP:idP,
+    idP:Number(idP),
     partenza: start,
     arrivo: end,
     usernameCliente:userClient,
     usernameTassista:getCookie("user"),
-    importo:cost
-
+    importo:Number(cost)
   }
+  console.log(json)
   php.mySql(PhpRequest.Corsa.Aggiungi, "POST", json);
   var res = php.getResponse();
   console.log(res);

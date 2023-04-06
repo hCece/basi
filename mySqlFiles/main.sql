@@ -51,7 +51,7 @@ CREATE TABLE GRADUATORIACLIENTI(
 CREATE TABLE PORTAFOGLIO(
 	CODP int auto_increment primary key,
     username varchar(20),
-    credito int default 100,
+    credito int default 100 NOT NULL,
     foreign key PORTAFOGLIO(username) references CREDENZIALI(username)
 	
 ) ENGINE = "INNODB";
@@ -228,7 +228,7 @@ begin
 end//
 
 delimiter //
-create procedure ricaricaPortafoglio(in codicePortafoglio varchar(20), euro int, Ncarta varchar(16))
+create procedure ricaricaPortafoglio(in codicePortafoglio int, euro int, Ncarta varchar(16))
 begin
 			insert into RICARICA(portafoglio,euro,tcoin,data,Ncarta) values (codicePortafoglio, euro, (euro*@T_COIN_CONVERSION),now(), Ncarta);
 			update PORTAFOGLIO set credito = (credito + (euro*3)) where CODP = codicePortafoglio; #update client's wallet amount 
@@ -250,12 +250,12 @@ create procedure pagaCorsa(in usernameCliente varchar(20), usernameTassista varc
 begin
 		declare haSoldi boolean default false;
 		declare tCoin int;
-		call creditoSufficente (usernameCliente, euro, haSoldi );
-        if(haSoldi) then
-            set tCoin = euro*@T_COIN_CONVERSION;
-            update PORTAFOGLIO set credito = (credito - tCoin) where username = usernameCliente;
-			update PORTAFOGLIO set credito = (credito + tCoin*(1-@PROFIT_PERCENTAGE)) where username = usernameTassista;
-		end if;
+		call creditoSufficente (usernameCliente, euro, haSoldi);
+		if(haSoldi) THEN
+			set tCoin = euro * 3;
+			update PORTAFOGLIO set credito = (credito - tCoin) where username = usernameCliente;
+			update PORTAFOGLIO set credito = (credito + tCoin*0.8) where username = usernameTassista;
+		END IF;
 end //
 
 
@@ -340,7 +340,7 @@ END;
 # infine si richiama la stored proc. che effettua il pagamento 
 
 delimiter //
-create procedure inserisciCorsa(in partenza varchar(20), arrivo varchar(20), usernameCliente varchar(20), usernameTassista varchar(20), idPrenotazione int,importo int, out rtrn boolean) 
+create procedure inserisciCorsa(in partenza varchar(20), arrivo varchar(20), usernameCliente varchar(20), usernameTassista varchar(20), idPrenotazione int,importo int, out rtrn varchar(20)) 
 begin
 	declare checkVal boolean default false;
 	declare costoVar int;
@@ -354,11 +354,18 @@ begin
 			SET haCorsa = true
 			WHERE idP = idPrenotazione;
 			
-			set costoVar = (select costo from prenotazioneCorsa where idP = idPrenotazione);
+            
+            select costo into costoVar from prenotazionecorsa as pc where pc.usernameCliente = usernameCliente;
+            
+            
 			call pagaCorsa(usernameCliente, usernameTassista, costoVar);
-		end if;
+            set rtrn = "Corsa inserita";
+		else
+			set rtrn = "Credito non sufficente";
+        end if;
+    else
+		set rtrn = "non esiste una corsa";
 	end if;
-    set rtrn = checkVal;
 end//
 
 
@@ -494,12 +501,13 @@ end //
 
 
 
-
+#TODO: Change this profit to be global
 
 delimiter //
 create procedure corseDisponibili(in usernameTassista varchar(20))
 begin
-	SELECT IDP, partenza, arrivo, posti, data, usernameCliente, CAST(costo*0.9 AS SIGNED)
+	DECLARE profit DECIMAL(5,2) DEFAULT 0.2;
+	SELECT IDP, partenza, arrivo, posti, data, usernameCliente,  ROUND(costo * (1 - profit))
 	FROM prenotazioneCorsa
 	WHERE partenza IN
 		(SELECT citta FROM tassista 
@@ -578,13 +586,22 @@ begin
 end//
 
 delimiter //
-create trigger aggiungiPortafoglioTassista #whenever a new tassista is added links him a wallet 
+
+create trigger aggiungiPortafoglioTassista
 after insert on TAXISERVER.TASSISTA 
 for each row
 begin
-		insert into PORTAFOGLIO(username) values(new.username);
-end// 
+    insert into PORTAFOGLIO(username) values(new.username);
+end //
 
+delimiter; $
+CREATE EVENT delete_reservations
+ON SCHEDULE EVERY 7 SECOND
+DO
+  DELETE FROM prenotazioneCorsa
+  WHERE haCorsa = true;
+END $
+delimiter ;
 
 #delimiter //
 #create trigger licenziaTassista
@@ -626,14 +643,8 @@ end//
 #create view recensioniTassista();
 
 #####################   EVENTS     #########################
-delimiter //
-CREATE EVENT delete_reservations
-	ON SCHEDULE EVERY 1 DAY
-	DO
-	  DELETE FROM prenotazioneCorsa
-	  WHERE haCorsa = true;
-	END //
-delimiter;
+
+
 
 ####################   EXAMPLE CODE	########################
  
@@ -708,14 +719,23 @@ call ricaricaPortafoglio(2, 200, '2245891423228922'); #should not work tassista 
 call riconosciUtente('yos99','123', @nome);
 select @nome;
 
-
+/*
 
 #call inserisciPrenotazione(false, 'Bologna', 'modena', 1, 'ciccio22', false, false, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
+call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
 call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
 
 
 
-/*
 
 
 call inserisciCorsa(false, 'bolo', 'modena', 'ciccio22', 'jury15', 10,0);
@@ -746,6 +766,10 @@ call inserisciRecensione(6,'4','puzza in auto');
 call inserisciRecensione(7,'10','ottimo');
 call inserisciRecensione(8,'7','ci stava');
 call visualizzaRecensione( 1 ,@voto);
+
+
+
+*/
 select @voto;
 #in usernameCliente varchar(20), nuovoUsername varchar(20), password varchar(100), fotoDoc varchar(20), marca varchar(20), 
 #											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int)
@@ -764,7 +788,6 @@ call storicoCorse('jury15');
 
 call richiamiTassista('jury15');
 
-*/
 
 
 call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1, @rtrn);

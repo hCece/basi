@@ -128,7 +128,8 @@ function riconosciUtente()
 
 function aggiungiCorsa()
 {   $values = array("partenza", "arrivo", "usernameCliente", "usernameTassista","idP","importo");
-    echo call_stored_procedure($values, "inserisciCorsa",'b');
+    echo $_POST['importo'];
+    call_stored_procedure($values, "inserisciCorsa",'b');
 }
 function prenotazioneCompletata()
 {   $values = array("user");

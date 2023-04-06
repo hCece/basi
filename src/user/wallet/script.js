@@ -29,7 +29,7 @@ function handleRicarica() {
     //if checks are correct call RicaricaPortafoglio procedure and add the ricarica to the db
     if(card != "" &&  card.length == 16 && amount>0) {
         request.mySql(PhpRequest.Portafoglio.Ricarica,
-        "POST", {codp: response, amount : amount, card : card});
+        "POST", {codp: String(response), amount : amount, card : card});
         console.log(request.getResponse());
         alert("Ricarica eseguita con successo");
     }
