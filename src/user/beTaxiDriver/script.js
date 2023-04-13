@@ -37,7 +37,7 @@ function handleRegistrationButton(){
 
       console.log(json);
       //make request to the server and add a new job request
-      request.mySql(PhpRequest.DB.SetRischiestaLavoro, "POST", json)
+      request.mySql(PhpRequest.Richiesta.Set, "POST", json)
       console.log(request.getResponse());
     } else
         alert("Please fill in all fields");

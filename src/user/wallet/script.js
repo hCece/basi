@@ -12,12 +12,12 @@ for (var i = 0; i < sp.length; i++) {
   }
 }
 //call the procedure CreditoPortafoglio and get the credit related to the user
-request.mySql(PhpRequest.DB.CreditoPortafoglio, "POST", {user: user});
+request.mySql(PhpRequest.Portafoglio.Credito, "POST", {user: user});
 var response = request.getResponse();
 document.getElementById("creditoValue").textContent = response; //set the credit value
 
 //call the procedure CodicePortafoglio and get the code related to the user
-request.mySql(PhpRequest.DB.CodicePortafoglio, "POST", {user: user});
+request.mySql(PhpRequest.Portafoglio.Codice, "POST", {user: user});
 response = request.getResponse();
 document.getElementById("codiceValue").textContent = response; //set the code value
 
@@ -28,8 +28,8 @@ function handleRicarica() {
 
     //if checks are correct call RicaricaPortafoglio procedure and add the ricarica to the db
     if(card != "" &&  card.length == 16 && amount>0) {
-        request.mySql(PhpRequest.DB.RicaricaPortafoglio,
-        "POST", {codp: response, amount : amount, card : card});
+        request.mySql(PhpRequest.Portafoglio.Ricarica,
+        "POST", {codp: String(response), amount : amount, card : card});
         console.log(request.getResponse());
         alert("Ricarica eseguita con successo");
     }

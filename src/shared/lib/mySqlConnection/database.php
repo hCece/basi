@@ -43,7 +43,6 @@ function ricaricaPortafoglio()
 {   $values = array("codp", "amount", "card");
     call_stored_procedure($values, "ricaricaPortafoglio", false); 
 }
-
 function storicoCorse()
 {   
     $return = call_query("CALL storicoCorse('".$_POST['user']."')");
@@ -98,9 +97,10 @@ function checkUsername()
 }
 function inserisciPrenotazione()
 {   $values = array("pro","partenza","arrivo", "nrPosti" , 
-    "usernameCliente","lus","ele");
-    $return = call_stored_procedure($values, "inserisciPrenotazione",false);
+    "usernameCliente","lus","ele","costo");
+    echo call_stored_procedure($values, "inserisciPrenotazione",'s');
 }
+
 function inserisciRichiestaLavoro()
 {    $values = array("usernameCliente","nuovoUsername","password", "fotoDoc", 
     "marca","modello","targa","posti","lusso","elettrico");
@@ -125,14 +125,33 @@ function riconosciUtente()
 {   $values = array("user","pass");
     echo call_stored_procedure($values, "riconosciUtente",'s');
 }
+
+function aggiungiCorsa()
+{   $values = array("partenza", "arrivo", "usernameCliente", "usernameTassista","idP","importo");
+    echo $_POST['importo'];
+    call_stored_procedure($values, "inserisciCorsa",'b');
+}
+function prenotazioneCompletata()
+{   $values = array("user");
+    echo call_stored_procedure($values, "verificaStatoPrenotazione",'s');
+}
+function eliminaPrenotazione()
+{   $values = array("user");
+    echo call_stored_procedure($values, "eliminaPrenotazione");
+}
 function corseDisponibili()
 {   if (isset($_COOKIE["user"])){
-        $query = '  SELECT * FROM prenotazioneCorsa
-                    WHERE partenza IN
-                        (SELECT citta FROM tassista 
-                        WHERE username = "'.$_COOKIE["user"].'")';
+        $query="CALL corseDisponibili('".$_COOKIE["user"]."')";
         $rtrn = call_query($query);
         echo json_encode($rtrn);
+    }
+}
+
+function countCorseDisponibili()
+{   if (isset($_COOKIE["user"])){
+        $_POST['user'] = $_COOKIE["user"];
+        $values = array("user");
+        echo call_stored_procedure($values, "countCorseDisponibili", 'i');
     }
 }
 
