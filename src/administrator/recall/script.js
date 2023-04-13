@@ -74,36 +74,14 @@ function openPopup1(results) {
         //get a reference to the table body
         const tableBody = document.getElementById('pop1Table');
 
-        //iterate over each recall in the data array and create a table row for each one
         data.forEach(item => {
             const row = document.createElement('tr');
-
-            // Create a table cell element for the IDRICHIAMO information and add it to the row
-            const idCell = document.createElement('td');
-            idCell.textContent = item.IDRICHIAMO;
-            row.appendChild(idCell);
-
-            // Create a table cell element for the usernameAmministratore information and add it to the row
-            const adminCell = document.createElement('td');
-            adminCell.textContent = item.usernameAmministratore;
-            row.appendChild(adminCell);
-
-            // Create a table cell element for the usernameTassista information and add it to the row
-            const taxiDriverCell = document.createElement('td');
-            taxiDriverCell.textContent = item.usernameTassista;
-            row.appendChild(taxiDriverCell);
-
-            // Create a table cell element for the commento information and add it to the row
-            const commentCell = document.createElement('td');
-            commentCell.textContent = item.commento;
-            row.appendChild(commentCell);
-
-            // Create a table cell element for the data information and add it to the row
-            const dateCell = document.createElement('td');
-            dateCell.textContent = item.data;
-            row.appendChild(dateCell);
-
-            // Add the completed row to the table body
+            const properties = ['IDRICHIAMO', 'usernameAmministratore', 'usernameTassista', 'commento', 'data'];
+            properties.forEach(property => {
+                const cell = document.createElement('td');
+                cell.textContent = item[property];
+                row.appendChild(cell);
+            });
             tableBody.appendChild(row);
         });
 

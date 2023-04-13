@@ -1,37 +1,41 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
 }
 
-h1 {
-    text-align: center;
-    margin-top: 50px;
+form {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.button-container {
-    float: right;
-    margin: 20px;
-}
-
-button {
+label {
     display: block;
     margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button[type="submit"] {
+    display: block;
+    margin-top: 20px;
     padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
     background-color: #6a64f1;
     color: white;
-    font-size: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 200px;
+    border-radius: 5px;
+    border: none;
 }
 
-button:hover {
-    background-color: #4c49b9;
+button[type="submit"]:hover {
+    cursor:pointer;
 }
-
-#importo_euro {
-    width: 40px;
-}
-
