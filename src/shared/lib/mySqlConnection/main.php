@@ -66,16 +66,6 @@ function call_stored_procedure($input_variables, $procedure_name, $hasOutput=fal
         $output = "done!";
     }
 
-    
-    // Free result sets
-    while($conn->next_result()) {
-        $result = $conn->use_result();
-        if($result instanceof mysqli_result) {
-            $result->free();
-        }
-    }
-
-
     return $output;
 }
 /*

@@ -15,9 +15,9 @@ for (var i = 0; i < sp.length; i++) {
 
 //when the page is requested fill the table by RichiamiTassta procedure
 window.onload = function () {
-  const update = new Update();
+  const updateTable = new UpdateTable();
   const tableBody = document.getElementById("table-body");
-  update.table(tableBody,PhpRequest.Richiami.Tassista,{user:user});
+  updateTable.update(tableBody,PhpRequest.DB.RichiamiTassista,{user:user});
   console.log(response);
    if (tableBody.innerHTML == '') { //if user does not have any recalls (table body is empty) display a message
         tableBody.style.display = "none";

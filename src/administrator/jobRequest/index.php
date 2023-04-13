@@ -10,7 +10,7 @@ checkUser(UserType::Amministratore);
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="../../shared/lib/PhpRequest.js"></script>
-  <script src="../../shared/lib/Update.js"></script>
+  <script src="../../shared/lib/UpdateTable.js"></script>
   <script src="script.js"></script>
   <link rel="stylesheet" href="style.css">
 
@@ -18,8 +18,6 @@ checkUser(UserType::Amministratore);
   <table id="table" class="styled-table">
     <thead>
       <tr>
-        
-        <th>ID Richiesta</th>
         <th>username Cliente</th>
         <th>username Nuovo</th>
         <th>targa</th>

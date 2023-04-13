@@ -1,35 +1,15 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
 }
-
 h1 {
-  text-align: center;
-  margin-top: 50px;
+   text-align: center;
+   margin-top: 50px;
 }
 
 .button-container {
-  float: right;
-  margin: 20px;
-}
-
-.notification-badge {
-  display: inline-block;
-  background-color: red;
-  color: white;
-  font-size: 16px;
-  width: 25px;
-  height: 25px;
-  line-height: 26px;
-  text-align: center;
-  border-radius: 50%;
-  position: absolute;
-  bottom: -5px;
-  right: -5px;
-}
-
-.button-container > div {
-  position: relative;
+   float: right;
+   margin: 20px;
 }
 
 button {
@@ -44,15 +24,10 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   width: 200px;
-  position: relative;
 }
 
 button:hover {
   background-color: #4c49b9;
-}
-
-#importo_euro {
-  width: 40px;
 }
 
 #image-container {

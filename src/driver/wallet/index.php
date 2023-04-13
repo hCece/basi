@@ -7,6 +7,8 @@ checkUser(UserType::Tassista);
   <head>
     <title>Taxi Service</title>
   </head>
+
+
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
      <script src="../../shared/lib/PhpRequest.js"></script>
      <link rel="stylesheet" href="style.css">
@@ -22,6 +24,7 @@ checkUser(UserType::Tassista);
       <hr>
       <h5>Per ricaricare il credito inserisci i
        dati richiesti e clicca su "ricarica portafoglio"</h5>
+
       <label for="iban">IBAN: </label>
       <input type="text" id="iban" >
       <br><br>

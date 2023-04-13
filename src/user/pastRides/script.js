@@ -16,17 +16,14 @@ document.getElementById("title").textContent = "Lista delle corse eseguite da " 
 
 //when page is requested fill the table by StoricoCorse procedure
 window.onload = function () {
-
-  const update = new Update();
-  const tableBody = document.getElementById("table-body"); // Get the tbody element
-   //gets rides related to the user
-  update.table(tableBody,PhpRequest.Corsa.Storico,{user:user});
+  const updateTable = new UpdateTable();
+  const tableBody = document.getElementById("table-body");
+  updateTable.update(tableBody,PhpRequest.DB.StoricoCorse,{user:user}); //gets rides related to the user
 
   var results =[];
   for (let i = 0; i < tableBody.rows.length; i++) {
     var idc = tableBody.rows[i].cells[0].innerText;
-     //Recensione.Visualizza gets the review's values (empty = no review)
-    request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: idc});
+    request.mySql(PhpRequest.DB.VisualizzaRecensione, "POST", {idc: idc}); //VisualizzaRecensione gets the review's values (empty = no review)
     results[i] = request.getResponse(); //fill results array with procedure output
 
     //now add a button at the end of each row
@@ -54,7 +51,6 @@ window.onload = function () {
 }
 
 //if the ride contains a review show popup1
-
 function openPopup(response,idc) {
     if (response && response.trim() !== "") {
       var sp=response.split('-')
@@ -92,7 +88,7 @@ function submitReview(idc) {
     var json = {idc: idc, voto: voto, commento: commento}
 
     if (voto >= 1 && voto <=10 ) {
-        request.mySql(PhpRequest.Recensione.Inserisci, "POST", json);
+        request.mySql(PhpRequest.DB.InserisciRecensione, "POST", json);
         btn = document.getElementById(idc);
         btn.innerText = "Visualizza Commento";
         alert("Recensione inserita correttamente");

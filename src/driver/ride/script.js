@@ -2,16 +2,17 @@
     class updateTable to update the values. The updating into the table is delegated to updateTable
 */
 window.onload = function () {
-  const update = new Update();
+  const updateTable = new UpdateTable();
   const tableBody = document.getElementById("tableBody"); // Get the tbody element
 
   setInterval(function () {
-      update.table(tableBody,PhpRequest.Corsa.Disponibili);
+      updateTable.update(tableBody,PhpRequest.DB.CorseDisponibili);
   }, 2000);
 
 
   // Add event listener to table rows, it makes a row marked when clicked.
   tableBody.addEventListener('click', function (event) {
+    console.log("ciao");
     // Remove the green highlight from all rows
     const rows = tableBody.getElementsByTagName('tr');
     for (let i = 0; i < rows.length; i++) {
@@ -22,36 +23,12 @@ window.onload = function () {
   });
 
 
-}
+  //TODO
+  function handleButton() {
 
-function handleButton() {
-  var php = new PhpRequest();
-  let row = document.querySelector('.active-row');
 
-  let idP = row.cells[0].textContent;
-  let start = row.cells[1].textContent;
-  let end = row.cells[2].textContent;
-  let userClient = row.cells[5].textContent;
-  let cost = row.cells[6].textContent;
-  
-  var json = {
-    idP:Number(idP),
-    partenza: start,
-    arrivo: end,
-    usernameCliente:userClient,
-    usernameTassista:getCookie("user"),
-    importo:Number(cost)
   }
-  console.log(json)
-  php.mySql(PhpRequest.Corsa.Aggiungi, "POST", json);
-  var res = php.getResponse();
-  console.log(res);
-  alert("Hai preso in carico una corsa. Il tuo cliente ti aspetta");
-}
 
 
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
 }
+
