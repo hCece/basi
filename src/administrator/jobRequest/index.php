@@ -28,7 +28,7 @@ checkUser(UserType::Amministratore);
     <tbody id="tableBody">
     </tbody>
   </table>
-  <input class="formbold-btn" type="button" onclick="handleApproved(); return false;" name="log" id="log"
+  <input class="formbold-btn" type="button" onclick="handleApprove(); return false;" name="log" id="log"
         value="Accetta richiesta">
     <input class="formbold-btn" type="button" onclick="handleDecline(); return false;" name="log" id="log"
         value="Rifiuta richiesta">

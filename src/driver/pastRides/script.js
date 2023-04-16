@@ -25,6 +25,17 @@ var results = [];
 //add a button at the end of each row
   for (let i = 0; i < tableBody.rows.length; i++) {
 
+    // Get the username from the last column in each row
+    const user = tableBody.rows[i].cells[4].innerText;
+    // make request here and set response to variable x
+    // you can use the PhpRequest.mySql method to make the query
+    request.mySql(PhpRequest.Utente.GetTel, "POST", { user: user });
+    const tel = request.getResponse(); // store the result in a variable
+    // create a new cell for the tel column and add the value
+    const telCell = tableBody.rows[i].insertCell(-1);
+    telCell.innerText = tel;
+
+
       var idc = tableBody.rows[i].cells[0].innerText;
       request.mySql(PhpRequest.Recensione.Visualizza, "POST",
       {idc: idc});//here we are passing the idc value from the first column in each row

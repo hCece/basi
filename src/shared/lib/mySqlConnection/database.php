@@ -8,6 +8,9 @@ if(function_exists($_GET['function'])) {
     $_GET['function']();
  }
 
+// This file at first might seem like a lot of headache code, but it's just a class that calls a query or a strored procedure, 
+//and makes sure that the data sent is actually in the right order, for error avoidance. 
+
 function storicoRecensioni()
 {   $return = call_query("CALL storicoRecensioni()");
     echo json_encode($return);
@@ -77,7 +80,7 @@ function codicePortafoglio()
     print_r($return);
 }
 function aggiungiCliente()
-{   $values = array("cf", "user", "firstName", "lastName", "birthday", "city");
+{   $values = array("tel", "user", "firstName", "lastName", "birthday", "city");
     call_stored_procedure($values, "aggiungiCliente", false);
     print_r("aggiunto cliente");
 }
@@ -86,9 +89,14 @@ function aggiungiCredenziali()
     call_stored_procedure($values, "aggiungiCredenziali", false);
     print_r("aggiunte credenziali");
 }
-function checkCF()
-{   $values = array("cf");
-    $return = call_stored_procedure($values, "checkCF",'s');
+function checkTel()
+{   $values = array("tel");
+    $return = call_stored_procedure($values, "checkTel",'s');
+    print_r($return);
+}
+function getTel()
+{   $values = array("user");
+    $return = call_stored_procedure($values, "getTel",'s');
     print_r($return);
 }
 function checkUsername()
@@ -100,7 +108,13 @@ function inserisciPrenotazione()
     "usernameCliente","lus","ele","costo");
     echo call_stored_procedure($values, "inserisciPrenotazione",'s');
 }
-
+function statoRichiesta(){   
+    if (isset($_COOKIE["user"])){
+        $_POST['user'] = $_COOKIE["user"];
+        $values = array("user");
+        echo call_stored_procedure($values, "statoRichiesta",true);
+    }
+}
 function inserisciRichiestaLavoro()
 {    $values = array("usernameCliente","nuovoUsername","password", "fotoDoc", 
     "marca","modello","targa","posti","lusso","elettrico");
@@ -108,7 +122,7 @@ function inserisciRichiestaLavoro()
     echo json_encode($return);
 }
 function getRichiestaLavoro()
-{   $query = 'SELECT IDRICHIESTA, usernameCliente, nuovoUsername, targa  FROM RichiestaLavoro';
+{   $query = 'SELECT IDRICHIESTA, usernameCliente, nuovoUsername, targa  FROM RichiestaLavoro where stato = "APERTO"';
     $rtrn = call_query($query);
     echo json_encode($rtrn);
 }
@@ -127,9 +141,15 @@ function riconosciUtente()
 }
 
 function aggiungiCorsa()
+<<<<<<< Updated upstream
 {   $values = array("partenza", "arrivo", "usernameCliente", "usernameTassista","idP","importo");
     echo call_stored_procedure($values, "inserisciCorsa",'b');
+=======
+{   $values = array("partenza", "arrivo", "usernameCliente", "usernameTassista","importo");
+    echo call_stored_procedure($values, "inserisciCorsa",'s');
+>>>>>>> Stashed changes
 }
+    
 function prenotazioneCompletata()
 {   $values = array("user");
     echo call_stored_procedure($values, "verificaStatoPrenotazione",'s');

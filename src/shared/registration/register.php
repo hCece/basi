@@ -56,8 +56,8 @@
         </div>
         <div class="formbold-input-flex">
           <div>
-            <label for="cf" class="formbold-form-label"> Codice Fiscale </label>
-            <input type="cf" name="cf" id="cf" class="formbold-form-input" />
+            <label for="tel" class="formbold-form-label"> Codice Fiscale </label>
+            <input type="tel" name="tel" id="tel" class="formbold-form-input" />
           </div>
           <div>
             <label for="birthday" class="formbold-form-label"> Data di Nascita </label>

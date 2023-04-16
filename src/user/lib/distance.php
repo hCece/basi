@@ -1,4 +1,5 @@
 <?php
+require dirname(dirname(__DIR__)).'/shared/lib/mySqlConnection/main.php';
 
 /*  
 This block of code makes a request to the apenrouteservice API, by sending the GPS location of two points. 
@@ -9,18 +10,37 @@ The request is made server side reather then client side (with js) to respect th
 There is a .txt file with a brief example on how CSRF could be used by hackers.
 
 */
+
+
+
 define('COEFFICENTE_PRO', 1.5);
+define('SCONTO_TOP_CLIENTI', 0.2);
 $coor = areCoordinatesSet();
 
 //if all variables are set, it returns an array with the variable in the right order to make the openroute request
 function areCoordinatesSet(){
     if (
         isset($_POST['LatBegin']) && isset($_POST['LongBegin']) &&
-        isset($_POST['LatEnd']) && isset($_POST['LongEnd']) && isset($_POST['isPro']))
+        isset($_POST['LatEnd']) && isset($_POST['LongEnd']) && isset($_POST['isPro']) && isset($_POST['user']))
     {
         return array($_POST['LatBegin'], $_POST['LongBegin'], $_POST['LatEnd'], $_POST['LongEnd']);
     }
     return false;
+}
+
+function isTopUser(){
+    $users = call_query("CALL topClienti()");
+    // Initialize a variable to keep track of whether the input username is in the top 5
+    $top5 = false;
+    // Loop through the top users array
+    foreach ($users as $key => $value) {
+        // If the input username is found in the top 5, set $isInTop5 to true and break out of the loop
+        if ($value['usernameCliente'] === $_POST['user'] && $key < 5) {
+            $top5 = true;
+            break;
+        }
+    }
+    return $top5;
 }
 
 if ($coor) {
@@ -58,7 +78,10 @@ if ($coor) {
             $cost = intval($distance)+intval($duration);
             if($_POST['isPro'])
                 $cost *= COEFFICENTE_PRO;
-            echo $cost;
+            if(isTopUser())
+                $cost *= 1-SCONTO_TOP_CLIENTI;
+            
+            echo $cost; 
             break; // exit loop if a successful response is received
         } else {
             /*

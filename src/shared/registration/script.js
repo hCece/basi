@@ -17,26 +17,25 @@ function handleRegistrationButton(){
     var lastName = document.getElementById("lastname").value;
     var birthday = document.getElementById("birthday").value;
     var city = document.getElementById("city").value;
-    var cf = document.getElementById("cf").value;
+    var tel = document.getElementById("tel").value;
 
-    if (user && pass && firstName && lastName && birthday && city && cf) {
+    if (user && pass && firstName && lastName && birthday && city && tel) {
 
         var json1 = {user:user,
                     pass:pass};
 
-        var json2 = {cf:cf,
+        var json2 = {tel:tel,
                     user:user,
                     firstName:firstName,
                     lastName:lastName,
                     birthday:birthday,
-                    city:city,
-                    cf:cf};
+                    city:city};
 
 
         request.mySql(PhpRequest.SP.CheckUsername, "POST", {user:user});
         var result1 = request.getResponse();
 
-        request.mySql(PhpRequest.SP.CheckCF, "POST", {cf:cf});
+        request.mySql(PhpRequest.SP.CheckTel, "POST", {tel:tel});
         var result2 = request.getResponse();
 
         if(result1 == 'OK'  && result2 == 'OK'){

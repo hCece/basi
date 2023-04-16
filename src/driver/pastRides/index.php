@@ -14,13 +14,13 @@
 		<thead>
 			<tr>
 				<th>ICD</th>
-				<th>Pro</th>
 				<th>Partenza</th>
                 <th>Arrivo</th>
                 <th>data</th>
                 <th>Cliente</th>
                 <th>Tassista</th>
                 <th>Importo</th>
+                <th>Tel</th>
                 <th></th>
 
 

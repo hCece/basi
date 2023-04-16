@@ -21,7 +21,8 @@
             Aggiungi: "aggiungiCredenziali",
             Check: "checkUsername",
             Riconosci: "riconosciUtente",
-            CheckCF: "checkCF",
+            CheckTel: "checkTel",
+            GetTel: "getTel",
         }
 
         static Portafoglio = {
@@ -32,6 +33,7 @@
         }
         
         static Richiesta = {
+            Stato: "statoRichiesta",
             Set: "inserisciRichiestaLavoro",
             Get: "getRichiestaLavoro",
             Approva: "approvaRichiesta",

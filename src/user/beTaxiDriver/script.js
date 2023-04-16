@@ -1,4 +1,5 @@
 
+var request = new PhpRequest();
 /*  with the name of the cookie as input, it will return the value of the cookie
 */
 function getCookie(name) {
@@ -8,12 +9,21 @@ function getCookie(name) {
   }
 
   
+window.onload = function () {
+
+  request.mySql(PhpRequest.Richiesta.Stato, "POST",{});
+  let res = request.getResponse();
+  console.log(res);
+  if(res.trim()== "APERTO"){
+    alert("La richiesta sta per essere valutata. Sii paziente");
+    window.location.href = "../dashboard/profile.php";
+  }else if(res.trim()== "APPROVATO"){
+    alert("La richiesta è stata approvata. Inizia ora il tuo nuovo lavoro");
+  }
+
+}
 function handleRegistrationButton(){
     //Retriving data from the two input fields, and parsing them into json
-    
-    var request = new PhpRequest();
-
-    //get all data from the input fields
     var user = document.getElementById("newUser").value;
     var pass = document.getElementById("pass").value;
     var brand = document.getElementById("brand").value;
@@ -38,10 +48,15 @@ function handleRegistrationButton(){
       console.log(json);
       //make request to the server and add a new job request
       request.mySql(PhpRequest.Richiesta.Set, "POST", json)
-      console.log(request.getResponse());
-    } else
-        alert("Please fill in all fields");
-
+      res = request.getResponse().trim();
+      if(res=='"ok"'){
+        alert("La richiesta sta per essere valutata. Sii paziente");
+        window.location.href = "../dashboard/profile.php";
+      } else if (res==null)
+        alert("Inserisci dei valori validi in tutti i campi");
+      else 
+        alert(res);
+    }
 
 }
 

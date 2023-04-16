@@ -28,14 +28,16 @@ function handleButton() {
   var php = new PhpRequest();
   let row = document.querySelector('.active-row');
 
-  let idP = row.cells[0].textContent;
-  let start = row.cells[1].textContent;
-  let end = row.cells[2].textContent;
-  let userClient = row.cells[5].textContent;
-  let cost = row.cells[6].textContent;
+  let start = row.cells[0].textContent;
+  let end = row.cells[1].textContent;
+  let userClient = row.cells[4].textContent;
+  let cost = row.cells[5].textContent;
   
   var json = {
+<<<<<<< Updated upstream
     idP:idP,
+=======
+>>>>>>> Stashed changes
     partenza: start,
     arrivo: end,
     usernameCliente:userClient,
@@ -44,9 +46,10 @@ function handleButton() {
 
   }
   php.mySql(PhpRequest.Corsa.Aggiungi, "POST", json);
-  var res = php.getResponse();
-  console.log(res);
-  alert("Hai preso in carico una corsa. Il tuo cliente ti aspetta");
+  php.mySql(PhpRequest.Utente.GetTel, "POST",{user:getCookie("user")})
+
+  alert("Hai preso in carico una corsa. Il tuo cliente ti aspetta. Il suo numero di telefono: " + php.getResponse());
+
 }
 
 

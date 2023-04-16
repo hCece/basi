@@ -29,6 +29,8 @@ window.onload = function () {
 function handleApprove() {
     row = document.getElementsByClassName('active-row')[0];
     idr = row.innerHTML.split("<td>")[1].split("</td>")[0];
+    console.log(idr);
+
     phpRequest.mySql(PhpRequest.Richiesta.Approva, "POST", {idr : idr});
   }
   

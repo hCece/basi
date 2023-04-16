@@ -1,4 +1,6 @@
 <?php 
+
+//TODO: get data from a file where the pass is stored
 function newConnection(){
     $servername = "localhost";
     $username = "root";
@@ -24,7 +26,9 @@ function call_query($query) {
     return $output;
 }
     
-/*  This function is made to call genericly stored procedures. Following inputs are required:
+/*  This function is made to call genericly stored procedures. The only sidedown of this method is that it 
+    only can return a single variable, instead of multiple return variables possible in mySql to return 
+    Following inputs are required:
 
         - input_variables: a list, in the right order, of the inputs needed for the stored procedure
         - procedure_name: the name of the stored procedure that we want to call
@@ -37,7 +41,8 @@ function call_stored_procedure($input_variables, $procedure_name, $hasOutput=fal
     global $conn;
     if($conn==null)
         $conn = newConnection();
-    // It preperas the input values. the values are retrived from  
+    // Firstly the input query get's prepared. We retrive the data with the prepare_input variable, 
+    // and the the query get's prepared with the question mark string
     $prepared_input = prepare_input($input_variables);
     if(!$prepared_input) return null;
 
@@ -48,10 +53,11 @@ function call_stored_procedure($input_variables, $procedure_name, $hasOutput=fal
     }else{
         $stmt = $conn->prepare("CALL $procedure_name($input_params)");
     }    
-    /*the three dots are called a "splat" operataor. It decomposes a array to single values and passes each a an individual one
+    /*  The next line bind's all the values into the query. 
+        The three dots are called a "splat" operataor. It decomposes a array to single values and passes each a an individual one
         for more info check https://www.hashbangcode.com/article/splat-operator-php
         E.g. if there are 3 input varables, the input will look as follow:
-            bind_param(                 "sss"                 , $input1, $input2, $input3)
+            bind_param("sss", $input1, $input2, $input3) =  bind_param("sss",...$input_values)
     */
     $stmt->bind_param(str_repeat("s", count($input_variables)), ...$input_values);
 
@@ -65,16 +71,16 @@ function call_stored_procedure($input_variables, $procedure_name, $hasOutput=fal
     }else{
         $output = "done!";
     }
-
     
-    // Free result sets
+    // ERROR: add this lines if there is an error 
+    /*
     while($conn->next_result()) {
         $result = $conn->use_result();
         if($result instanceof mysqli_result) {
             $result->free();
         }
     }
-
+    */
 
     return $output;
 }

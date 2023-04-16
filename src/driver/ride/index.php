@@ -17,7 +17,6 @@ checkUser(UserType::Tassista);
   <table id="table" class="styled-table">
     <thead>
       <tr>
-        <th>IPD</th>
         <th>partenza</th>
         <th>arrivo</th>
         <th>posti</th>
@@ -29,7 +28,6 @@ checkUser(UserType::Tassista);
     <tbody id="tableBody">
     </tbody>
   </table>
-  <input class="formbold-btn" type="button" onclick="handleButton(); return false;"        value="Accetta corsa">
-
+  <input class="formbold-btn" type="button" onclick="handleButton(); return false;"        value="Accetta corsa"> <br>
 
 </html>

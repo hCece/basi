@@ -24,6 +24,17 @@ window.onload = function () {
 
   var results =[];
   for (let i = 0; i < tableBody.rows.length; i++) {
+
+    // Get the username from the last column in each row
+    const user = tableBody.rows[i].cells[5].innerText;
+    // make request here and set response to variable x
+    // you can use the PhpRequest.mySql method to make the query
+    request.mySql(PhpRequest.Utente.GetTel, "POST", { user: user });
+    const tel = request.getResponse(); // store the result in a variable
+    // create a new cell for the tel column and add the value
+    const telCell = tableBody.rows[i].insertCell(-1);
+    telCell.innerText = tel;
+
     var idc = tableBody.rows[i].cells[0].innerText;
      //Recensione.Visualizza gets the review's values (empty = no review)
     request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: idc});
