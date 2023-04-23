@@ -1,12 +1,6 @@
 
 var request = new PhpRequest();
-/*  with the name of the cookie as input, it will return the value of the cookie
-*/
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
+
 
   
 window.onload = function () {
@@ -23,6 +17,7 @@ window.onload = function () {
 
 }
 function handleRegistrationButton(){
+    var cookie = new Cookie();
     //Retriving data from the two input fields, and parsing them into json
     var user = document.getElementById("newUser").value;
     var pass = document.getElementById("pass").value;
@@ -34,7 +29,7 @@ function handleRegistrationButton(){
     //check if they are not null
     if (user && pass && brand && model && licence && nrSeat) {
       //prepare json to send to the server
-      var json = {usernameCliente:getCookie("user"),
+      var json = {usernameCliente:cookie.get("user"),
                   nuovoUsername:user,
                   password:pass,
                   fotoDoc:"LOL",

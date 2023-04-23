@@ -31,7 +31,7 @@ checkUser(UserType::Cliente);
     <div>
     <button id="prenota-corsa"
     onclick="window.location.href = '../bookRide/index.php'";>
-    <span class="notification-badge" id="span-prenota-corsa">1</span>
+    <span class="notification-badge" id="span-prenota-corsa" style="visibility:hidden" >1</span>
     Prenota una corsa</button>
     </div>
 

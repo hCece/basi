@@ -124,7 +124,6 @@ CREATE TABLE PRENOTAZIONECORSA(
     costo int,
     haCorsa boolean default false,
     foreign key PRENOTAZIONECORSA(usernameCliente) references CLIENTE(username)
-    z
 ) ENGINE = "INNODB";
 
 CREATE TABLE CORSA(
@@ -253,9 +252,9 @@ begin
 		declare tCoin int;
 		call creditoSufficente (usernameCliente, euro, haSoldi );
         if(haSoldi) then
-            set tCoin = euro*@T_COIN_CONVERSION;
+            set tCoin = euro*3;
             update PORTAFOGLIO set credito = (credito - tCoin) where username = usernameCliente;
-			update PORTAFOGLIO set credito = (credito + tCoin*(1-@PROFIT_PERCENTAGE)) where username = usernameTassista;
+			update PORTAFOGLIO set credito = (credito + tCoin*(1-0.2)) where username = usernameTassista;
 		end if;
 end //
 
@@ -286,7 +285,7 @@ end //
 
 
 delimiter //
-create procedure inserisciPrenotazione(in pro int, partenza varchar(20), arrivo varchar(20), Nposti int, usernameCliente varchar(20), lus int, ele int, costo int, out rtrn int)
+create procedure inserisciPrenotazione(in pro int, partenza varchar(50), arrivo varchar(50), Nposti int, usernameCliente varchar(20), lus int, ele int, costo int, out rtrn int)
 begin
 
 	declare existsTaxi boolean default false;
@@ -350,11 +349,7 @@ END;
 # infine si richiama la stored proc. che effettua il pagamento 
 
 delimiter //
-<<<<<<< Updated upstream
-create procedure inserisciCorsa(in partenza varchar(20), arrivo varchar(20), usernameCliente varchar(20), usernameTassista varchar(20), idPrenotazione int,importo int, out rtrn boolean) 
-=======
-create procedure inserisciCorsa(in partenza varchar(20), arrivo varchar(20), usernameCliente varchar(20), usernameTassista varchar(20),importo int, out rtrn varchar(20)) 
->>>>>>> Stashed changes
+create procedure inserisciCorsa(in partenza varchar(50), arrivo varchar(50), usernameCliente varchar(20), usernameTassista varchar(20),importo int, out rtrn varchar(20)) 
 begin
 	declare checkVal boolean default false;
 	declare costoVar int;
@@ -368,7 +363,7 @@ begin
 			SET haCorsa = true
 			WHERE pc.usernameCliente = usernameCliente;
 			
-			set costoVar = (select costo from prenotazioneCorsa where idP = idPrenotazione);
+			set costoVar = (select costo from prenotazioneCorsa as pc where pc.usernameCliente = usernameCliente);
 			call pagaCorsa(usernameCliente, usernameTassista, costoVar);
 		end if;
 	end if;
@@ -541,12 +536,9 @@ end //
 delimiter //
 create procedure corseDisponibili(in usernameTassista varchar(20))
 begin
-<<<<<<< Updated upstream
-	SELECT IDP, partenza, arrivo, posti, data, usernameCliente, CAST(costo*0.9 AS SIGNED)
-=======
+
 	DECLARE profit DECIMAL(5,2) DEFAULT 0.2;
 	SELECT partenza, arrivo, posti, data, usernameCliente,  ROUND(costo * (1 - profit))
->>>>>>> Stashed changes
 	FROM prenotazioneCorsa
 	WHERE partenza IN
 		(SELECT citta FROM tassista 
@@ -674,15 +666,16 @@ end//
 #create view recensioniTassista();
 
 #####################   EVENTS     #########################
-delimiter //
+/*
+delimiter $$
 CREATE EVENT delete_reservations
 	ON SCHEDULE EVERY 1 DAY
 	DO
 	  DELETE FROM prenotazioneCorsa
 	  WHERE haCorsa = true;
-	END //
-delimiter;
-
+	END 
+$$ 
+*/
 ####################   EXAMPLE CODE	########################
  
 
@@ -698,12 +691,7 @@ delimiter;
 
 
 
-<<<<<<< Updated upstream
-
 SET GLOBAL event_scheduler = ON;
-
-=======
->>>>>>> Stashed changes
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('yos99', '123');
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('dwdpie00', '123');
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('jury15', '123');
@@ -756,20 +744,16 @@ call inserisciRichiamo('yos99','jury15','ha fatto il gay 2');
 call ricaricaPortafoglio(4, 100, '0945891423768901');
 call ricaricaPortafoglio(2, 200, '2245891423228922'); #should not work tassista can't call ricaricaPortafoglio
 
-
 call riconosciUtente('yos99','123', @nome);
 select @nome;
 
-<<<<<<< Updated upstream
+#in pro int, partenza varchar(20), arrivo varchar(20), Nposti int, usernameCliente varchar(20), lus int, ele int, costo int, out rtrn int)
 
-
-#call inserisciPrenotazione(false, 'Bologna', 'modena', 1, 'ciccio22', false, false, 100, @rtrn);
-call inserisciPrenotazione(true, 'Bologna', 'modena', 1, 'dwdpie00', true, true, 100, @rtrn);
-=======
 call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'dwdpie00', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'dwdpie00', 'parme', 1,@rtrn);
 
-call inserisciPrenotazione(true, 'Bologna', 'Bologna', 1, 'ciccio22', 1, 1, 1, @rtrn);
+
+call inserisciPrenotazione(true, 'Bologna', 'Bologna', 1, 'ciccio22', 1, 1, 10, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'ciccio22', 'jury15', 1,@rtrn);
 
 call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'claudia', 0, 0, 1, @rtrn);
@@ -777,7 +761,7 @@ call inserisciCorsa('Bologna', 'Bologna', 'claudia', 'parme', 1,@rtrn);
 
 call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'alle', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'alle', 'parme', 1,@rtrn);
->>>>>>> Stashed changes
+
 
 
 call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'riccardo', 0, 0, 1, @rtrn);
@@ -791,7 +775,6 @@ call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'enri', 0, 0, 1, @rtr
 call inserisciCorsa('Bologna', 'Bologna', 'enri', 'parme', 1,@rtrn);
 DELETE FROM prenotazionecorsa;
 
-/*
 
 call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'paolo', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'paolo', 'parme', 1,@rtrn);
@@ -804,7 +787,6 @@ DELETE FROM prenotazionecorsa;
 call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'paolo', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'paolo', 'parme', 1,@rtrn);
 DELETE FROM prenotazionecorsa;
-
 
 select * from corsa;
 
@@ -820,12 +802,7 @@ call inserisciRecensione(9,'10','ottimo');
 
 
 call visualizzaRecensione( 1 ,@voto);
-<<<<<<< Updated upstream
-=======
 
-
-
->>>>>>> Stashed changes
 select @voto;
 
 call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1, @rtrn);
@@ -843,9 +820,9 @@ call storicoCorse('jury15');
 
 call richiamiTassista('jury15');
 
-*/
-
 
 call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1, @rtrn);
 
 call storicoRecensioni();
+
+

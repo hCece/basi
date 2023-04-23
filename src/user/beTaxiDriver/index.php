@@ -9,6 +9,7 @@ checkUser(UserType::Cliente);
 
 <head>
   <script src="../../shared/lib/PhpRequest.js"></script>
+  <script src="../../shared/lib/Cookie.js"></script>
   <script src="script.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 

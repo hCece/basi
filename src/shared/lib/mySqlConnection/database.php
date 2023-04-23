@@ -141,13 +141,8 @@ function riconosciUtente()
 }
 
 function aggiungiCorsa()
-<<<<<<< Updated upstream
-{   $values = array("partenza", "arrivo", "usernameCliente", "usernameTassista","idP","importo");
-    echo call_stored_procedure($values, "inserisciCorsa",'b');
-=======
 {   $values = array("partenza", "arrivo", "usernameCliente", "usernameTassista","importo");
     echo call_stored_procedure($values, "inserisciCorsa",'s');
->>>>>>> Stashed changes
 }
     
 function prenotazioneCompletata()

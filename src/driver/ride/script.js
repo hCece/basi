@@ -26,6 +26,7 @@ window.onload = function () {
 
 function handleButton() {
   var php = new PhpRequest();
+  var cookie = new Cookie();
   let row = document.querySelector('.active-row');
 
   let start = row.cells[0].textContent;
@@ -34,27 +35,18 @@ function handleButton() {
   let cost = row.cells[5].textContent;
   
   var json = {
-<<<<<<< Updated upstream
-    idP:idP,
-=======
->>>>>>> Stashed changes
     partenza: start,
     arrivo: end,
     usernameCliente:userClient,
-    usernameTassista:getCookie("user"),
-    importo:cost
-
+    usernameTassista:cookie.get("user"),
+    importo:Number(cost)
   }
+  console.log(json)
+
   php.mySql(PhpRequest.Corsa.Aggiungi, "POST", json);
-  php.mySql(PhpRequest.Utente.GetTel, "POST",{user:getCookie("user")})
+  console.log("HEZ: "+ php.getResponse());
+  php.mySql(PhpRequest.Utente.GetTel, "POST",{user:userClient})
 
-  alert("Hai preso in carico una corsa. Il tuo cliente ti aspetta. Il suo numero di telefono: " + php.getResponse());
+  alert("Hai preso in carico una corsa. Il tuo cliente ti aspetta. Il suo numero di telefono del tuo cliente: " + php.getResponse());
 
-}
-
-
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
 }
