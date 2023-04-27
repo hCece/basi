@@ -11,7 +11,7 @@
   <div class="formbold-main-wrapper">
     <div class="formbold-form-wrapper">
 
-        <h2>Log In</h2>
+      <h2>Log In</h2>
 
       <div>
         <br>
@@ -30,11 +30,12 @@
         window.location.href = '../registration/register.php';
         return false;">
         Register Now</button>
+      <br><br>
+      <span id="errorLabel" class="label danger" style="visibility  : hidden">Credenziali sbagliate!</span>
 
     </div>
   </div>
 
-  <br><br> <span id="errorLabel" class="label danger" style="visibility  : hidden">Credenziali sbagliate!</span>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="../lib/PhpRequest.js"></script>
   <script src="script.js"></script>

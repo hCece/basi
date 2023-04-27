@@ -94,8 +94,8 @@ function addAutocompleteListener(autocomplete, marker){
 //this function get's immidiatly called, it creates a map and the autocomplete Listener
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 44.7236221, lng: 10.869555 },
-    zoom: 8,
+    center: { lat: 44.5236221, lng: 11.369555 },
+    zoom: 10,
     mapTypeControl: false,
   });
 

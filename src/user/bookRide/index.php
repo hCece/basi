@@ -33,7 +33,9 @@ checkUser(UserType::Cliente);
             placeholder="Enter another location"
           />  
           <button id="submit-button"  onclick="handleSubmitButton(); return false;">Prenotazione Corsa</button>
-          <p id="distance"></p>
+          
+          <p id="price-label" style="display: none;"></p>
+
         </div>
         <label for="nrSeat" > Number of seats:  </label>
         <input type="number"  id="nrSeat" name="nrSeat" min="1" max="8"> <br>
@@ -56,7 +58,8 @@ checkUser(UserType::Cliente);
 
     <script src="../lib/GoogleMaps.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="../../shared/lib/PhpRequest.js"></script>
+    <script src="../../shared/lib/PhpRequest.js"></script>  
+    <script src="../../shared/lib/Cookie.js"></script>
     <script src="script.js"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnGs4AcLhw3S_XFxTRkQisRYKOQ7QJTlw&callback=initMap&libraries=places&v=weekly"

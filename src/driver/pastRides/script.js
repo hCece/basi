@@ -19,10 +19,10 @@ document.getElementById("title").textContent = "Lista delle corse eseguite da " 
 window.onload = function () {
   const update = new Update();
   const tableBody = document.getElementById("table-body");
-  update.table(tableBody,PhpRequest.Corsa.Storico,{user:user});
+  update.table(tableBody, PhpRequest.Corsa.Storico, { user: user });
 
-var results = [];
-//add a button at the end of each row
+  var results = [];
+  //add a button at the end of each row
   for (let i = 0; i < tableBody.rows.length; i++) {
 
     // Get the username from the last column in each row
@@ -36,52 +36,52 @@ var results = [];
     telCell.innerText = tel;
 
 
-      var idc = tableBody.rows[i].cells[0].innerText;
-      request.mySql(PhpRequest.Recensione.Visualizza, "POST",
-      {idc: idc});//here we are passing the idc value from the first column in each row
-      results[i] = request.getResponse(); //keep the procedure output in the results array
+    var idc = tableBody.rows[i].cells[0].innerText;
+    request.mySql(PhpRequest.Recensione.Visualizza, "POST",
+      { idc: idc });//here we are passing the idc value from the first column in each row
+    results[i] = request.getResponse(); //keep the procedure output in the results array
 
-      //then add a button at the end of each row
-      // create a new cell for the button
-      const cell = tableBody.rows[i].insertCell(-1);
-      // create a new button element
-      const button = document.createElement("button");
-      // Get the values of voto and commento from sp.visualizzaRecensione
+    //then add a button at the end of each row
+    // create a new cell for the button
+    const cell = tableBody.rows[i].insertCell(-1);
+    // create a new button element
+    const button = document.createElement("button");
+    // Get the values of voto and commento from sp.visualizzaRecensione
 
-      //if the response is not empty create a button clickable to get the review
-      if(results[i] && results[i].trim() != "") {
+    //if the response is not empty create a button clickable to get the review
+    if (results[i] && results[i].trim() != "") {
 
-         button.innerText = "Visualizza commento";
-         button.style.background= '#6a64f1';
-         button.style.cursor = 'pointer';
+      button.innerText = "Visualizza commento";
+      button.style.background = '#6a64f1';
+      button.style.cursor = 'pointer';
 
-         button.addEventListener("click", function() {
-            //on click call the openPopup function with the appropriate idc
-            openPopup(results[i]);
-         });
-      }else{
-        //set grey not cickable button
-         button.innerText = "Nessun commento";
-         button.style.background = "grey";
-      }
-      // add the button to the cell
-      cell.appendChild(button);
+      button.addEventListener("click", function () {
+        //on click call the openPopup function with the appropriate idc
+        openPopup(results[i]);
+      });
+    } else {
+      //set grey not cickable button
+      button.innerText = "Nessun commento";
+      button.style.background = "grey";
     }
+    // add the button to the cell
+    cell.appendChild(button);
+  }
 }
 
 //this function shows the value of the review
 function openPopup(response) {
 
-    var sp=response.split('-')
-    // Set the text of the span elements in the pop up
-    document.getElementById("Votovalue").textContent = sp[0];
-    document.getElementById("Commentovalue").textContent = sp[1];
-    // Display the pop up
-    document.getElementById("popup").style.display = "block";
+  var sp = response.split('-')
+  // Set the text of the span elements in the pop up
+  document.getElementById("Votovalue").textContent = sp[0];
+  document.getElementById("Commentovalue").textContent = sp[1];
+  // Display the pop up
+  document.getElementById("popup").style.display = "block";
 }
 
 //close the popup
 function closePopup() {
-    // Hide the pop up
-    document.getElementById("popup").style.display = "none";
+  // Hide the pop up
+  document.getElementById("popup").style.display = "none";
 }

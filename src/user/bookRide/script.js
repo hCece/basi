@@ -65,7 +65,7 @@ function doReservation(){
   nrSeat = document.getElementById("nrSeat").value;
   if(!nrSeat) nrSeat = 1;
 
-
+  var cost = getCost();
   var json = {
     pro :isProCar(),
     partenza:startCity,
@@ -74,9 +74,13 @@ function doReservation(){
     usernameCliente:cookieUser,
     lus:isLuxury(),
     ele:isElectric(),
-    costo:getCost()};
+    costo:cost};
 
   console.log(json);  
+
+
+
+
   request.mySql(PhpRequest.Prenotazione.Inserisci, "POST", json);
   let idRes = request.getResponse();
   console.log(idRes)
@@ -84,8 +88,12 @@ function doReservation(){
     alert("Non esistono dei tassisti con le tue specifiche richieste che partono da " + startCity);
   else if(idRes==-400)
     alert("Non hai abbastanza denaro per prenotare la corsa fino a " + endCity);
-
-
+  else{
+    //Setting the price 
+    const priceLabel = document.getElementById('price-label');
+    priceLabel.innerText = 'Prezzo: ' + Math.round(cost*3) + " T-coin";
+    priceLabel.style.display = 'block';
+  }
   return idRes;
 
 }

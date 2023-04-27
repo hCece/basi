@@ -4,6 +4,9 @@
 
 require __DIR__.'/main.php';
 
+require dirname(__DIR__).'/mongo.php';
+
+
 if(function_exists($_GET['function'])) {
     $_GET['function']();
  }
@@ -34,6 +37,7 @@ function recensioniMigliori()
 function inserisciRichiamo()
 {   $values = array("admin","user","commento");
     $return = call_stored_procedure($values, "inserisciRichiamo",false);
+    insert_log($_COOKIE['user'], "made a new recall to the taxi drive".$_POST['user']);
 }
 
 function richiamiTassista()
@@ -45,6 +49,8 @@ function richiamiTassista()
 function ricaricaPortafoglio()
 {   $values = array("codp", "amount", "card");
     call_stored_procedure($values, "ricaricaPortafoglio", false); 
+    insert_log($_COOKIE['user'], "Recharged his wallet by ".$_POST['amount']. " EURO");
+
 }
 function storicoCorse()
 {   
@@ -54,11 +60,12 @@ function storicoCorse()
 function inserisciBonifico()
 {    $values = array("codp", "tcoin" , "iban");
     call_stored_procedure($values, "inserisciBonifico", false);
+    insert_log($_COOKIE['user'], "Took ".$_POST['amount']. " EURO out of his wallet");
 }
 function inserisciRecensione()
 {   $values = array("idc","voto","commento");
     call_stored_procedure($values, "inserisciRecensione", false);
-
+    insert_log($_COOKIE['user'], "Wrote a new review");
 }
 function visualizzaRecensione()
 {   $values = array("idc");
@@ -82,6 +89,7 @@ function codicePortafoglio()
 function aggiungiCliente()
 {   $values = array("tel", "user", "firstName", "lastName", "birthday", "city");
     call_stored_procedure($values, "aggiungiCliente", false);
+    insert_log($_POST['user'], "A new user has been created");
     print_r("aggiunto cliente");
 }
 function aggiungiCredenziali()
@@ -107,6 +115,7 @@ function inserisciPrenotazione()
 {   $values = array("pro","partenza","arrivo", "nrPosti" , 
     "usernameCliente","lus","ele","costo");
     echo call_stored_procedure($values, "inserisciPrenotazione",'s');
+    insert_log($_COOKIE['user'], "Made a new reservation from ".$_POST['partenza']." to" .$_POST['arrivo']);
 }
 function statoRichiesta(){   
     if (isset($_COOKIE["user"])){
@@ -119,6 +128,7 @@ function inserisciRichiestaLavoro()
 {    $values = array("usernameCliente","nuovoUsername","password", "fotoDoc", 
     "marca","modello","targa","posti","lusso","elettrico");
     $return = call_stored_procedure($values, "inserisciRichiestaLavoro",true);
+    insert_log($_COOKIE['user'], "Made a new request to become a taxi driver");
     echo json_encode($return);
 }
 function getRichiestaLavoro()
@@ -129,29 +139,40 @@ function getRichiestaLavoro()
 function rifiutaRichiesta()
 {   $values = array("idr");
     call_stored_procedure($values, "rifiutaRichiesta",false);
+    insert_log($_POST['user'], "rejected a request to become a taxi driver");
 }
 
 function approvaRichiesta()
 {   $values = array("idr");
     call_stored_procedure($values, "approvaRichiesta",false);
+    insert_log($_POST['user'], "approved a request to become a taxi driver");
 }
 function riconosciUtente()
 {   $values = array("user","pass");
-    echo call_stored_procedure($values, "riconosciUtente",'s');
+    $rtrn = call_stored_procedure($values, "riconosciUtente",'s');
+    if(trim($rtrn) != "unregistered")
+        insert_log($_POST['user'], "Logged in successfully as ".$rtrn);
+    else
+        insert_log($_POST['user'], "Logged in unsuccessfully");
+    echo $rtrn;
 }
 
 function aggiungiCorsa()
 {   $values = array("partenza", "arrivo", "usernameCliente", "usernameTassista","importo");
     echo call_stored_procedure($values, "inserisciCorsa",'s');
+    insert_log($_POST['user'], "approved a reservation from".$_POST['usernameCliente']." to become a taxi driver");
+
 }
     
 function prenotazioneCompletata()
 {   $values = array("user");
-    echo call_stored_procedure($values, "verificaStatoPrenotazione",'s');
+    echo call_stored_procedure($values, "verificaStatoPrenotazione",'s');    
 }
 function eliminaPrenotazione()
 {   $values = array("user");
     echo call_stored_procedure($values, "eliminaPrenotazione");
+    insert_log($_COOKIE['user'], "Deleted his request to make a ride");
+
 }
 function corseDisponibili()
 {   if (isset($_COOKIE["user"])){

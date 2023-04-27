@@ -723,7 +723,7 @@ INSERT INTO  CLIENTE(Tel,username,nome,cognome,dataDiNascita,citta) VALUES ('011
 
 
 INSERT INTO  AMMINISTRATORE(Tel,username,nome,cognome,dataDiNascita,sede) VALUES ('111-123456','yos99', 'youssef', 'zerowatt', '1999-12-05','Bologna');
-INSERT INTO  CLIENTE(Tel,username,nome,cognome,dataDiNascita,citta) VALUES ('012-123456','dwdpie00', 'dawid', 'piesla', '2000-02-05','Bologna');
+INSERT INTO  CLIENTE(Tel,username,nome,cognome,dataDiNascita,citta) VALUES ('444-123456','dwdpie00', 'dawid', 'piesla', '2000-02-05','Bologna');
 INSERT INTO  TASSISTA(Tel,username,nome,cognome,dataDiNascita,targaAuto,citta) VALUES ('222-123456','jury15', 'juri', 'horstmann', '2000-05-01','123qwe','Bologna');
 INSERT INTO  TASSISTA(Tel,username,nome,cognome,dataDiNascita,targaAuto,citta) VALUES ('333-123456','parme', 'luca', 'parmesi', '2000-05-01','777cio','Bologna');
 
@@ -732,7 +732,7 @@ insert into TAXI(targa,marca,modello,posti) values('777cio','bmw','x25',9);
 insert into TAXIPRO(targa,marca,modello,posti,elettrico,lusso) values ('123qwe','benz','slk',2,true,true);
 
 INSERT INTO  CREDENZIALI(username,psw) VALUES ('ciccio22', '123');
-call aggiungiCliente('123e', 'ciccio22', 'ciccio', 'gamer', '1990-02-25', 'Padova');
+call aggiungiCliente('012-123456', 'ciccio22', 'ciccio', 'gamer', '1990-02-25', 'Padova');
 
 call inserisciBonifico(12, 60, "45ftg65tyh78ikjuyg56789iut");
 
