@@ -19,9 +19,9 @@ CREATE TABLE CREDENZIALI(
 ) ENGINE = "INNODB";
 
 CREATE TABLE AMMINISTRATORE(
-	Tel varchar(16),
+    Tel varchar(16),
     username varchar(20),
-	nome varchar(20),
+    nome varchar(20),
     cognome varchar(20),
     dataDiNascita date, #FORMAT	'0000-00-00'
     sede varchar(20),
@@ -31,14 +31,29 @@ CREATE TABLE AMMINISTRATORE(
 ) ENGINE = "INNODB";
 
 CREATE TABLE CLIENTE(
-	Tel varchar(16),
+    Tel varchar(16),
     username varchar(20),
-	nome varchar(20),
+    nome varchar(20),
     cognome varchar(20),
     dataDiNascita date, #FORMAT	'0000-00-00'
-	citta varchar(30),
+    citta varchar(30),
     primary key(Tel),
     foreign key CLIENTE(username) references CREDENZIALI(username)
+    
+) ENGINE = "INNODB";
+
+CREATE TABLE TASSISTA(
+    Tel varchar(16),
+    username varchar(20),
+    nome varchar(20),
+    cognome varchar(20),
+    dataDiNascita date, #FORMAT	'0000-00-00'
+    targaAuto varchar(7) unique not null,
+    foto varchar(20), #CAMBIARE CON BLOB
+    citta varchar(30),
+    Ncorse int default 0,
+    primary key(Tel),
+    foreign key TASSISTA(username) references CREDENZIALI(username) on delete cascade
     
 ) ENGINE = "INNODB";
 
@@ -50,7 +65,7 @@ CREATE TABLE GRADUATORIACLIENTI(
 ) ENGINE = "INNODB";
 
 CREATE TABLE PORTAFOGLIO(
-	CODP int auto_increment primary key,
+    CODP int auto_increment primary key,
     username varchar(20),
     credito int default 100,
     foreign key PORTAFOGLIO(username) references CREDENZIALI(username)
@@ -58,7 +73,7 @@ CREATE TABLE PORTAFOGLIO(
 ) ENGINE = "INNODB";
 
 CREATE TABLE RICARICA(
-	CODR int auto_increment primary key,
+    CODR int auto_increment primary key,
     portafoglio int,
     euro int,
     tcoin int,
@@ -68,43 +83,28 @@ CREATE TABLE RICARICA(
 	
 ) ENGINE = "INNODB";
 
-CREATE TABLE TASSISTA(
-	Tel varchar(16),
-    username varchar(20),
-	nome varchar(20),
-    cognome varchar(20),
-    dataDiNascita date, #FORMAT	'0000-00-00'
-    targaAuto varchar(7) unique not null,
-    foto varchar(20), #CAMBIARE CON BLOB
-	citta varchar(30),
-    Ncorse int default 0,
-    primary key(Tel),
-    foreign key TASSISTA(username) references CREDENZIALI(username) on delete cascade
-    
-) ENGINE = "INNODB";
-
 CREATE TABLE BONIFICO(
-	CODB int auto_increment primary key,
-    usernameTassista varchar(20),
+    CODB int auto_increment primary key,
+    portafoglio int,
     euro int,
     tcoin int,
     data datetime,
     IBAN varchar(27),
-    foreign key BONIFICO(usernameTassista) references TASSISTA(username)
+    foreign key BONIFICO(portafoglio) references PORTAFOGLIO(CODP)
 	
 ) ENGINE = "INNODB";
 
 CREATE TABLE TAXI(
-	targa varchar(7) primary key,
+    targa varchar(7) primary key,
     marca varchar(20),
     modello varchar(20),
     posti int,
-	foreign key TAXI(targa) references TASSISTA(targaAuto)
+    foreign key TAXI(targa) references TASSISTA(targaAuto)
     
 ) ENGINE = "INNODB";
 
 CREATE TABLE TAXIPRO(
-	targa varchar(7) primary key,
+    targa varchar(7) primary key,
     marca varchar(20),
     modello varchar(20),
     posti int,
@@ -115,19 +115,21 @@ CREATE TABLE TAXIPRO(
 ) ENGINE = "INNODB";
 
 CREATE TABLE PRENOTAZIONECORSA(
-    usernameCliente varchar(20) primary key,
-	pro boolean default false,
+    IDP int auto_increment primary key,
+    pro boolean default false,
     partenza varchar(50), 
     arrivo varchar(50),
     posti int,
     data datetime,
-    costo int,
+    usernameCliente varchar(20),
+    importo int,
     haCorsa boolean default false,
     foreign key PRENOTAZIONECORSA(usernameCliente) references CLIENTE(username)
+    
 ) ENGINE = "INNODB";
 
 CREATE TABLE CORSA(
-	IDC int auto_increment primary key,
+    IDC int auto_increment primary key,
     partenza varchar(50), 
     arrivo varchar(50),
     data datetime,
@@ -135,7 +137,7 @@ CREATE TABLE CORSA(
     usernameTassista varchar(20),
     importo int,
     foreign key (usernameCliente) references CLIENTE(username),
-	foreign key (usernameTassista) references TASSISTA(username)
+    foreign key (usernameTassista) references TASSISTA(username)
     
 ) ENGINE = "INNODB";
 
@@ -149,11 +151,11 @@ CREATE TABLE RECENSIONE(
 ) ENGINE = "INNODB";
 
 CREATE TABLE RICHIESTALAVORO(
-	IDRICHIESTA int auto_increment primary key,
-	usernameCliente varchar(20),
+    IDRICHIESTA int auto_increment primary key,
+    usernameCliente varchar(20),
     nuovoUsername varchar(20),
     psw varchar(20),
-	fotoDoc varchar(20), #CAMBIARE CON BLOB
+    fotoDoc varchar(20), #CAMBIARE CON BLOB
     marca varchar(20),
     modello varchar(20),
     posti int,
@@ -166,13 +168,13 @@ CREATE TABLE RICHIESTALAVORO(
 ) ENGINE = "INNODB";
 
 CREATE TABLE RICHIAMO(
-	IDRICHIAMO int auto_increment primary key,
-	usernameAmministratore varchar(20),
-	usernameTassista varchar(20),
+    IDRICHIAMO int auto_increment primary key,
+    usernameAmministratore varchar(20),
+    usernameTassista varchar(20),
     commento varchar(200),
     data datetime,
     foreign key (usernameAmministratore) references AMMINISTRATORE(username),
-	foreign key (usernameTassista) references TASSISTA(username) on delete cascade
+    foreign key (usernameTassista) references TASSISTA(username) on delete cascade
 	
 ) ENGINE = "INNODB";
 
