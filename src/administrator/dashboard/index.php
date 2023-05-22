@@ -32,9 +32,6 @@ checkUser(UserType::Amministratore);
   </body>
 
 
-  <?php
-      echo("username: " . $_COOKIE["user"]);
 
-  ?>
 </html>
 

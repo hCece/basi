@@ -1,13 +1,64 @@
 var googleMap = googleMaps();
-var locationStart,locationEnd,map;
+var request = new PhpRequest();
+var locationStart,locationEnd;
+let idReservation, reservation;
 const COEFFICENTE_PRO = 1.5;
-// ------------ NOT UPDATED COMMENT -------------
-//Just a boring handler. It gets the Location object, 
-// takes the coordinates of those location and makes a request to the server.
-// The response is printed onto html 
+
+
+window.onload = function () {
+  request.mySql(PhpRequest.Prenotazione.isCompletata, "POST",{user:getCookie('user')} );
+  let res = request.getResponse().trim();
+  if(res == "si prenotazione" || res == "si corsa" ) {
+    btn = document.getElementById("submit-button");
+    btn.innerHTML = "Cancella Prenotazione";
+    checkRide(btn);
+  }
+}
+
+
+/* The button "submit" has two states: "Prenotazione Corsa" & "Cancella Prenotazione"
+ * That are rappresented with the first if in the method. If the button is in delete reservation mode, 
+ * the method deletes the previously made reservation, otherwise it will make a reservation and 
+ * check each 5 seconds if the reservation has been approved by a taxidriver
+ */
 function handleSubmitButton() {
-  var request = new PhpRequest();
-  setLocations();
+  
+  let btn = document.getElementById("submit-button");
+  if(btn.innerHTML === "Prenotazione Corsa"){
+    setLocations();
+    idReservation = doReservation();
+    if(idReservation < 0) return;
+
+    btn.innerHTML = "Cancella Prenotazione";
+    checkRide(btn)
+
+
+  }else{
+    console.log(idReservation + "id Prenotazione");
+    request.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:getCookie('user')} );
+    btn.innerHTML = "Prenotazione Corsa";
+    clearInterval(reservation);
+  }
+}
+
+//Checks if the reservation has been picked up by a rider with "si corsa".
+//When the reservation has been picked up by a rider, the user's reservation get's deleted
+function checkRide(btn){
+  interval = setInterval(function () {
+    request.mySql(PhpRequest.Prenotazione.isCompletata, "POST",{user:getCookie('user')} );
+    const responseData = request.getResponse();
+    
+    if (responseData.trim()==  "si corsa") {
+      request.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:getCookie('user')} );
+      alert("La corsa è stata presa in carico. un tassista arriverà a breve");
+      clearInterval(interval);    
+      btn.innerHTML = "Prenotazione Corsa";
+    }
+  }, 5000);
+}
+
+// This method prepares the json file to send to the server, and makes the request to book a new ride  
+function doReservation(){
   startCity = googleMap.getCityFromLocation(locationStart);
   endCity = googleMap.getCityFromLocation(locationEnd);
 
@@ -22,18 +73,22 @@ function handleSubmitButton() {
     nrPosti:nrSeat,
     usernameCliente:getCookie("user"),
     lus:isLuxury(),
-    ele:isElectric()};
+    ele:isElectric(),
+    costo:getCost()};
 
-  console.log(json);
-  request.mySql(PhpRequest.DB.InserisciPrenotazione, "POST", json);
-  
-  var costo = getCost(request);
-  console.log("Costo corsa: " + costo + " €");
+  console.log(json);  
+  request.mySql(PhpRequest.Prenotazione.Inserisci, "POST", json);
+  let idRes = request.getResponse();
+  console.log(idRes)
+  if(idRes==-200)
+    alert("Non esistono dei tassisti con le tue specifiche richieste che partono da " + startCity);
+  else if(idRes==-400)
+    alert("Non hai abbastanza denaro per prenotare la corsa fino a " + endCity);
 
 
-  
+  return idRes;
+
 }
-
 
 
 function setLocations(){
@@ -45,6 +100,7 @@ function setLocations(){
   }
 
 }
+
 
 function isProCar(){
   if(isElectric() && isLuxury()) 
@@ -72,24 +128,18 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
+//
 
-function getCost(request){
-  
+function getCost(){
   var startCoordinates = googleMap.getStartCoordinates(locationStart);
   var endCoordinates = googleMap.getEndCoordinates(locationEnd);
-
-
   prettyZoom();
   json = {LatBegin:startCoordinates[0],LongBegin:startCoordinates[1],
-    LatEnd:endCoordinates[0],LongEnd:endCoordinates[1]};
+    LatEnd:endCoordinates[0],LongEnd:endCoordinates[1],isPro:isProCar()};
 
   request.request("../lib/distance.php", "POST", json);
-  rtrn = request.getResponse().split(";");
-  var costo = Number(rtrn[0])+Number(rtrn[1]);
+  return Number(request.getResponse());
 
-  if (isProCar()) costo *= COEFFICENTE_PRO;
-  
-  return costo;
 }
 
 //it adjusts zoom and location, so that both markers fit in the same map

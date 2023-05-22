@@ -9,11 +9,14 @@ checkUser(UserType::Cliente);
   </head>
 
 
+
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
      <script src="../../shared/lib/PhpRequest.js"></script>
+     <script src="../../shared/lib/Update.js"></script>
+
      <link rel="stylesheet" href="style.css">
   <body>
-    <form>
+    <div id="portafoglioCliente">
 
       <label for="codice">Codice Portafoglio: </label>
       <label id="codiceValue"></label>
@@ -36,11 +39,31 @@ checkUser(UserType::Cliente);
       <span id="output"></span>
       <br><br>
       <button type="submit" style="background-color: #6a64f1;"
-      onclick="handleRicarica();" return false;>Ricarica portafoglio</button>
-       <span id="errorLabel" class="label danger" style="visibility  : hidden">
-       inserisci il numero di carta e un importo valido!</span>
-    </form>
-  </body>
-  <script src="script.js"></script>
+      onclick="handleRicarica()">Ricarica portafoglio</button>
+      <br><br>
+      <button type="submit" style="background-color: #6a64f1;"
+      onclick="handleStorico()">Storico ricariche</button>
+    </div>
+     <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <table id="tab">
+            	<thead>
+            		<tr>
+            			<th>CODR</th>
+                        <th>euro</th>
+                        <th>tcoin</th>
+                        <th>data</th>
+                        <th>N. carta</th>
 
+            		</tr>
+            	</thead>
+
+            	<tbody id="popTable"></tbody>
+            </table>
+        </div>
+      </div>
+  </body>
+
+<script src="script.js"></script>
 </html>

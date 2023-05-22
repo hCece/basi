@@ -7,13 +7,13 @@ checkUser(UserType::Tassista);
   <head>
     <title>Taxi Service</title>
   </head>
-
-
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
      <script src="../../shared/lib/PhpRequest.js"></script>
+     <script src="../../shared/lib/Update.js"></script>
+
      <link rel="stylesheet" href="style.css">
   <body>
-    <form>
+    <div id="portafolgioTaxi">
 
       <label for="codice">Codice Portafoglio: </label>
       <label id="codiceValue"></label>
@@ -24,7 +24,6 @@ checkUser(UserType::Tassista);
       <hr>
       <h5>Per ricaricare il credito inserisci i
        dati richiesti e clicca su "ricarica portafoglio"</h5>
-
       <label for="iban">IBAN: </label>
       <input type="text" id="iban" >
       <br><br>
@@ -38,9 +37,30 @@ checkUser(UserType::Tassista);
       <button type="submit" style="background-color: #6a64f1;"
       onclick="handleBonifico();" >
       Inserisci Bonifico</button>
+      <br><br>
+      <button type="submit" style="background-color: #6a64f1;"
+      onclick="handleStorico();">Storico bonifici</button>
+    </div>
 
+         <div id="popup" class="popup">
+            <div class="popup-content">
+                <span class="close-btn" onclick="closePopup()">&times;</span>
+                <table id="tab">
+                	<thead>
+                		<tr>
+                			<th>CODR</th>
+                            <th>euro</th>
+                            <th>tcoin</th>
+                            <th>data</th>
+                            <th>N. carta</th>
 
-    </form>
+                		</tr>
+                	</thead>
+
+                	<tbody id="popTable"></tbody>
+                </table>
+            </div>
+          </div>
   </body>
   <script src="script.js"></script>
 

@@ -4,7 +4,7 @@
 	<title>Storico corse</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="../../shared/lib/PhpRequest.js"></script>
-    <script src="../../shared/lib/UpdateTable.js"></script>
+    <script src="../../shared/lib/Update.js"></script>
 
 	<link rel="stylesheet" href="style.css">
 </head>
@@ -21,7 +21,7 @@
                 <th>Cliente</th>
                 <th>Tassista</th>
                 <th>Importo</th>
-                <th></th>
+
 
 
 			</tr>
