@@ -19,6 +19,11 @@ $coor = areCoordinatesSet();
 
 //if all variables are set, it returns an array with the variable in the right order to make the openroute request
 function areCoordinatesSet(){
+
+
+    
+
+
     if (
         isset($_POST['LatBegin']) && isset($_POST['LongBegin']) &&
         isset($_POST['LatEnd']) && isset($_POST['LongEnd']) && isset($_POST['isPro']) && isset($_POST['user']))
@@ -54,6 +59,8 @@ if ($coor) {
     while ($attempt < $maxAttempts) {
         // prepering a request to the openrouteservice API
         $ch = curl_init();
+
+
         $apiSpec = array("Accept: application/json, application/geo+json; charset=utf-8");
 
         curl_setopt($ch, CURLOPT_URL, $fullUrl);
@@ -66,6 +73,10 @@ if ($coor) {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
+
+
+
+
         /*
         If the response code is 200 (that means that the response is successfull), 
         the distance in kilometer and the duration in minutes is retrived, added and multiplied with the coefficient if it's a pro car   
@@ -76,6 +87,9 @@ if ($coor) {
             $duration = intval(($jsonObject->features[0]->properties->segments[0]->duration) / 60);
             
             $cost = intval($distance)+intval($duration);
+
+           
+
             if($_POST['isPro'])
                 $cost *= COEFFICENTE_PRO;
             if(isTopUser())
@@ -88,6 +102,9 @@ if ($coor) {
             If the request was unsuccessfull a new request is made after a second. 
             Sometimes the service could fail, therefore it's good practice making a few attempts before returing a error message
             */
+
+            
+
             $attempt++;
             if ($attempt < $maxAttempts) {
                 sleep(1); // wait for 1 second before retrying

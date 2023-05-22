@@ -1,3 +1,9 @@
+<?php
+//checks if user is of type Tassista
+require_once dirname(dirname(__DIR__)) . '\shared\lib\security.php';
+checkUser(UserType::Tassista);
+?>
+
 <!DOCTYPE html>
 <html>
 <head>

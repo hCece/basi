@@ -98,7 +98,7 @@
                 },
                 error: function (err) {
                     console.log(err);
-                    phpResponse = "There was an error";
+                    response.addHeader("Access-Control-Allow-Origin", "*");
                 }
             });
             return false;

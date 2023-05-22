@@ -9,8 +9,9 @@ h1 {
 }
 
 .button-container {
-  float: right;
-  margin: 20px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
 .notification-badge {

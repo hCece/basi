@@ -66,6 +66,7 @@ function doReservation(){
   if(!nrSeat) nrSeat = 1;
 
   var cost = getCost();
+  console.log(cost + "COSTOOOOOO")
   var json = {
     pro :isProCar(),
     partenza:startCity,
@@ -141,6 +142,8 @@ function getCost(){
   json = {LatBegin:startCoordinates[0],LongBegin:startCoordinates[1],
     LatEnd:endCoordinates[0],LongEnd:endCoordinates[1],isPro:isProCar(), user:cookieUser};
 
+
+  console.log("LOOOOOL" + JSON.stringify(json))
   request.request("../lib/distance.php", "POST", json);
   return Number(request.getResponse());
 

@@ -10,8 +10,8 @@
 
   <div class="formbold-main-wrapper">
     <div class="formbold-form-wrapper">
-
       <h2>Log In</h2>
+
 
       <div>
         <br>
