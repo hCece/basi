@@ -1,0 +1,9 @@
+----- mySQL -----
+
+servername=localhost
+username=root
+password=pass0
+
+--- mongoDB ---
+
+port=27017

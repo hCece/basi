@@ -43,9 +43,9 @@ function handleButton() {
   }
   console.log(json)
 
-  php.mySql(PhpRequest.Corsa.Aggiungi, "POST", json);
+  php.mySql(PhpRequest.Corsa.Aggiungi,  json);
   console.log("HEZ: "+ php.getResponse());
-  php.mySql(PhpRequest.Utente.GetTel, "POST",{user:userClient})
+  php.mySql(PhpRequest.Utente.GetTel, {user:userClient})
 
   alert("Hai preso in carico una corsa. Il tuo cliente ti aspetta. Il suo numero di telefono del tuo cliente: " + php.getResponse());
 

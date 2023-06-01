@@ -1,13 +1,18 @@
-var googleMap = googleMaps();
+
+
+var locationStart = document.getElementById("input-start-location")
+var locationEnd = document.getElementById("input-end-location")
+
+var googleMap = 
+    googleMaps(document.getElementById("map"),locationStart, locationEnd);
 var request = new PhpRequest();
 var cookie = new Cookie();
-var locationStart,locationEnd;
 let idReservation, reservation;
 const COEFFICENTE_PRO = 1.5;
 var cookieUser = cookie.get('user');
 
 window.onload = function () {
-  request.mySql(PhpRequest.Prenotazione.isCompletata, "POST",{user:cookieUser} );
+  request.mySql(PhpRequest.Prenotazione.isCompletata, {user:cookieUser} );
   let res = request.getResponse().trim();
   if(res == "si prenotazione" || res == "si corsa" ) {
     btn = document.getElementById("submit-button");
@@ -35,7 +40,7 @@ function handleSubmitButton() {
 
 
   }else{
-    request.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:cookieUser} );
+    request.mySql(PhpRequest.Prenotazione.Elimina, {user:cookieUser} );
     btn.innerHTML = "Prenotazione Corsa";
     clearInterval(reservation);
   }
@@ -45,11 +50,11 @@ function handleSubmitButton() {
 //When the reservation has been picked up by a rider, the user's reservation get's deleted
 function checkRide(btn){
   interval = setInterval(function () {
-    request.mySql(PhpRequest.Prenotazione.isCompletata, "POST",{user:cookieUser} );
+    request.mySql(PhpRequest.Prenotazione.isCompletata, {user:cookieUser} );
     const responseData = request.getResponse();
     
     if (responseData.trim()==  "si corsa") {
-      request.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:cookieUser} );
+      request.mySql(PhpRequest.Prenotazione.Elimina, {user:cookieUser} );
       alert("La corsa è stata presa in carico. un tassista arriverà a breve");
       clearInterval(interval);    
       btn.innerHTML = "Prenotazione Corsa";
@@ -65,8 +70,7 @@ function doReservation(){
   nrSeat = document.getElementById("nrSeat").value;
   if(!nrSeat) nrSeat = 1;
 
-  var cost = getCost();
-  console.log(cost + "COSTOOOOOO")
+  var cost = getCost();  
   var json = {
     pro :isProCar(),
     partenza:startCity,
@@ -77,12 +81,10 @@ function doReservation(){
     ele:isElectric(),
     costo:cost};
 
-  console.log(json);  
 
 
 
-
-  request.mySql(PhpRequest.Prenotazione.Inserisci, "POST", json);
+  request.mySql(PhpRequest.Prenotazione.Inserisci,  json);
   let idRes = request.getResponse();
   console.log(idRes)
   if(idRes==-200)
@@ -143,15 +145,14 @@ function getCost(){
     LatEnd:endCoordinates[0],LongEnd:endCoordinates[1],isPro:isProCar(), user:cookieUser};
 
 
-  console.log("LOOOOOL" + JSON.stringify(json))
-  request.request("../lib/distance.php", "POST", json);
+  request.request("../lib/distance.php",  json);
   return Number(request.getResponse());
 
 }
 
 //it adjusts zoom and location, so that both markers fit in the same map
 function prettyZoom(){
-  map = googleMap.getMap();
+  map = googleMap.getMap(document.getElementById("map"));
   const bounds = new google.maps.LatLngBounds();
   bounds.extend(locationStart.geometry.location);
   bounds.extend(locationEnd.geometry.location);

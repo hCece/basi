@@ -32,15 +32,15 @@ function handleRegistrationButton(){
                     city:city};
 
 
-        request.mySql(PhpRequest.SP.CheckUsername, "POST", {user:user});
+        request.mySql(PhpRequest.SP.CheckUsername,  {user:user});
         var result1 = request.getResponse();
 
-        request.mySql(PhpRequest.SP.CheckTel, "POST", {tel:tel});
+        request.mySql(PhpRequest.SP.CheckTel,  {tel:tel});
         var result2 = request.getResponse();
 
         if(result1 == 'OK'  && result2 == 'OK'){
-            request.mySql(PhpRequest.SP.AggiungiCredenziali, "POST", json1);
-            request.mySql(PhpRequest.SP.AggiungCliente, "POST", json2);
+            request.mySql(PhpRequest.SP.AggiungiCredenziali,  json1);
+            request.mySql(PhpRequest.SP.AggiungCliente,  json2);
             alert("Registration successful, try to login");
             window.location.href = "../login/login.php";
         }else

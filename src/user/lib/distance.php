@@ -6,9 +6,6 @@ This block of code makes a request to the apenrouteservice API, by sending the G
 The API returns a complete route on how to get from the staring point to the location by car. 
 Two information, the time taken and the total distance, are information that are sent back to whoever calls this file.
 
-The request is made server side reather then client side (with js) to respect the Cross-site request forgery (CSRF).
-There is a .txt file with a brief example on how CSRF could be used by hackers.
-
 */
 
 

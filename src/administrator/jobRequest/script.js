@@ -31,9 +31,14 @@ function handleApprove() {
     idr = row.innerHTML.split("<td>")[1].split("</td>")[0];
     console.log(idr);
 
-    phpRequest.mySql(PhpRequest.Richiesta.Approva, "POST", {idr : idr});
+    phpRequest.mySql(PhpRequest.Richiesta.Approva,  {idr : idr});
   }
   
+
+/*
+  TODO: handle Decline
+*/
+
   function handleDecline() {
     //phpRequest.mySql(PhpRequest.Richiesta.Rifiuta, "POST");  
   }

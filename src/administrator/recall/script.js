@@ -20,7 +20,7 @@ window.onload = function () {
     update.table(tableBody,PhpRequest.Richiami.Storico);
     var results = [];
     for (let i = 0; i < tableBody.rows.length; i++) {
-        request.mySql(PhpRequest.Richiami.Tassista, "POST",
+        request.mySql(PhpRequest.Richiami.Tassista, 
         {user: tableBody.rows[i].cells[0].innerText}); //here we are passing usernameTassista that is in first column of each row
         results[i] = request.getResponse();
 
@@ -108,10 +108,7 @@ function openPopup1(results) {
         });
 
     // Display the popup 
-    //TODO: This uncommented code maybe has to be added
-    /*const update = new Update();
-    const tableBody = document.getElementById("pop1Table"); // Get the tbody element
-    update.table(tableBody,PhpRequest.Richiami.Tassista,{user: user});*/
+
     document.getElementById("popup1").style.display = "block";
 }
  //Popup2 shows an interface where the administrator can add a recall
@@ -145,7 +142,7 @@ function submitRecall(user) {
     var json = {admin: admin, user: user, commento: commento}
     console.log(json);
     if (commento && commento.tirm!="") {
-        request.mySql(PhpRequest.Richiamo.Inserisci, "POST", json);
+        request.mySql(PhpRequest.Richiamo.Inserisci,  json);
         alert("Richiamo inserito correttamente");
         closePopup2();
         window.location.href = "index.php"; //refresh the page

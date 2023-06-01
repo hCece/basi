@@ -78,21 +78,14 @@
         The request is performed with JQuery & AJAX. If the function is successfull, 
         the data get's saved on "respone", otherwise an error message populates the variable    
         */
-        request = function (url, type, json) {
+        request = function (url, json) {
             console.log(url);
             // Check if the provided storedProcedure is a valid enum value
             $.ajax({
                 url: url,
-                type: type,
+                type: "POST",
                 async: false,
                 data: json,
-                //This could be the solution to a future cookie-updating problem
-                //https://stackoverflow.com/questions/10230341/http-cookies-and-ajax-requests-over-https/10249123
-                /*
-                xhrFields: {
-                    withCredentials: true
-                },
-                */
                 complete: function (res) {
                     response = res.responseText;
                 },
@@ -105,7 +98,7 @@
         };
 
 
-        mySql = function (storedProcedure, type, json) {
+        mySql = function (storedProcedure, json) {
             // A one-liner that use the Object.values() method to get an array
             // of the values in the PhpRequest object and check if the
             // storedProcedure parameter exists in that array
@@ -114,7 +107,7 @@
                 throw new TypeError("Invalid stored procedure name");
             //Adds the path where the php files are found
             var url = DATABASE_PATH + "?function="+ storedProcedure;
-            this.request(url, type, json);
+            this.request(url, json);
         };
         
 

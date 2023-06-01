@@ -733,8 +733,6 @@ INSERT INTO  TASSISTA(Tel,username,nome,cognome,dataDiNascita,targaAuto,citta) V
 insert into TAXI(targa,marca,modello,posti) values('777cio','bmw','x25',9);
 insert into TAXIPRO(targa,marca,modello,posti,elettrico,lusso) values ('123qwe','benz','slk',2,true,true);
 
-INSERT INTO  CREDENZIALI(username,psw) VALUES ('ciccio22', '123');
-call aggiungiCliente('012-123456', 'ciccio22', 'ciccio', 'gamer', '1990-02-25', 'Padova');
 
 call inserisciBonifico(12, 60, "45ftg65tyh78ikjuyg56789iut");
 
@@ -755,8 +753,6 @@ call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'dwdpie00', 0, 0, 1, 
 call inserisciCorsa('Bologna', 'Bologna', 'dwdpie00', 'parme', 1,@rtrn);
 
 
-call inserisciPrenotazione(true, 'Bologna', 'Bologna', 1, 'ciccio22', 1, 1, 10, @rtrn);
-call inserisciCorsa('Bologna', 'Bologna', 'ciccio22', 'jury15', 1,@rtrn);
 
 call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'claudia', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'claudia', 'parme', 1,@rtrn);
@@ -817,7 +813,6 @@ select @res;
 select credito from PORTAFOGLIO where username = 'parme';
 call topClienti();
 
-call storicoCorse('ciccio22');
 call storicoCorse('jury15');
 
 call richiamiTassista('jury15');

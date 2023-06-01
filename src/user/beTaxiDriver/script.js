@@ -5,7 +5,7 @@ var request = new PhpRequest();
   
 window.onload = function () {
 
-  request.mySql(PhpRequest.Richiesta.Stato, "POST",{});
+  request.mySql(PhpRequest.Richiesta.Stato, {});
   let res = request.getResponse();
   console.log(res);
   if(res.trim()== "APERTO"){
@@ -42,7 +42,7 @@ function handleRegistrationButton(){
 
       console.log(json);
       //make request to the server and add a new job request
-      request.mySql(PhpRequest.Richiesta.Set, "POST", json)
+      request.mySql(PhpRequest.Richiesta.Set,  json)
       res = request.getResponse().trim();
       if(res=='"ok"'){
         alert("La richiesta sta per essere valutata. Sii paziente");

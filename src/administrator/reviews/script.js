@@ -1,4 +1,3 @@
-//TODO: test if it works. i put out update from each function
 
 request = new PhpRequest();
 const update = new Update();

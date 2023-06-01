@@ -5,7 +5,6 @@ var map;
 /*
   This class makes the googleMaps implementation run. It creates a map and transformes the simple input fields
   In an something they called "Place Autocomplete". It's basically the input box on google maps.
-  You can get the 
 
 */
 function GoogleMaps(){
@@ -40,7 +39,9 @@ function googleMaps(){
   return new GoogleMaps();
 }
 
-//This function creates the autocomplete input fields and connects a marker with them
+//This function creates the autocomplete input fields and connects a marker (=the dot on google maps) with them
+// an introduction code and explanation about autocompletes can be found on:
+//  https://developers.google.com/maps/documentation/javascript/place-autocomplete#add-autocomplete
 function addAutocomplete(input, map, isStart) {
   const options = {
     fields: ["address_components", "geometry", "name"],

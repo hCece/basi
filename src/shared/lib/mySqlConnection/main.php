@@ -1,17 +1,39 @@
 <?php 
 
-//TODO: get data from a file where the pass is stored
-function newConnection(){
-    $servername = "localhost";
-    $username = "root";
-    $password = "pass0";
-    $dbname = "taxiserver";
+
+function newConnection() {
+    // Get the file path
+    $filepath =  dirname(dirname(dirname(dirname(__DIR__)))) . '\settings.txt';
+    
+    // Read the file
+    $fileContents = file($filepath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    
+    // Extract the relevant information
+    $servername = getValueFromSettings($fileContents, 'servername');
+    $username = getValueFromSettings($fileContents, 'username');
+    $password = getValueFromSettings($fileContents, 'password');
+    $dbname = 'taxiserver';  // Hardcoded dbname as it is not present in settings.txt
+    
+    // Create and return the mysqli connection
     return new mysqli($servername, $username, $password, $dbname);
 }
+
+// Helper function to extract values from settings.txt
+function getValueFromSettings($fileContents, $key) {
+    foreach ($fileContents as $line) {
+        if (strpos($line, $key . '=') === 0) {
+            return substr($line, strlen($key) + 1);
+        }
+    }
+    return '';
+}
+
 newConnection();
 
 
+/*
 
+*/
 function call_query($query) {
     global $conn;
     if($conn==null)

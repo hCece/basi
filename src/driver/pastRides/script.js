@@ -29,7 +29,7 @@ var results = [];
     const user = tableBody.rows[i].cells[4].innerText;
     // make request here and set response to variable x
     // you can use the PhpRequest.mySql method to make the query
-    request.mySql(PhpRequest.Utente.GetTel, "POST", { user: user });
+    request.mySql(PhpRequest.Utente.GetTel,  { user: user });
     const tel = request.getResponse(); // store the result in a variable
     // create a new cell for the tel column and add the value
     const telCell = tableBody.rows[i].insertCell(-1);
@@ -37,7 +37,7 @@ var results = [];
 
 
       var idc = tableBody.rows[i].cells[0].innerText;
-      request.mySql(PhpRequest.Recensione.Visualizza, "POST",
+      request.mySql(PhpRequest.Recensione.Visualizza, 
       {idc: idc});//here we are passing the idc value from the first column in each row
       results[i] = request.getResponse(); //keep the procedure output in the results array
 

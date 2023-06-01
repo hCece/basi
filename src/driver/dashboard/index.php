@@ -40,9 +40,5 @@ checkUser(UserType::Tassista);
 </body>
 
 
-<?php
-echo ("username: " . $_COOKIE["user"]);
-
-?>
 
 </html>

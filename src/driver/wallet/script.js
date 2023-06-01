@@ -13,12 +13,12 @@ for (var i = 0; i < sp.length; i++) {
 }
 
 //call the procedure CreditoPortafoglio and get the credit related to the user
-request.mySql(PhpRequest.Portafoglio.Credito, "POST", {user: user});
+request.mySql(PhpRequest.Portafoglio.Credito,  {user: user});
 var credit = request.getResponse();
 document.getElementById("creditoValue").textContent = credit; //set credito value
 
 //call the procedure CodicePortafoglio and get the code related to the user
-request.mySql(PhpRequest.Portafoglio.Codice, "POST", {user: user});
+request.mySql(PhpRequest.Portafoglio.Codice,  {user: user});
 var code = request.getResponse();
 document.getElementById("codiceValue").textContent = code; //sed code value
 
@@ -31,7 +31,7 @@ function handleBonifico() {
     // check if iban is valid and if the tcoin amount is greater than 0 and lover than total credit
     if(iban.trim != "" && tcoin > 0 && tcoin < Number(credit)+1) {
         //insert the bonifico in the db by InserisciBonifico procedure
-        request.mySql(PhpRequest.Portafoglio.Bonifico, "POST", {codp:code, tcoin: tcoin, iban: iban});
+        request.mySql(PhpRequest.Portafoglio.Bonifico,  {codp:code, tcoin: tcoin, iban: iban});
         alert("bonifico eseguito con successo");
     }
     else{

@@ -29,7 +29,7 @@ window.onload = function () {
     const user = tableBody.rows[i].cells[5].innerText;
     // make request here and set response to variable x
     // you can use the PhpRequest.mySql method to make the query
-    request.mySql(PhpRequest.Utente.GetTel, "POST", { user: user });
+    request.mySql(PhpRequest.Utente.GetTel,  { user: user });
     const tel = request.getResponse(); // store the result in a variable
     // create a new cell for the tel column and add the value
     const telCell = tableBody.rows[i].insertCell(-1);
@@ -37,7 +37,7 @@ window.onload = function () {
 
     var idc = tableBody.rows[i].cells[0].innerText;
      //Recensione.Visualizza gets the review's values (empty = no review)
-    request.mySql(PhpRequest.Recensione.Visualizza, "POST", {idc: idc});
+    request.mySql(PhpRequest.Recensione.Visualizza,  {idc: idc});
     results[i] = request.getResponse(); //fill results array with procedure output
 
     //now add a button at the end of each row
@@ -103,7 +103,7 @@ function submitReview(idc) {
     var json = {idc: idc, voto: voto, commento: commento}
 
     if (voto >= 1 && voto <=10 ) {
-        request.mySql(PhpRequest.Recensioni.Inserisci, "POST", json);
+        request.mySql(PhpRequest.Recensioni.Inserisci,  json);
         btn = document.getElementById(idc);
         btn.innerText = "Visualizza Commento";
         alert("Recensione inserita correttamente");

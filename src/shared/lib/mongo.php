@@ -1,7 +1,10 @@
 <?php
 
 require dirname(dirname(dirname(__DIR__))) . '/vendor/autoload.php'; // include Composer's autoloader
-$client = new MongoDB\Client("mongodb://localhost:27017");
+
+
+$port = getPortFromSettings();
+$client = new MongoDB\Client("mongodb://localhost:".$port);
 $collection = $client->basi->logs;
 
 function insert_log($username, $message)
@@ -35,6 +38,27 @@ function read_log($username = null)
     }
     
     return $output;
+}
+
+
+function getPortFromSettings() {
+    // Get the file path
+    $filepath = __DIR__ . '/../../../settings.txt';
+    
+    // Read the file
+    $fileContents = file($filepath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    
+    // Extract the port value
+    $port = '';
+    foreach ($fileContents as $line) {
+        $line = trim($line); // Trim whitespace from the line
+        if (strpos($line, 'port=') === 0) {
+            $port = trim(substr($line, 5));
+            break;
+        }
+    }
+    
+    return $port;
 }
 
 ?>

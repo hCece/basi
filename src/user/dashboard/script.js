@@ -12,7 +12,7 @@ window.onload = function () {
             tmpRide = update.notificationBadge(notifyBadge,PhpRequest.Prenotazione.isCompletata,{user:cookie.get('user')});
             if(tmpRide.trim()=="si corsa"){    
                 notifyBadge.innerHTML = 0;
-                phpRequest.mySql(PhpRequest.Prenotazione.Elimina, "POST",{user:cookie.get('user')} );
+                phpRequest.mySql(PhpRequest.Prenotazione.Elimina, {user:cookie.get('user')} );
                 alert("La corsa è stata presa in carico. un tassista arriverà a breve");
                 clearInterval(reservation);    
             } 

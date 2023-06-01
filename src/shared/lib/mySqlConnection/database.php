@@ -1,12 +1,10 @@
 
 <?php
-
-
 require __DIR__.'/main.php';
 
 require dirname(__DIR__).'/mongo.php';
 
-
+//Checks if a function exists and calls it
 if(function_exists($_GET['function'])) {
     $_GET['function']();
  }
@@ -181,7 +179,6 @@ function corseDisponibili()
         echo json_encode($rtrn);
     }
 }
-
 function countCorseDisponibili()
 {   if (isset($_COOKIE["user"])){
         $_POST['user'] = $_COOKIE["user"];

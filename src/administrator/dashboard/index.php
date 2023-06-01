@@ -17,7 +17,7 @@ checkUser(UserType::Amministratore);
     <h2>seleziona un opzione</h2>
 
 
-    <button id"jobRequest" onclick=
+    <button id="jobRequest" onclick=
     "window.location.href = '../jobRequest/index.php'" >
     Visualizza Richieste Lavoro</button>
 
