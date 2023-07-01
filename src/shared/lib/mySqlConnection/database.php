@@ -52,7 +52,7 @@ function ricaricaPortafoglio()
 }
 function storicoCorse()
 {   
-    $return = call_query("CALL storicoCorse('".$_POST['user']."')");
+    $return = call_query("CALL storicoCorse('".$_COOKIE['user']."')");
     echo json_encode($return);
 }
 function inserisciBonifico()

@@ -37,7 +37,7 @@ window.onload = function () {
 
     var idc = tableBody.rows[i].cells[0].innerText;
      //Recensione.Visualizza gets the review's values (empty = no review)
-    request.mySql(PhpRequest.Recensione.Visualizza,  {idc: idc});
+    request.mySql(PhpRequest.Recensioni.Visualizza,  {idc: idc});
     results[i] = request.getResponse(); //fill results array with procedure output
 
     //now add a button at the end of each row

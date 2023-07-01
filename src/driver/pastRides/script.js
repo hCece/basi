@@ -37,7 +37,7 @@ var results = [];
 
 
       var idc = tableBody.rows[i].cells[0].innerText;
-      request.mySql(PhpRequest.Recensione.Visualizza, 
+      request.mySql(PhpRequest.Recensioni.Visualizza, 
       {idc: idc});//here we are passing the idc value from the first column in each row
       results[i] = request.getResponse(); //keep the procedure output in the results array
 

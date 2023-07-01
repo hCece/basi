@@ -21,7 +21,7 @@ checkUser(UserType::Cliente);
   <h2>seleziona un opzione</h2>
   <div class="button-container">
     <div>
-      <button id="logout-btn" onclick="handeLogOutButton();return false">Log Out</button>
+      <button id="logout-btn" onclick="handleLogoutButton();return false">Log Out</button>
     </div>
   </div>
   <div id="image-container">

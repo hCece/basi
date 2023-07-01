@@ -69,7 +69,6 @@
             Tassista : "richiamiTassista",
         }
 
-
         //Returns the variable "response" 
         getResponse = function () { return response; };       
 

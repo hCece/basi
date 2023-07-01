@@ -17,10 +17,17 @@ checkUser(UserType::Tassista);
 </head>
 
 <body>
+
   <h1>Benvenuto Tassista</h1>
   <div id="image-container"><img src="./driverIMG.png" alt="Image description"></div>
   <h2>seleziona un opzione</h2>
 
+  <div class="button-container">
+    <div>
+      <button id="logout-btn" onclick="handleLogoutButton();return false">Log Out</button>
+    </div>
+  </div>
+  
   <button id="Portafoglio" onclick="
     window.location.href = '../wallet/index.php';return false;">
     Portafoglio</button>
