@@ -1,4 +1,5 @@
 GRANT EVENT ON *.* TO 'root'@'localhost';
+GRANT EVENT ON *.* TO 'root'@'localhost';
 
 DROP DATABASE IF EXISTS TAXISERVER;
 SET SQL_SAFE_UPDATES = 0;
@@ -49,7 +50,6 @@ CREATE TABLE TASSISTA(
     cognome varchar(20),
     dataDiNascita date, #FORMAT	'0000-00-00'
     targaAuto varchar(7) unique not null,
-    foto varchar(20), #CAMBIARE CON BLOB
     citta varchar(30),
     primary key(Tel),
     foreign key TASSISTA(username) references CREDENZIALI(username) on delete cascade
@@ -156,7 +156,6 @@ CREATE TABLE RICHIESTALAVORO(
     usernameCliente varchar(20),
     nuovoUsername varchar(20),
     psw varchar(20),
-    fotoDoc varchar(20), #CAMBIARE CON BLOB
     marca varchar(20),
     modello varchar(20),
     posti int,
@@ -301,6 +300,18 @@ end //
 
 
 delimiter //
+create procedure storicoRicariche(in codicePortafoglio int)
+begin
+            select CODR,euro,tcoin,data,Ncarta from RICARICA where RICARICA.portafoglio = codicePortafoglio;
+
+end //
+delimiter //
+create procedure storicoBonifici(in codp int)
+begin
+    select CODB,euro,tcoin,data,IBAN from BONIFICO where BONIFICO.portafoglio = codp;
+end//
+
+delimiter //
 create procedure inserisciPrenotazione(in pro int, partenza varchar(50), arrivo varchar(50), Nposti int, usernameCliente varchar(20), lus int, ele int, importo int, out rtrn int)
 begin
 
@@ -419,7 +430,7 @@ begin
 end //
 
 delimiter //
-create procedure inserisciRichiestaLavoro(in usernameCliente varchar(20), nuovoUsername varchar(20), psw varchar(100), fotoDoc varchar(20), marca varchar(20), 
+create procedure inserisciRichiestaLavoro(in usernameCliente varchar(20), nuovoUsername varchar(20), psw varchar(100), marca varchar(20), 
 											modello varchar(20), targa varchar(7), posti int, lusso int, elettrico int, out rtrn varchar(80) )
 begin
 	declare checkUsername boolean default false;
@@ -433,8 +444,8 @@ begin
     if checkUsername then 
 		if (checkRichiesta) then
 			if (checkTel) then
-				insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, psw, fotoDoc, marca, modello, targa, posti, lusso, elettrico) 
-				values(usernameCliente, nuovoUsername,psw, fotoDoc, marca, modello, targa, posti, lusso, elettrico);
+				insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, psw, marca, modello, targa, posti, lusso, elettrico) 
+				values(usernameCliente, nuovoUsername,psw, marca, modello, targa, posti, lusso, elettrico);
 				set rtrn='ok';
 			else 
 				set rtrn="sei attualmente un tassista";
@@ -621,7 +632,7 @@ begin
         
         #insert new driver
         insert into CREDENZIALI(username, psw) values (new.nuovoUsername, new.psw);
-		insert into TASSISTA(Tel,username,nome,cognome,dataDiNascita,targaAuto,foto,citta) values (TelTmp,new.nuovoUsername,nomeTmp,cognomeTmp,dataDiNascitaTmp,new.targa,new.fotoDoc,cittaTmp);
+		insert into TASSISTA(Tel,username,nome,cognome,dataDiNascita,targaAuto,citta) values (TelTmp,new.nuovoUsername,nomeTmp,cognomeTmp,dataDiNascitaTmp,new.targa,cittaTmp);
     end if;
 	
 end //
@@ -790,5 +801,5 @@ call inserisciRichiamo('yos99','jury15','Non rispetta i limiti di velocità');
 select * from RICHIAMO;
 
 #inserisco una richiesta di lavoro da parte di "dwdpie00"
-call inserisciRichiestaLavoro("dwdpie00", "bomber", '123', 'foto',"audi", "a15", "173h132", 5, 0, 1, @rtrn);
+call inserisciRichiestaLavoro("dwdpie00", "bomber", '123',"audi", "a15", "173h132", 5, 0, 1, @rtrn);
 

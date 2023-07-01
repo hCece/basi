@@ -32,7 +32,6 @@ function handleRegistrationButton(){
       var json = {usernameCliente:cookie.get("user"),
                   nuovoUsername:user,
                   password:pass,
-                  fotoDoc:"LOL",
                   marca:brand,
                   modello:model,
                   targa:licence,

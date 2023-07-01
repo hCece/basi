@@ -17,6 +17,14 @@ function storicoRecensioni()
     echo json_encode($return);
 }
 
+function storicoRicariche()
+{   $return = call_query("CALL storicoRicariche('".$_POST['codp']."')");
+    echo json_encode($return);
+}
+function storicoBonifici()
+{   $return = call_query("CALL storicoBonifici('".$_POST['codicePortafoglio']."')");
+    echo json_encode($return);
+}
 function storicoRichiami()
 {   $return = call_query("CALL storicoRichiami()");
     echo json_encode($return);
@@ -81,7 +89,7 @@ function creditoPortafoglio()
 }
 function codicePortafoglio()
 {   $values = array("user");
-    $return = call_stored_procedure($values, "codicePortafoglio",'s');
+    $return = call_stored_procedure($values, "codicePortafoglio",'i');
     print_r($return);
 }
 function aggiungiCliente()
@@ -123,7 +131,7 @@ function statoRichiesta(){
     }
 }
 function inserisciRichiestaLavoro()
-{    $values = array("usernameCliente","nuovoUsername","password", "fotoDoc", 
+{    $values = array("usernameCliente","nuovoUsername","password", 
     "marca","modello","targa","posti","lusso","elettrico");
     $return = call_stored_procedure($values, "inserisciRichiestaLavoro",true);
     insert_log($_COOKIE['user'], "Made a new request to become a taxi driver");

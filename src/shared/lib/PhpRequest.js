@@ -29,7 +29,9 @@
             Bonifico: "inserisciBonifico",
             Ricarica: "ricaricaPortafoglio",
             Credito: "creditoPortafoglio",
-            Codice: "codicePortafoglio",
+            Codice: "codicePortafoglio",           
+            StoricoB: "storicoBonifici",
+            StoricoR: "storicoRicariche",
         }
         
         static Richiesta = {
