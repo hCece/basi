@@ -27,7 +27,7 @@ checkUser(UserType::Amministratore);
 				<th>Voto</th>
 				<th>Commento</th>
 				<th>Tassista</th>
-				<th>Data</th>
+                    <th>Data</th>
 			</tr>
 		</thead>
 

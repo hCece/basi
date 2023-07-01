@@ -4,11 +4,11 @@ DROP DATABASE IF EXISTS TAXISERVER;
 SET SQL_SAFE_UPDATES = 0;
 CREATE DATABASE IF NOT EXISTS TAXISERVER;
 USE TAXISERVER; 
+SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 
 SET @T_COIN_CONVERSION = 3;
 SET @PROFIT_PERCENTAGE = 0.2;
-
-
 
 #Definisco le tabelle
 
@@ -51,11 +51,11 @@ CREATE TABLE TASSISTA(
     targaAuto varchar(7) unique not null,
     foto varchar(20), #CAMBIARE CON BLOB
     citta varchar(30),
-    Ncorse int default 0,
     primary key(Tel),
     foreign key TASSISTA(username) references CREDENZIALI(username) on delete cascade
     
 ) ENGINE = "INNODB";
+
 
 CREATE TABLE GRADUATORIACLIENTI(
     username varchar(20) primary key,
@@ -72,6 +72,17 @@ CREATE TABLE PORTAFOGLIO(
 	
 ) ENGINE = "INNODB";
 
+CREATE TABLE BONIFICO(
+	CODB int auto_increment primary key,
+	portafoglio int,
+    euro int,
+    tcoin int,
+    data datetime,
+    IBAN varchar(27),
+    foreign key BONIFICO(portafoglio) references PORTAFOGLIO(CODP)
+	
+) ENGINE = "INNODB";
+
 CREATE TABLE RICARICA(
     CODR int auto_increment primary key,
     portafoglio int,
@@ -83,16 +94,7 @@ CREATE TABLE RICARICA(
 	
 ) ENGINE = "INNODB";
 
-CREATE TABLE BONIFICO(
-    CODB int auto_increment primary key,
-    portafoglio int,
-    euro int,
-    tcoin int,
-    data datetime,
-    IBAN varchar(27),
-    foreign key BONIFICO(portafoglio) references PORTAFOGLIO(CODP)
-	
-) ENGINE = "INNODB";
+
 
 CREATE TABLE TAXI(
     targa varchar(7) primary key,
@@ -138,7 +140,6 @@ CREATE TABLE CORSA(
     importo int,
     foreign key (usernameCliente) references CLIENTE(username),
     foreign key (usernameTassista) references TASSISTA(username)
-    
 ) ENGINE = "INNODB";
 
 CREATE TABLE RECENSIONE(
@@ -260,6 +261,19 @@ begin
 		end if;
 end //
 
+delimiter //
+CREATE PROCEDURE storicoRichiami()
+BEGIN
+   SELECT TASSISTA.username,
+           COUNT(DISTINCT RICHIAMO.IDRICHIAMO) AS NumRichiami,
+           ROUND(AVG(RECENSIONE.voto),1) AS MediaVoti
+    FROM TASSISTA
+    LEFT JOIN RICHIAMO ON TASSISTA.username = RICHIAMO.usernameTassista
+    LEFT JOIN CORSA ON TASSISTA.username = CORSA.usernameTassista
+    LEFT JOIN RECENSIONE ON CORSA.IDC = RECENSIONE.IDC
+    GROUP BY TASSISTA.username;
+    
+END//
 
 #restituisce il credito rimanente in portafoglio
 delimiter // 
@@ -287,7 +301,7 @@ end //
 
 
 delimiter //
-create procedure inserisciPrenotazione(in pro int, partenza varchar(50), arrivo varchar(50), Nposti int, usernameCliente varchar(20), lus int, ele int, costo int, out rtrn int)
+create procedure inserisciPrenotazione(in pro int, partenza varchar(50), arrivo varchar(50), Nposti int, usernameCliente varchar(20), lus int, ele int, importo int, out rtrn int)
 begin
 
 	declare existsTaxi boolean default false;
@@ -304,13 +318,14 @@ begin
         where (citta = partenza and posti >= Nposti));
     end if;
     
-    call creditoSufficente(usernameCliente, costo, haSoldi);
+    call creditoSufficente(usernameCliente, importo, haSoldi);
     
+   
     
     
     if(existsTaxi) then #if there is at least 1 taxi matching the request add PRENOTAZIONECORSA
 		if(haSoldi) then
-			insert into PRENOTAZIONECORSA(pro, partenza, arrivo, posti, data, usernameCliente, costo) values(pro, partenza, arrivo, Nposti, now(), usernameCliente, costo);
+			insert into PRENOTAZIONECORSA(pro, partenza, arrivo, posti, data, usernameCliente, importo) values(pro, partenza, arrivo, Nposti, now(), usernameCliente, importo);
 			SET rtrn= 1;
 		else
 			SET rtrn= -400; # -400 means no moneyz
@@ -365,7 +380,7 @@ begin
 			SET haCorsa = true
 			WHERE pc.usernameCliente = usernameCliente;
 			
-			set costoVar = (select costo from prenotazioneCorsa as pc where pc.usernameCliente = usernameCliente);
+			set costoVar = (select importo from prenotazioneCorsa as pc where pc.usernameCliente = usernameCliente);
 			call pagaCorsa(usernameCliente, usernameTassista, costoVar);
 		end if;
 	end if;
@@ -442,9 +457,8 @@ begin
     set usernameT = (select username from PORTAFOGLIO where PORTAFOGLIO.CODP = codp);
     select checkImporto;
     select usernameT;
-    
     if((checkImporto - tcoin) >= 0) then #check if the tassista isn't requesting a bonifico bigger than his credito
-	 insert into BONIFICO(usernameTassista, tcoin, euro, data, IBAN) values(usernameT, tcoin, (tcoin/3), now(), IBAN);
+	 insert into BONIFICO(portafoglio, tcoin, euro, data, IBAN) values(codp, tcoin, (tcoin/3), now(), IBAN);
      update PORTAFOGLIO set credito = (credito - tcoin) where username = usernameT; #uptate tassista's portafoglio after bonifico
     end if;
 end //
@@ -526,9 +540,10 @@ END//
 delimiter //
 create procedure storicoRecensioni()
 begin
-	select *
+	select Recensione.IDC, voto, commento, usernameCliente,data
 	from RECENSIONE
-	order by IDC desc;
+    join CORSA on CORSA.IDC = RECENSIONE.IDC
+	order by RECENSIONE.IDC desc;
 end //
 
 
@@ -540,7 +555,7 @@ create procedure corseDisponibili(in usernameTassista varchar(20))
 begin
 
 	DECLARE profit DECIMAL(5,2) DEFAULT 0.2;
-	SELECT partenza, arrivo, posti, data, usernameCliente,  ROUND(costo * (1 - profit))
+	SELECT partenza, arrivo, posti, data, usernameCliente,  ROUND(importo * (1 - profit))
 	FROM prenotazioneCorsa
 	WHERE partenza IN
 		(SELECT citta FROM tassista 
@@ -558,6 +573,23 @@ begin
 end //
 
 
+delimiter //
+create procedure recensioniPeggiori()
+begin
+select RECENSIONE.IDC,voto,commento,usernameTassista,data
+from RECENSIONE,CORSA
+where RECENSIONE.IDC = CORSA.IDC
+order by voto asc;
+end //
+
+delimiter //
+create procedure recensioniMigliori()
+begin
+select RECENSIONE.IDC,voto,commento,usernameTassista,data
+from RECENSIONE,CORSA
+where RECENSIONE.IDC = CORSA.IDC
+order by voto desc;
+end //
 
 delimiter //
 create procedure cancellaPrenotazione(in username varchar(20))
@@ -733,12 +765,7 @@ INSERT INTO  TASSISTA(Tel,username,nome,cognome,dataDiNascita,targaAuto,citta) V
 insert into TAXI(targa,marca,modello,posti) values('777cio','bmw','x25',9);
 insert into TAXIPRO(targa,marca,modello,posti,elettrico,lusso) values ('123qwe','benz','slk',2,true,true);
 
-
 call inserisciBonifico(12, 60, "45ftg65tyh78ikjuyg56789iut");
-
-call inserisciRichiamo('yos99','jury15','ha fatto il gay 1');
-call inserisciRichiamo('yos99','jury15','ha fatto il gay 2');
-#call inserisciRichiamo('yos99','jury15','ha fatto il gay 3');
 
 
 call ricaricaPortafoglio(4, 100, '0945891423768901');
@@ -747,42 +774,38 @@ call ricaricaPortafoglio(2, 200, '2245891423228922'); #should not work tassista 
 call riconosciUtente('yos99','123', @nome);
 select @nome;
 
-#in pro int, partenza varchar(20), arrivo varchar(20), Nposti int, usernameCliente varchar(20), lus int, ele int, costo int, out rtrn int)
-
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'dwdpie00', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'dwdpie00', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'dwdpie00', 'parme', 1,@rtrn);
 
-
-
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'claudia', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'claudia', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'claudia', 'parme', 1,@rtrn);
 
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'alle', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'alle', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'alle', 'parme', 1,@rtrn);
 
 
 
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'riccardo', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'riccardo', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'riccardo', 'parme', 1,@rtrn);
 
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'enri', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'enri', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'enri', 'parme', 1,@rtrn);
 DELETE FROM prenotazionecorsa;
 
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'enri', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'enri', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'enri', 'parme', 1,@rtrn);
 DELETE FROM prenotazionecorsa;
 
 
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'paolo', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'paolo', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'paolo', 'parme', 1,@rtrn);
 DELETE FROM prenotazionecorsa;
 
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'paolo', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'paolo', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'paolo', 'parme', 1,@rtrn);
 DELETE FROM prenotazionecorsa;
 
-call inserisciPrenotazione(false, 'Bologna', 'Bologna', 1, 'paolo', 0, 0, 1, @rtrn);
+call inserisciPrenotazione(0, 'Bologna', 'Bologna', 1, 'paolo', 0, 0, 1, @rtrn);
 call inserisciCorsa('Bologna', 'Bologna', 'paolo', 'parme', 1,@rtrn);
 DELETE FROM prenotazionecorsa;
 

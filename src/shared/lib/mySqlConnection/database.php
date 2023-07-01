@@ -39,7 +39,7 @@ function inserisciRichiamo()
 }
 
 function richiamiTassista()
-{   $return = call_query("CALL richiamiTassista('".$_POST['user']."')");
+{   $return = call_query("CALL richiamiTassista('".$_COOKIE['user']."')");
     echo json_encode($return);
 }
 

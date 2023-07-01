@@ -24,7 +24,6 @@ checkUser(UserType::Amministratore);
 				<th>Tassista</th>
 				<th>N. Richiami</th>
 				<th>Media Voti</th>
-				<th>N. Corse</th>
 				<th></th>
 				<th></th>
 			</tr>

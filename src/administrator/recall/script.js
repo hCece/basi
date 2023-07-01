@@ -142,7 +142,7 @@ function submitRecall(user) {
     var json = {admin: admin, user: user, commento: commento}
     console.log(json);
     if (commento && commento.tirm!="") {
-        request.mySql(PhpRequest.Richiamo.Inserisci,  json);
+        request.mySql(PhpRequest.Richiami.Inserisci,  json);
         alert("Richiamo inserito correttamente");
         closePopup2();
         window.location.href = "index.php"; //refresh the page
