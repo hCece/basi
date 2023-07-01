@@ -30,7 +30,7 @@ checkUser(UserType::Amministratore);
     Visualizza recensioni</button>
 
   <button onclick="window.location.href = '../recall/index.php'">
-    Storico Richiamo</button>
+    Storico Richiami</button>
 </body>
 
 

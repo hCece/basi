@@ -45,6 +45,6 @@ function handleButton() {
   php.mySql(PhpRequest.Corsa.Aggiungi,  json);
   php.mySql(PhpRequest.Utente.GetTel, {user:userClient})
 
-  alert("Hai preso in carico una corsa. Il tuo cliente ti aspetta. Il suo numero di telefono del tuo cliente: " + php.getResponse());
+  alert("Hai preso in carico una corsa. Il tuo cliente ti aspetta. Numero di telefono del tuo cliente: " + php.getResponse());
 
 }

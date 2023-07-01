@@ -23,7 +23,6 @@ checkUser(UserType::Cliente);
   <div class="formbold-main-wrapper">
     <div class="formbold-form-wrapper">
 
-      <img src="your-image-url-here.jpg">
 
       <form action="https://formbold.com/s/FORM_ID" method="POST">
         <div class="formbold-form-title">

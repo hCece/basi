@@ -30,7 +30,7 @@ window.onload = function () {
         // create a new button element
         const button = document.createElement("button");
         //if result is not empty create a clickable button to show the recall/s
-        if(results[i] && results[i].length > 5) {
+        if(tableBody.rows[i].cells[1].innerText != 0) {
            button.innerText = "Visualizza richiami";
            button.style.background= '#6a64f1';
            button.style.cursor = 'pointer';
