@@ -55,6 +55,10 @@ function richiamiTassista()
     echo json_encode($return);
 }
 
+function richiamiTassistaPost()
+{   $return = call_query("CALL richiamiTassista('".$_POST['user']."')");
+    echo json_encode($return);
+}
 
 function ricaricaPortafoglio()
 {   $values = array("codp", "amount", "card");
@@ -149,13 +153,13 @@ function getRichiestaLavoro()
 function rifiutaRichiesta()
 {   $values = array("idr");
     call_stored_procedure($values, "rifiutaRichiesta",false);
-    insert_log($_POST['user'], "rejected a request to become a taxi driver");
+    insert_log($_COOKIE['user'], "rejected a request to become a taxi driver");
 }
 
 function approvaRichiesta()
 {   $values = array("idr");
     call_stored_procedure($values, "approvaRichiesta",false);
-    insert_log($_POST['user'], "approved a request to become a taxi driver");
+    insert_log($_COOKIE['user'], "approved a request to become a taxi driver");
 }
 function riconosciUtente()
 {   $values = array("user","pass");

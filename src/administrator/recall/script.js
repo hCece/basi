@@ -20,10 +20,11 @@ window.onload = function () {
     update.table(tableBody,PhpRequest.Richiami.Storico);
     var results = [];
     for (let i = 0; i < tableBody.rows.length; i++) {
-        request.mySql(PhpRequest.Richiami.Tassista, 
+        request.mySql(PhpRequest.Richiami.TassistaPost, 
         {user: tableBody.rows[i].cells[0].innerText}); //here we are passing usernameTassista that is in first column of each row
         results[i] = request.getResponse();
-
+        console.log("ciao")
+        console.log(request.getResponse())
         //then add a button of the and of each table row
         // create a new cell for the button
         const cell = tableBody.rows[i].insertCell(-1);

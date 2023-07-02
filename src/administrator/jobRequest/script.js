@@ -35,10 +35,10 @@ function handleApprove() {
   }
   
 
-/*
-  TODO: handle Decline
-*/
+  function handleDecline() {    
+    row = document.getElementsByClassName('active-row')[0];
+    idr = row.innerHTML.split("<td>")[1].split("</td>")[0];
+    console.log(idr);
 
-  function handleDecline() {
-    //phpRequest.mySql(PhpRequest.Richiesta.Rifiuta, "POST");  
+    phpRequest.mySql(PhpRequest.Richiesta.Rifiuta,  {idr : idr});
   }

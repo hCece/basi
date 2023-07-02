@@ -15,7 +15,7 @@ class Update {
     table = function (tableBody, storedProcedure, dataJson) {
         phpRequest.mySql(storedProcedure, 'POST', dataJson);
         const responseData = phpRequest.getResponse();
-
+        console.log(responseData);
         if (responseData !== previousData) {
             previousData = responseData;
             console.log(responseData);

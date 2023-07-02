@@ -69,6 +69,7 @@
             Storico : "storicoRichiami",
             Inserisci: "inserisciRichiamo",
             Tassista : "richiamiTassista",
+            TassistaPost : "richiamiTassistaPost",
         }
 
         //Returns the variable "response" 

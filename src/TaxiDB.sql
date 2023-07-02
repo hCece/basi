@@ -436,22 +436,17 @@ begin
 	declare checkUsername boolean default false;
     declare checkRichiesta boolean default false;
     declare checkTel boolean default false;
-    set checkRichiesta = NOT exists(select usernameCliente from RICHIESTALAVORO where usernameCliente = usernameCliente);
     set checkUsername = NOT exists(select username from credenziali where username = nuovoUsername);
     set checkTel = NOT exists(select * from tassista where Tel IN (select Tel from cliente where username = usernameCliente ));
     
-     #check if the new username isen't already taken and check if there is not already a job request for this cliente
+     #check if the new username isen't already taken and check if the user is already a taxidriver
     if checkUsername then 
-		if (checkRichiesta) then
-			if (checkTel) then
-				insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, psw, marca, modello, targa, posti, lusso, elettrico) 
-				values(usernameCliente, nuovoUsername,psw, marca, modello, targa, posti, lusso, elettrico);
-				set rtrn='ok';
-			else 
-				set rtrn="sei attualmente un tassista";
-			end if;
+		if (checkTel) then
+			insert into RICHIESTALAVORO(usernameCliente, nuovoUsername, psw, marca, modello, targa, posti, lusso, elettrico) 
+			values(usernameCliente, nuovoUsername,psw, marca, modello, targa, posti, lusso, elettrico);
+			set rtrn='ok';
 		else 
-			set rtrn = "La tua richiesta sta per essere valutata. Aspetta una risposta";
+			set rtrn="sei attualmente un tassista";
 		end if;
 	else
         set rtrn='Username non disponibile';
@@ -477,13 +472,13 @@ end //
 delimiter //
 create procedure approvaRichiesta(in idr int)
 begin
-	update RICHIESTALAVORO set stato = 'APPROVATO' where IDR = idr;
+	update RICHIESTALAVORO set stato = 'APPROVATO' where IDRichiesta = idr;
 end//
 
 delimiter //
 create procedure rifiutaRichiesta(in idr int)
 begin
-	update RICHIESTALAVORO set stato = 'RIFIUTATO' where IDR = idr;
+	update RICHIESTALAVORO set stato = 'NEGATO' where IDRichiesta = idr;
 end//
 
 delimiter //
@@ -636,6 +631,9 @@ begin
     end if;
 	
 end //
+
+
+
 
 delimiter //
 create trigger aggiungiTaxi

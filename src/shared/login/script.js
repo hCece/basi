@@ -36,12 +36,12 @@ function handleLoginButton() {
             document.getElementById("errorLabel").style.visibility = "visible";
             break; 
         default:
-            //TODO add server error 
+            document.getElementById("errorLabel").style.visibility = "visible";
+            document.getElementById("errorLabel").innerHTML = "Server error";
+            break; 
     }
 
 
-    //TODO: it's not save to store the password in cookies. We could implement a more secure version
-    // https://stackoverflow.com/questions/2100356/is-it-secure-to-store-passwords-in-cookies
     function setLoginCookies(){
         document.cookie = "user="+user +"; path=/";
         document.cookie = "pass="+pass + "; path=/"; 

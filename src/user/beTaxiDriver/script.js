@@ -43,6 +43,7 @@ function handleRegistrationButton(){
       //make request to the server and add a new job request
       request.mySql(PhpRequest.Richiesta.Set,  json)
       res = request.getResponse().trim();
+      console.log(res)
       if(res=='"ok"'){
         alert("La richiesta sta per essere valutata. Sii paziente");
         window.location.href = "../dashboard/profile.php";
