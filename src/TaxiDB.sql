@@ -300,15 +300,15 @@ end //
 
 
 delimiter //
-create procedure storicoRicariche(in codicePortafoglio int)
+create procedure storicoRicariche()
 begin
-            select CODR,euro,tcoin,data,Ncarta from RICARICA where RICARICA.portafoglio = codicePortafoglio;
+	select * from RICARICA;
 
 end //
 delimiter //
-create procedure storicoBonifici(in codp int)
+create procedure storicoBonifici()
 begin
-    select CODB,euro,tcoin,data,IBAN from BONIFICO where BONIFICO.portafoglio = codp;
+    select * from BONIFICO;
 end//
 
 delimiter //

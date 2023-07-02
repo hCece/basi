@@ -9,9 +9,10 @@ checkUser(UserType::Tassista);
   </head>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
      <script src="../../shared/lib/PhpRequest.js"></script>
+     <script src="../../shared/lib/Update.js"></script>
+
      <link rel="stylesheet" href="style.css">
   <body>
-    <form>
 
       <label for="codice">Codice Portafoglio: </label>
       <label id="codiceValue"></label>
@@ -37,8 +38,36 @@ checkUser(UserType::Tassista);
       Inserisci Bonifico</button>
 
 
-    </form>
-  </body>
+
+       <br><br>
+             <button type="submit" style="background-color: #6a64f1;"
+             onclick="handleStorico();">Storico bonifici</button>
+           </div>
+
+                <div id="popup" class="popup">
+                   <div class="popup-content">
+                       <span class="close-btn" onclick="closePopup()">&times;</span>
+                       <table id="tab">
+                           <thead>
+                               <tr>
+                                   <th>CODR</th>
+                                   <th>CODP</th>
+                                   <th>euro</th>
+                                   <th>tcoin</th>
+                                   <th>data</th>
+                                   <th>IBAN</th>
+
+                               </tr>
+                           </thead>
+
+                           <tbody id="popTable"></tbody>
+                       </table>
+                   </div>
+                 </div>
+
+         </body>
   <script src="script.js"></script>
+
+
 
 </html>

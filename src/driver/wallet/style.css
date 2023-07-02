@@ -1,95 +1,95 @@
 body {
-   font-family: Arial, sans-serif;
-   margin: 0;
-   padding: 0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-#portafolgioTaxi {
-   max-width: 500px;
-   margin: 20px auto;
-   padding: 20px;
-   border: 1px solid #ccc;
-   border-radius: 5px;
+#portafoglioCliente {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 label {
-   display: block;
-   margin-bottom: 10px;
+    display: block;
+    margin-bottom: 10px;
 }
 
 input[type="text"],
 input[type="number"] {
-   width: 100%;
-   padding: 10px;
-   box-sizing: border-box;
-   border-radius: 5px;
-   border: 1px solid #ccc;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
 button[type="submit"] {
-   display: block;
-   margin-top: 20px;
-   padding: 10px 20px;
-   background-color: #6a64f1;
-   color: white;
-   border-radius: 5px;
-   border: none;
+    display: block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #6a64f1;
+    color: white;
+    border-radius: 5px;
+    border: none;
 }
 
 button[type="submit"]:hover {
-   cursor:pointer;
+    cursor:pointer;
 }
 
 .popup {
-         visibility: hidden;
-         position: fixed;
-         z-index: 1;
-         left: 0;
-         top: 0;
-         width: 100%;
-         height: 100%;
-         overflow: auto;
-         background-color: rgba(0, 0, 0, 0.4);
-     }
+          visibility: hidden;
+          position: fixed;
+          z-index: 1;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0, 0, 0, 0.4);
+      }
 
-     .popup-content {
-         background-color: white;
-         margin: 15% auto;
-         padding: 20px;
-         border: 1px solid #888;
-         width: 50%;
-     }
+      .popup-content {
+          background-color: white;
+          margin: 15% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 50%;
+      }
 
-     .close-btn {
-         color: #aaa;
-         float: right;
-         font-size: 28px;
-         font-weight: bold;
-     }
+      .close-btn {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+      }
 
-     .close-btn:hover{
-         color: black;
-         text-decoration: none;
-         cursor: pointer;
-     }
+      .close-btn:hover{
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+      }
 
-     table {
-         margin: 0 auto; /* center the table horizontally */
-         border: 2px solid #555; /* add a border to the table */
-         width: 80%; /* make the table take up 80% of the screen */
-         max-width: 800px; /* set a max width for the table */
-         background-color: white; /* set a white background for the table */
-         border-collapse: collapse; /* collapse table borders */
-     }
+      table {
+          margin: 0 auto; /* center the table horizontally */
+          border: 2px solid #555; /* add a border to the table */
+          width: 80%; /* make the table take up 80% of the screen */
+          max-width: 800px; /* set a max width for the table */
+          background-color: white; /* set a white background for the table */
+          border-collapse: collapse; /* collapse table borders */
+      }
 
-     th, td {
-         padding: 15px; /* add padding to table cells */
-         text-align: center; /* center align table cell text */
-         border: 2px solid #aaa;
-         border-bottom: 1px solid #ddd; /* add a bottom border to table rows */
-     }
+      th, td {
+          padding: 15px; /* add padding to table cells */
+          text-align: center; /* center align table cell text */
+          border: 2px solid #aaa;
+          border-bottom: 1px solid #ddd; /* add a bottom border to table rows */
+      }
 
-     th {
-        background-color: #555; /* set the background color of the table headers */
-        color: white; /* set the color of the table headers */
-     }
+      th {
+         background-color: #555; /* set the background color of the table headers */
+         color: white; /* set the color of the table headers */
+      }

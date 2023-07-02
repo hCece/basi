@@ -12,6 +12,7 @@ window.onload = function () {
 }
 
 
+
 function handleLogoutButton(){
     var cookies = document.cookie.split(";");
 

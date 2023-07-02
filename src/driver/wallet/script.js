@@ -20,7 +20,8 @@ document.getElementById("creditoValue").textContent = credit; //set credito valu
 //call the procedure CodicePortafoglio and get the code related to the user
 request.mySql(PhpRequest.Portafoglio.Codice,  {user: user});
 var code = request.getResponse();
-document.getElementById("codiceValue").textContent = code; //sed code value
+document.getElementById("codiceValue").textContent = code; //send code value
+
 
 //handle the bonifico button click
 function handleBonifico() {
@@ -33,11 +34,42 @@ function handleBonifico() {
         //insert the bonifico in the db by InserisciBonifico procedure
         request.mySql(PhpRequest.Portafoglio.Bonifico,  {codp:code, tcoin: tcoin, iban: iban});
         alert("bonifico eseguito con successo");
+        location.reload();
     }
     else{
         alert("Inserisci un iban e un importo valido");
     }
 }
+
+function handleStorico() {
+
+  const update = new Update();
+  const tableBody = document.getElementById("popTable");
+
+  update.table(tableBody, PhpRequest.Portafoglio.StoricoB);
+
+  const rows = tableBody.getElementsByTagName("tr");
+
+  // Iterate over the table rows in reverse order
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const cell = rows[i].getElementsByTagName("td")[1]; // The second column (index 1) contains the value "portafoglio"
+    const portafoglio = cell.textContent.trim();
+
+    // Check if the "portafoglio" value is different from the provided "code"
+    if (portafoglio.trim() !== code.toString().trim()) {
+      // Delete the row if the condition is true
+      tableBody.deleteRow(i);
+    }
+  }
+
+  document.getElementById("popup").style.visibility = "visible";
+}
+
+function closePopup() {
+   // Hide the pop up
+   document.getElementById("popup").style.visibility = "hidden";
+}
+
 // convert tcoin to euro (amount divided by 3)
 function calculate() {
     const input = document.getElementById('importo_tcoin');

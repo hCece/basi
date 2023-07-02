@@ -18,13 +18,17 @@ function storicoRecensioni()
 }
 
 function storicoRicariche()
-{   $return = call_query("CALL storicoRicariche('".$_POST['codp']."')");
-    echo json_encode($return);
+{
+     $return = call_query("CALL storicoRicariche()");
+     echo json_encode($return);
 }
+
 function storicoBonifici()
-{   $return = call_query("CALL storicoBonifici('".$_POST['codicePortafoglio']."')");
+{
+    $return = call_query("CALL storicoBonifici()");
     echo json_encode($return);
 }
+
 function storicoRichiami()
 {   $return = call_query("CALL storicoRichiami()");
     echo json_encode($return);
@@ -47,7 +51,7 @@ function inserisciRichiamo()
 }
 
 function richiamiTassista()
-{   $return = call_query("CALL richiamiTassista('".$_POST['user']."')");
+{   $return = call_query("CALL richiamiTassista('".$_COOKIE['user']."')");
     echo json_encode($return);
 }
 
